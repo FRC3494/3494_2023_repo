@@ -2,15 +2,14 @@ package com.swervedrivespecialties.swervelib.rev;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.swervedrivespecialties.swervelib.AbsoluteEncoder;
 import com.swervedrivespecialties.swervelib.AbsoluteEncoderFactory;
 
 public class SparkMAXEncoderFactoryBuilder {
-    public AbsoluteEncoderFactory<SparkMAXEncoderAbsoluteConfiguration> build() {
+    public AbsoluteEncoderFactory<SparkMAXEncoderAbsoluteConfiguration> build(CANSparkMax parentSparkMax) {
         return configuration -> {
-            return new EncoderImplementation(new CANSparkMax(configuration.getId(), MotorType.kBrushless).getAbsoluteEncoder(Type.kDutyCycle));
+            return new EncoderImplementation(parentSparkMax.getAbsoluteEncoder(Type.kDutyCycle));
         };
     }
 

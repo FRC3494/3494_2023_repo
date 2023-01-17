@@ -3,6 +3,7 @@ package frc.robot;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import com.pathplanner.lib.PathPlanner;
@@ -10,6 +11,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
 
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.auto.FollowPath;
@@ -26,7 +28,7 @@ public class RobotContainer {
 		OI.configureButtonBindings();
 
 		// Add all autos to the auto chooser
-		Path autoPath = Filesystem.getDeployDirectory().toPath().resolve("/home/lvuser/deploy/pathplanner/");
+		Path autoPath = Filesystem.getDeployDirectory().toPath().resolve("pathplanner/");
 
 		autoChooser = new SendableChooser<>();
 
@@ -35,7 +37,7 @@ public class RobotContainer {
 				.map(Path::getFileName)
 				.map(Path::toString)
 				.forEach((String autoFileName) -> {
-					autoChooser.addOption(autoFileName, autoFileName);
+					autoChooser.addOption(autoFileName.split(Pattern.quote("."))[0], autoFileName.split(Pattern.quote("."))[0]);
 				});
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -43,6 +45,8 @@ public class RobotContainer {
 
 		// Configure default commands
 		drivetrain.setDefaultCommand(new TeleopDrive(drivetrain));
+
+		Shuffleboard.getTab("Autonomous").add(autoChooser);
 	}
 
 	public Command getAutonomousCommand() {

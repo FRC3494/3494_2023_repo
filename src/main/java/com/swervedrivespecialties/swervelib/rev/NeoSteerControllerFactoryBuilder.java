@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardContainer;
 
 import static com.swervedrivespecialties.swervelib.rev.RevUtils.checkNeoError;
 
+import java.util.function.Function;
+
 public final class NeoSteerControllerFactoryBuilder {
     // PID configuration
     private double pidProportional = Double.NaN;
@@ -46,14 +48,14 @@ public final class NeoSteerControllerFactoryBuilder {
         return Double.isFinite(currentLimit);
     }
 
-    public <T> SteerControllerFactory<ControllerImplementation, NeoSteerConfiguration<T>> build(AbsoluteEncoderFactory<T> encoderFactory) {
+    public <T> SteerControllerFactory<ControllerImplementation, NeoSteerConfiguration<T>> build(Function<CANSparkMax, AbsoluteEncoderFactory<T>> encoderFactory) {
         return new FactoryImplementation<>(encoderFactory);
     }
 
     public class FactoryImplementation<T> implements SteerControllerFactory<ControllerImplementation, NeoSteerConfiguration<T>> {
-        private final AbsoluteEncoderFactory<T> encoderFactory;
+        private final Function<CANSparkMax, AbsoluteEncoderFactory<T>> encoderFactory;
 
-        public FactoryImplementation(AbsoluteEncoderFactory<T> encoderFactory) {
+        public FactoryImplementation(Function<CANSparkMax, AbsoluteEncoderFactory<T>> encoderFactory) {
             this.encoderFactory = encoderFactory;
         }
 
@@ -65,7 +67,6 @@ public final class NeoSteerControllerFactoryBuilder {
 
         @Override
         public ControllerImplementation create(NeoSteerConfiguration<T> steerConfiguration, ModuleConfiguration moduleConfiguration) {
-            AbsoluteEncoder absoluteEncoder = encoderFactory.create(steerConfiguration.getEncoderConfiguration());
 
             CANSparkMax motor = new CANSparkMax(steerConfiguration.getMotorPort(), CANSparkMaxLowLevel.MotorType.kBrushless);
             checkNeoError(motor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 100), "Failed to set periodic status frame 0 rate");
@@ -79,6 +80,8 @@ public final class NeoSteerControllerFactoryBuilder {
             if (hasCurrentLimit()) {
                 checkNeoError(motor.setSmartCurrentLimit((int) Math.round(currentLimit)), "Failed to set NEO current limits");
             }
+
+            AbsoluteEncoder absoluteEncoder = encoderFactory.apply(motor).create(steerConfiguration.getEncoderConfiguration());
 
             RelativeEncoder integratedEncoder = motor.getEncoder();
             checkNeoError(integratedEncoder.setPositionConversionFactor(2.0 * Math.PI * moduleConfiguration.getSteerReduction()), "Failed to set NEO encoder conversion factor");

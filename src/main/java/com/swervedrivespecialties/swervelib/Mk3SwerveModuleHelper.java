@@ -1,5 +1,6 @@
 package com.swervedrivespecialties.swervelib;
 
+import com.revrobotics.CANSparkMax;
 import com.swervedrivespecialties.swervelib.rev.NeoDriveControllerFactoryBuilder;
 import com.swervedrivespecialties.swervelib.rev.NeoSteerConfiguration;
 import com.swervedrivespecialties.swervelib.rev.NeoSteerControllerFactoryBuilder;
@@ -24,7 +25,7 @@ public final class Mk3SwerveModuleHelper {
                 .withVoltageCompensation(configuration.getNominalVoltage())
                 .withPidConstants(1.0, 0.0, 0.1)
                 .withCurrentLimit(configuration.getSteerCurrentLimit())
-                .build(new SparkMAXEncoderFactoryBuilder().build());
+                .build((CANSparkMax parentMotorController) -> new SparkMAXEncoderFactoryBuilder().build(parentMotorController));
     }
 
     /**
