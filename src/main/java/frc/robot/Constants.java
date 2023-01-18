@@ -19,29 +19,21 @@ public final class Constants {
             public static final class FrontLeftModule {
                 public static int DRIVE_MOTOR_PORT = 12;
                 public static int STEER_MOTOR_PORT = 11;
-
-                public static double STEER_OFFSET = -Math.toRadians(7.54);
             }
 
             public static final class FrontRightModule {
                 public static int DRIVE_MOTOR_PORT = 7;
                 public static int STEER_MOTOR_PORT = 8;
-
-                public static double STEER_OFFSET = -Math.toRadians(258.84);
             }
 
             public static final class BackLeftModule {
                 public static int DRIVE_MOTOR_PORT = 14;
                 public static int STEER_MOTOR_PORT = 15;
-
-                public static double STEER_OFFSET = -Math.toRadians(25);
             }
 
             public static final class BackRightModule {
                 public static int DRIVE_MOTOR_PORT = 5;
                 public static int STEER_MOTOR_PORT = 4;
-
-                public static double STEER_OFFSET = -Math.toRadians(92.856);
             }
 
             public static final double TRACKWIDTH_METERS = 0.7112;
@@ -70,7 +62,7 @@ public final class Constants {
             public static final PIDController X_CONTROLLER = new PIDController(1, 0, 0);
             public static final PIDController Y_CONTROLLER = new PIDController(1, 0, 0);
             
-            public static final ProfiledPIDController THETA_CONTROLLER = new ProfiledPIDController(1, 0, 0, 
+            public static final ProfiledPIDController THETA_CONTROLLER = new ProfiledPIDController(0.25, 0, 0.01, 
                     new TrapezoidProfile.Constraints(Math.PI, Math.PI));
         }
     }

@@ -9,7 +9,11 @@ import com.swervedrivespecialties.swervelib.AbsoluteEncoderFactory;
 public class SparkMAXEncoderFactoryBuilder {
     public AbsoluteEncoderFactory<SparkMAXEncoderAbsoluteConfiguration> build(CANSparkMax parentSparkMax) {
         return configuration -> {
-            return new EncoderImplementation(parentSparkMax.getAbsoluteEncoder(Type.kDutyCycle));
+            SparkMaxAbsoluteEncoder encoder = parentSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
+            
+            encoder.setInverted(configuration.getReversed());
+
+            return new EncoderImplementation(encoder);
         };
     }
 
@@ -22,7 +26,7 @@ public class SparkMAXEncoderFactoryBuilder {
 
         @Override
         public double getAbsoluteAngle() {
-            double angle = Math.toRadians(encoder.getPosition());
+            double angle = Math.toRadians(encoder.getPosition() * 360.0);
             angle %= 2.0 * Math.PI;
             if (angle < 0.0) {
                 angle += 2.0 * Math.PI;

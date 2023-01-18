@@ -27,6 +27,8 @@ public class RobotContainer {
 		// Configure the button bindings
 		OI.configureButtonBindings();
 
+		OI.getResetHeadingEvent().rising().ifHigh(drivetrain::zeroYaw);
+
 		// Add all autos to the auto chooser
 		Path autoPath = Filesystem.getDeployDirectory().toPath().resolve("pathplanner/");
 

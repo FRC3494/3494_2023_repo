@@ -1,8 +1,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.event.BooleanEvent;
+import edu.wpi.first.wpilibj.event.EventLoop;
 
 public final class OI {
+    private static EventLoop eventLoop = new EventLoop();
+
 	private static XboxController primaryController = new XboxController(Constants.OI.PRIMARY_CONTROLLER_PORT);
 
     private static double deadband(double value, double deadband) {
@@ -24,11 +28,16 @@ public final class OI {
         // Square the axis
         value = Math.copySign(value * value * value, value);
 
-        return value * .5;
+        return value * 3;
     }
     
 	public static void configureButtonBindings() {
+
 	}
+
+    public static void update() {
+        eventLoop.poll();
+    }
 
     public static double getTeleopXVelocity() {
         return modifyAxis(primaryController.getLeftY());
@@ -40,5 +49,9 @@ public final class OI {
 
     public static double getTeleopTurnVelocity() {
         return modifyAxis(primaryController.getRightX());
+    }
+
+    public static BooleanEvent getResetHeadingEvent() {
+        return primaryController.back(eventLoop);
     }
 }

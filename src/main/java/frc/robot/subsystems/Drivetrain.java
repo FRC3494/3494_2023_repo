@@ -175,4 +175,8 @@ public class Drivetrain extends SubsystemBase {
 
 		return Rotation2d.fromDegrees(360.0 - navX.getYaw());
 	}
+
+	public void zeroYaw() {
+		navX.zeroYaw();
+	}
 }
