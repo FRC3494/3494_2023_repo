@@ -3,6 +3,7 @@ package frc.robot.commands.auto;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
@@ -14,6 +15,7 @@ public class FollowPath extends SwerveControllerCommand {
 	Timer timer = new Timer();
 
 	Field2d field2d;
+	FieldObject2d fieldObject2d;
 
 	public FollowPath(Drivetrain drivetrain, Trajectory trajectory, Field2d field2d) {
 		super(trajectory,
@@ -28,6 +30,7 @@ public class FollowPath extends SwerveControllerCommand {
 		this.drivetrain = drivetrain;
 		this.trajectory = trajectory;
 		this.field2d = field2d;
+		this.fieldObject2d = field2d.getObject("Target Position");
 				
 		Constants.Commands.FollowPath.THETA_CONTROLLER.enableContinuousInput(-Math.PI, Math.PI);
 		
@@ -50,7 +53,7 @@ public class FollowPath extends SwerveControllerCommand {
 
 		double curTime = timer.get();
 
-		field2d.getObject("Target Position").setPose(trajectory.sample(curTime).poseMeters);
+		fieldObject2d.setPose(trajectory.sample(curTime).poseMeters);
 	}
 
   	@Override

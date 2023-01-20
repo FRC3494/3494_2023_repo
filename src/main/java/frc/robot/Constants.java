@@ -79,5 +79,8 @@ public final class Constants {
 
     public static final class OI {
         public static final int PRIMARY_CONTROLLER_PORT = 0;
+
+        public static final double MAX_DRIVE_SPEED = 3; // m/s
+        public static final double MAX_TURN_SPEED = 6; // rad/s
     }
 }

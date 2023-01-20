@@ -28,7 +28,7 @@ public final class OI {
         // Square the axis
         value = Math.copySign(value * value * value, value);
 
-        return value * 3;
+        return value;
     }
     
 	public static void configureButtonBindings() {
@@ -40,15 +40,15 @@ public final class OI {
     }
 
     public static double getTeleopXVelocity() {
-        return modifyAxis(primaryController.getLeftY());
+        return modifyAxis(primaryController.getLeftY()) * Constants.OI.MAX_DRIVE_SPEED;
     }
 
     public static double getTeleopYVelocity() {
-        return modifyAxis(primaryController.getLeftX());
+        return modifyAxis(primaryController.getLeftX()) * Constants.OI.MAX_DRIVE_SPEED;
     }
 
     public static double getTeleopTurnVelocity() {
-        return modifyAxis(primaryController.getRightX());
+        return modifyAxis(primaryController.getRightX()) * Constants.OI.MAX_TURN_SPEED;
     }
 
     public static BooleanEvent getResetHeadingEvent() {
