@@ -1,14 +1,21 @@
 package frc.robot.commands.auto;
 
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
 public class FollowPath extends SwerveControllerCommand {
 	Drivetrain drivetrain;
+	Trajectory trajectory;
+	
+	Timer timer = new Timer();
 
-	public FollowPath(Drivetrain drivetrain, Trajectory trajectory) {
+	Field2d field2d;
+
+	public FollowPath(Drivetrain drivetrain, Trajectory trajectory, Field2d field2d) {
 		super(trajectory,
 				drivetrain::getPose,
 				drivetrain.getKinematics(),
@@ -19,6 +26,8 @@ public class FollowPath extends SwerveControllerCommand {
 				drivetrain);
 
 		this.drivetrain = drivetrain;
+		this.trajectory = trajectory;
+		this.field2d = field2d;
 				
 		Constants.Commands.FollowPath.THETA_CONTROLLER.enableContinuousInput(-Math.PI, Math.PI);
 		
@@ -26,4 +35,28 @@ public class FollowPath extends SwerveControllerCommand {
 
 		this.andThen(() -> drivetrain.drive(0, 0, 0, false));
 	}
+
+	@Override
+  	public void initialize() {
+		super.initialize();
+
+  		timer.reset();
+  		timer.start();
+  	}
+
+	@Override
+	public void execute() {
+		super.execute();
+
+		double curTime = timer.get();
+
+		field2d.getObject("Target Position").setPose(trajectory.sample(curTime).poseMeters);
+	}
+
+  	@Override
+  	public void end(boolean interrupted) {
+		super.end(interrupted);
+
+  		timer.stop();
+  	}
 }
