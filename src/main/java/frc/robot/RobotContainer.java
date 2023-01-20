@@ -16,12 +16,15 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.auto.AutoBalance;
 import frc.robot.commands.auto.FollowPath;
 import frc.robot.commands.teleop.TeleopDrive;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.NavX;
 
 public class RobotContainer {
-	private final Drivetrain drivetrain = new Drivetrain();
+	private final NavX navX = new NavX();
+	private final Drivetrain drivetrain = new Drivetrain(navX);
 
 	private FollowPath followPath;
 
@@ -54,23 +57,25 @@ public class RobotContainer {
 			e.printStackTrace();
 		}
 
+		autoChooser.setDefaultOption("Choose an Auto!", null);
+
 		autoTab = Shuffleboard.getTab("Autonomous");
 		fieldTab = Shuffleboard.getTab("Field");
 
-		autoTab.add(autoChooser);
+		autoTab.add(autoChooser).withSize(2, 1);
 
 		// Configure default commands
-		drivetrain.setDefaultCommand(new TeleopDrive(drivetrain));
+		drivetrain.setDefaultCommand(new AutoBalance(drivetrain, navX));
 
 		robotPosition = new Field2d();
 
 		robotPosition.setRobotPose(null);
 
-		fieldTab.add(robotPosition);
+		fieldTab.add(robotPosition).withPosition(1, 0).withSize(7, 4);
 
-		fieldTab.addDouble("Odometry X", () -> drivetrain.getPose().getX());
-		fieldTab.addDouble("Odometry Y", () -> drivetrain.getPose().getY());
-		fieldTab.addDouble("Odometry W", () -> drivetrain.getPose().getRotation().getDegrees());
+		fieldTab.addDouble("Odometry X", () -> drivetrain.getPose().getX()).withPosition(0, 0);
+		fieldTab.addDouble("Odometry Y", () -> drivetrain.getPose().getY()).withPosition(0, 1);
+		fieldTab.addDouble("Odometry W", () -> drivetrain.getPose().getRotation().getDegrees()).withPosition(0, 2);
 	}
 
 	public Command getAutonomousCommand() {

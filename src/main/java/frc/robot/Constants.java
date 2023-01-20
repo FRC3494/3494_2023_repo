@@ -6,10 +6,8 @@ import com.pathplanner.lib.PathConstraints;
 import com.swervedrivespecialties.swervelib.ThriftyBotModuleConfigurations;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 
@@ -61,9 +59,19 @@ public final class Constants {
         public static final class FollowPath {
             public static final PIDController X_CONTROLLER = new PIDController(1, 0, 0);
             public static final PIDController Y_CONTROLLER = new PIDController(1, 0, 0);
+
+            public static final PIDController THETA_CONTROLLER = new PIDController(0.22, 0, 0.05);
             
-            public static final ProfiledPIDController THETA_CONTROLLER = new ProfiledPIDController(0.25, 0, 0.01, 
-                    new TrapezoidProfile.Constraints(Math.PI, Math.PI));
+            /*public static final ProfiledPIDController THETA_CONTROLLER = new ProfiledPIDController(0.22, 0, 0.05, 
+                    new TrapezoidProfile.Constraints(Math.PI, Math.PI));*/
+        }
+
+        public static final class AutoBalance {
+            public static final double TRIGGER_ANGLE = 5;
+
+            public static final double LEVEL_ANGLE = 2;
+
+            public static final double DRIVE_POWER = 0.2;
         }
     }
 

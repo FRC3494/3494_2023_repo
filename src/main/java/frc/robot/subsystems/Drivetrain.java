@@ -53,8 +53,7 @@ public class Drivetrain extends SubsystemBase {
 			Constants.Subsystems.Drivetrain.BackRightModule.STEER_MOTOR_PORT,
 			Constants.Subsystems.Drivetrain.BackRightModule.STEER_MOTOR_PORT);
 
-	// The gyro sensor
-	private final NavX navX = new NavX();
+	NavX navX;
 
 	// Odometry class for tracking robot pose
 	private SwerveDriveOdometry odometry = new SwerveDriveOdometry(
@@ -63,7 +62,8 @@ public class Drivetrain extends SubsystemBase {
 			getSwerveModulePositions());
 
 	/** Creates a new DriveSubsystem. */
-	public Drivetrain() {
+	public Drivetrain(NavX navX) {
+		this.navX = navX;
 	}
 
 	@Override

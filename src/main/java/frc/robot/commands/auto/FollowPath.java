@@ -1,14 +1,16 @@
 package frc.robot.commands.auto;
 
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
-public class FollowPath extends SwerveControllerCommand {
+public class FollowPath extends PPSwerveControllerCommand {
 	Drivetrain drivetrain;
 	Trajectory trajectory;
 	
@@ -17,7 +19,7 @@ public class FollowPath extends SwerveControllerCommand {
 	Field2d field2d;
 	FieldObject2d fieldObject2d;
 
-	public FollowPath(Drivetrain drivetrain, Trajectory trajectory, Field2d field2d) {
+	public FollowPath(Drivetrain drivetrain, PathPlannerTrajectory trajectory, Field2d field2d) {
 		super(trajectory,
 				drivetrain::getPose,
 				drivetrain.getKinematics(),
@@ -25,6 +27,7 @@ public class FollowPath extends SwerveControllerCommand {
 				Constants.Commands.FollowPath.Y_CONTROLLER,
 				Constants.Commands.FollowPath.THETA_CONTROLLER,
 				drivetrain::setModuleStates,
+				true,
 				drivetrain);
 
 		this.drivetrain = drivetrain;
