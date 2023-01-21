@@ -16,15 +16,14 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.auto.AutoBalance;
 import frc.robot.commands.auto.FollowPath;
+import frc.robot.commands.groups.AutoBalanceTeleopGroup;
 import frc.robot.commands.teleop.TeleopDrive;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.NavX;
 
 public class RobotContainer {
-	private final NavX navX = new NavX();
-	private final Drivetrain drivetrain = new Drivetrain(navX);
+	private final Drivetrain drivetrain;
 
 	private FollowPath followPath;
 
@@ -36,10 +35,14 @@ public class RobotContainer {
 	private Field2d robotPosition;
 
 	public RobotContainer() {
+		NavX.getNavX();
+		drivetrain = new Drivetrain();
+
 		// Configure the button bindings
 		OI.configureButtonBindings();
 
 		OI.getResetHeadingEvent().rising().ifHigh(drivetrain::zeroYaw);
+		OI.getAutoBalanceEvent().rising().ifHigh(() -> AutoBalanceTeleopGroup.get(drivetrain).schedule());
 
 		// Add all autos to the auto chooser
 		Path autoPath = Filesystem.getDeployDirectory().toPath().resolve("pathplanner/");
@@ -65,7 +68,7 @@ public class RobotContainer {
 		autoTab.add(autoChooser).withSize(2, 1);
 
 		// Configure default commands
-		drivetrain.setDefaultCommand(new AutoBalance(drivetrain, navX));
+		drivetrain.setDefaultCommand(new TeleopDrive(drivetrain));
 
 		robotPosition = new Field2d();
 
@@ -76,6 +79,9 @@ public class RobotContainer {
 		fieldTab.addDouble("Odometry X", () -> drivetrain.getPose().getX()).withPosition(0, 0);
 		fieldTab.addDouble("Odometry Y", () -> drivetrain.getPose().getY()).withPosition(0, 1);
 		fieldTab.addDouble("Odometry W", () -> drivetrain.getPose().getRotation().getDegrees()).withPosition(0, 2);
+		fieldTab.addDouble("NavX Pitch", () -> NavX.getPitch()).withPosition(8, 0);
+		fieldTab.addDouble("NavX Roll", () -> NavX.getRoll()).withPosition(8, 1);
+		fieldTab.addDouble("NavX Yaw", () -> NavX.getYaw()).withPosition(8, 2);
 	}
 
 	public Command getAutonomousCommand() {

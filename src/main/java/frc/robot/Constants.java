@@ -67,11 +67,15 @@ public final class Constants {
         }
 
         public static final class AutoBalance {
-            public static final double TRIGGER_ANGLE = 5;
+            public static final double TRIGGER_ANGLE = 10;
 
             public static final double LEVEL_ANGLE = 2;
 
-            public static final double DRIVE_POWER = 0.2;
+            public static final double DRIVE_POWER = 1;
+
+            public static final double DIVIDE_FACTOR = 4;
+
+            public static final double EXIT_TIME = 3;
         }
     }
 

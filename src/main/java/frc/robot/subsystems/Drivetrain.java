@@ -62,8 +62,7 @@ public class Drivetrain extends SubsystemBase {
 			getSwerveModulePositions());
 
 	/** Creates a new DriveSubsystem. */
-	public Drivetrain(NavX navX) {
-		this.navX = navX;
+	public Drivetrain() {
 	}
 
 	@Override
@@ -168,15 +167,15 @@ public class Drivetrain extends SubsystemBase {
 	 * @return The current heading of the chassis.
 	 */
 	public Rotation2d getGyroscopeRotation() {
-		if (navX.getNavX().isMagnetometerCalibrated()) {
+		if (NavX.getNavX().isMagnetometerCalibrated()) {
 			// We will only get valid fused headings if the magnetometer is calibrated
-			return Rotation2d.fromDegrees(navX.getYaw());
+			return Rotation2d.fromDegrees(NavX.getYaw());
 		}
 
-		return Rotation2d.fromDegrees(360.0 - navX.getYaw());
+		return Rotation2d.fromDegrees(360.0 - NavX.getYaw());
 	}
 
 	public void zeroYaw() {
-		navX.zeroYaw();
+		NavX.zeroYaw();
 	}
 }

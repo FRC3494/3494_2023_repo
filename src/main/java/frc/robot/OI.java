@@ -52,6 +52,10 @@ public final class OI {
     }
 
     public static BooleanEvent getResetHeadingEvent() {
-        return primaryController.back(eventLoop);
+        return primaryController.x(eventLoop);
+    }
+
+    public static BooleanEvent getAutoBalanceEvent() {
+        return primaryController.y(eventLoop);
     }
 }

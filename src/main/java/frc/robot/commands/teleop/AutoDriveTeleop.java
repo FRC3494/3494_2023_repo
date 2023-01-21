@@ -1,16 +1,17 @@
-package frc.robot.commands.auto;
+package frc.robot.commands.teleop;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.OI;
 import frc.robot.subsystems.Drivetrain;
 
-public class AutoDrive extends CommandBase {
+public class AutoDriveTeleop extends CommandBase {
 	Drivetrain drivetrain;
 	double xVelocity;
 	double yVelocity;
 	double rotationVelocity;
 	boolean fieldRelative;
 
-	public AutoDrive(Drivetrain drivetrain, double xVelocity, double yVelocity, double rotationVelocity, boolean fieldRelative) {
+	public AutoDriveTeleop(Drivetrain drivetrain, double xVelocity, double yVelocity, double rotationVelocity, boolean fieldRelative) {
 		this.drivetrain = drivetrain;
 
 		this.xVelocity = xVelocity;
@@ -23,7 +24,7 @@ public class AutoDrive extends CommandBase {
 
 	@Override
 	public void execute() {
-		drivetrain.drive(xVelocity, yVelocity, rotationVelocity, fieldRelative);
+		drivetrain.drive(xVelocity + OI.getTeleopXVelocity(), yVelocity + OI.getTeleopYVelocity(), rotationVelocity + OI.getTeleopTurnVelocity(), fieldRelative);
 	}
 
 	@Override
