@@ -17,21 +17,29 @@ public final class Constants {
             public static final class FrontLeftModule {
                 public static int DRIVE_MOTOR_PORT = 12;
                 public static int STEER_MOTOR_PORT = 11;
+
+                public static double STEER_OFFSET = Math.toRadians(0);
             }
 
             public static final class FrontRightModule {
                 public static int DRIVE_MOTOR_PORT = 7;
                 public static int STEER_MOTOR_PORT = 8;
+
+                public static double STEER_OFFSET = Math.toRadians(0);
             }
 
             public static final class BackLeftModule {
                 public static int DRIVE_MOTOR_PORT = 14;
                 public static int STEER_MOTOR_PORT = 15;
+
+                public static double STEER_OFFSET = Math.toRadians(0);
             }
 
             public static final class BackRightModule {
                 public static int DRIVE_MOTOR_PORT = 5;
                 public static int STEER_MOTOR_PORT = 4;
+
+                public static double STEER_OFFSET = Math.toRadians(0);
             }
 
             public static final double TRACKWIDTH_METERS = 0.7112;

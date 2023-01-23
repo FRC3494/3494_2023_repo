@@ -10,48 +10,52 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
+import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
-import com.swervedrivespecialties.swervelib.ThriftySwerveModuleHelper;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Drivetrain extends SubsystemBase {
-	SwerveModule frontLeft = ThriftySwerveModuleHelper.createNeo(
+	SwerveModule frontLeft = Mk4iSwerveModuleHelper.createAnalogNeo(
 			Shuffleboard.getTab("Drivetrain").getLayout("Front Left Module", BuiltInLayouts.kList)
 					.withSize(2, 4)
 					.withPosition(0, 0),
-			ThriftySwerveModuleHelper.GearRatio.STANDARD,
+			Mk4iSwerveModuleHelper.GearRatio.L1,
 			Constants.Subsystems.Drivetrain.FrontLeftModule.DRIVE_MOTOR_PORT,
 			Constants.Subsystems.Drivetrain.FrontLeftModule.STEER_MOTOR_PORT,
-			Constants.Subsystems.Drivetrain.FrontLeftModule.STEER_MOTOR_PORT);
+			Constants.Subsystems.Drivetrain.FrontLeftModule.STEER_MOTOR_PORT,
+			Constants.Subsystems.Drivetrain.FrontLeftModule.STEER_OFFSET);
 
-	SwerveModule frontRight = ThriftySwerveModuleHelper.createNeo(
+	SwerveModule frontRight = Mk4iSwerveModuleHelper.createAnalogNeo(
 			Shuffleboard.getTab("Drivetrain").getLayout("Front Right Module", BuiltInLayouts.kList)
 					.withSize(2, 4)
 					.withPosition(2, 0),
-			ThriftySwerveModuleHelper.GearRatio.STANDARD,
+			Mk4iSwerveModuleHelper.GearRatio.L1,
 			Constants.Subsystems.Drivetrain.FrontRightModule.DRIVE_MOTOR_PORT,
 			Constants.Subsystems.Drivetrain.FrontRightModule.STEER_MOTOR_PORT,
-			Constants.Subsystems.Drivetrain.FrontRightModule.STEER_MOTOR_PORT);
+			Constants.Subsystems.Drivetrain.FrontRightModule.STEER_MOTOR_PORT,
+			Constants.Subsystems.Drivetrain.FrontLeftModule.STEER_OFFSET);
 
-	SwerveModule backLeft = ThriftySwerveModuleHelper.createNeo(
+	SwerveModule backLeft = Mk4iSwerveModuleHelper.createAnalogNeo(
 			Shuffleboard.getTab("Drivetrain").getLayout("Back Left Module", BuiltInLayouts.kList)
 					.withSize(2, 4)
 					.withPosition(4, 0),
-			ThriftySwerveModuleHelper.GearRatio.STANDARD,
+			Mk4iSwerveModuleHelper.GearRatio.L1,
 			Constants.Subsystems.Drivetrain.BackLeftModule.DRIVE_MOTOR_PORT,
 			Constants.Subsystems.Drivetrain.BackLeftModule.STEER_MOTOR_PORT,
-			Constants.Subsystems.Drivetrain.BackLeftModule.STEER_MOTOR_PORT);
+			Constants.Subsystems.Drivetrain.BackLeftModule.STEER_MOTOR_PORT,
+			Constants.Subsystems.Drivetrain.FrontLeftModule.STEER_OFFSET);
 
-	SwerveModule backRight = ThriftySwerveModuleHelper.createNeo(
+	SwerveModule backRight = Mk4iSwerveModuleHelper.createAnalogNeo(
 			Shuffleboard.getTab("Drivetrain").getLayout("Back Right Module", BuiltInLayouts.kList)
 					.withSize(2, 4)
 					.withPosition(6, 0),
-			ThriftySwerveModuleHelper.GearRatio.STANDARD,
+			Mk4iSwerveModuleHelper.GearRatio.L1,
 			Constants.Subsystems.Drivetrain.BackRightModule.DRIVE_MOTOR_PORT,
 			Constants.Subsystems.Drivetrain.BackRightModule.STEER_MOTOR_PORT,
-			Constants.Subsystems.Drivetrain.BackRightModule.STEER_MOTOR_PORT);
+			Constants.Subsystems.Drivetrain.BackRightModule.STEER_MOTOR_PORT,
+			Constants.Subsystems.Drivetrain.FrontLeftModule.STEER_OFFSET);
 
 	NavX navX;
 
