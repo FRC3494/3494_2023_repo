@@ -4,10 +4,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.OI;
 import frc.robot.subsystems.Drivetrain;
 
-public class TeleopDrive extends CommandBase {
+public class driveForward extends CommandBase {
 	Drivetrain drivetrain;
 
-	public TeleopDrive(Drivetrain drivetrain) {
+	public driveForward(Drivetrain drivetrain) {
 		this.drivetrain = drivetrain;
 
 		addRequirements(drivetrain);
@@ -15,7 +15,7 @@ public class TeleopDrive extends CommandBase {
 
 	@Override
 	public void execute() {
-		drivetrain.drive(OI.getTeleopXVelocity(), OI.getTeleopYVelocity(), OI.getTeleopTurnVelocity(), false);
+		drivetrain.drive(0, 0.1, 0, false);
 	}
 
 	@Override

@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.auto.FollowPath;
 import frc.robot.commands.groups.AutoBalanceTeleopGroup;
 import frc.robot.commands.teleop.TeleopDrive;
+import frc.robot.commands.teleop.driveForward;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.NavX;
 
@@ -68,7 +69,8 @@ public class RobotContainer {
 		autoTab.add(autoChooser).withSize(2, 1);
 
 		// Configure default commands
-		drivetrain.setDefaultCommand(new TeleopDrive(drivetrain));
+		//drivetrain.setDefaultCommand(new TeleopDrive(drivetrain));
+		drivetrain.setDefaultCommand(new driveForward(drivetrain));
 
 		robotPosition = new Field2d();
 
