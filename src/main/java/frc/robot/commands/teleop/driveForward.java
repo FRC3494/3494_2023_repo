@@ -1,7 +1,6 @@
 package frc.robot.commands.teleop;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.OI;
 import frc.robot.subsystems.Drivetrain;
 
 public class driveForward extends CommandBase {
@@ -15,7 +14,7 @@ public class driveForward extends CommandBase {
 
 	@Override
 	public void execute() {
-		drivetrain.drive(0, 0.1, 0, false);
+		drivetrain.drive(0.1, 0.0, 0, false);
 	}
 
 	@Override

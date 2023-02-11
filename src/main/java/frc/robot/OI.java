@@ -58,4 +58,8 @@ public final class OI {
     public static BooleanEvent getAutoBalanceEvent() {
         return primaryController.y(eventLoop);
     }
+    public static BooleanEvent getAutoLineUpEvent() {
+        return primaryController.b(eventLoop);
+    }
+    
 }

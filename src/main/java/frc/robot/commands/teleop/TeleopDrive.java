@@ -11,11 +11,11 @@ public class TeleopDrive extends CommandBase {
 		this.drivetrain = drivetrain;
 
 		addRequirements(drivetrain);
+	
 	}
-
 	@Override
 	public void execute() {
-		drivetrain.drive(OI.getTeleopXVelocity(), OI.getTeleopYVelocity(), OI.getTeleopTurnVelocity(), false);
+		drivetrain.drive(OI.getTeleopXVelocity(), OI.getTeleopYVelocity(), OI.getTeleopTurnVelocity(), true);
 	}
 
 	@Override

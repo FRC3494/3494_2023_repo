@@ -1,4 +1,4 @@
-/*package frc.robot;
+package frc.robot;
 
 import java.lang.reflect.*;
 import java.util.ArrayList;
@@ -22,7 +22,6 @@ public class AutoConfigurable {
     }
     public void InitializeShuffleBoard(){
         dontGrabFrom.allFields = getAllVariablesAndInit(null, null);
-        
     }
     public void UpdateVariables(){
         
@@ -66,7 +65,7 @@ public class AutoConfigurable {
         }
         
     }
-    public  List<Field> getAllVariablesAndInit(Class getFieldsFrom, List<Field> fieldsSoFar){
+    public List<Field> getAllVariablesAndInit(Class getFieldsFrom, List<Field> fieldsSoFar){
         if(fieldsSoFar == null){ fieldsSoFar = new ArrayList<>();}
         if(getFieldsFrom == null){getFieldsFrom = this.getClass();}
         for(Field f: getFieldsFrom.getDeclaredFields()){
@@ -82,6 +81,7 @@ public class AutoConfigurable {
     }
     public void initShuffles (Field fieldToInit, Class classFieldIn){
         fieldToInit.setAccessible(true);
+        System.out.println(fieldToInit.getName());
         if(fieldToInit.getType() == int.class ||fieldToInit.getType() == float.class ||fieldToInit.getType() == double.class){
             
             dontGrabFrom.shuffleBoardElements.put(fieldToInit.getName(),
@@ -109,4 +109,4 @@ public class AutoConfigurable {
     }
 
     
-}*/
+}

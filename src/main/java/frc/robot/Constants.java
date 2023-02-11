@@ -11,35 +11,41 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 
-public final class Constants {
+public final class Constants extends AutoConfigurable {
     public static final class Subsystems {
         public static final class Drivetrain {
             public static final class FrontLeftModule {
                 public static int DRIVE_MOTOR_PORT = 12;
                 public static int STEER_MOTOR_PORT = 11;
 
-                public static double STEER_OFFSET = -Math.toRadians(355.7);
+                public static int ENCODER_MOTOR_PORT = 0;
+
+                public static double STEER_OFFSET = -Math.toRadians(290f-36f+0.6-94.4);
             }
 
             public static final class FrontRightModule {
                 public static int DRIVE_MOTOR_PORT = 7;
                 public static int STEER_MOTOR_PORT = 8;
 
-                public static double STEER_OFFSET = -Math.toRadians(4.8);
+                public static int ENCODER_MOTOR_PORT = 1;
+
+                public static double STEER_OFFSET = -Math.toRadians(243f-123.0+2.5-6);
             }
 
             public static final class BackLeftModule {
                 public static int DRIVE_MOTOR_PORT = 14;
                 public static int STEER_MOTOR_PORT = 15;
 
-                public static double STEER_OFFSET = -Math.toRadians(1.02);
+                public static int ENCODER_MOTOR_PORT = 2;
+
+                public static double STEER_OFFSET = -Math.toRadians(290f-36f-0.8-154.7);
             }
 
             public static final class BackRightModule {
                 public static int DRIVE_MOTOR_PORT = 5;
                 public static int STEER_MOTOR_PORT = 4;
-
-                public static double STEER_OFFSET = -Math.toRadians(256.7);
+                public static int ENCODER_MOTOR_PORT = 3;
+                public static double STEER_OFFSET = -Math.toRadians(164f+8f+2f+10f+5f+3.8f-8.3-119);
             }
 
             public static final double TRACKWIDTH_METERS = 0.7112;
@@ -85,6 +91,10 @@ public final class Constants {
 
             public static final double EXIT_TIME = 3;
         }
+        public static final class AutoLineUp {
+            public static final double MAX_STRAFE_SPEED = 0.3;
+            public static final double YAW_ERROR_ALLOWANCE = 1;
+        }
     }
 
     public static final class RobotContainer {
@@ -100,7 +110,7 @@ public final class Constants {
     public static final class OI {
         public static final int PRIMARY_CONTROLLER_PORT = 0;
 
-        public static final double MAX_DRIVE_SPEED = 3; // m/s
-        public static final double MAX_TURN_SPEED = 6; // rad/s
+        public static final double MAX_DRIVE_SPEED = 9; // m/s
+        public static final double MAX_TURN_SPEED = 9; // rad/s
     }
 }

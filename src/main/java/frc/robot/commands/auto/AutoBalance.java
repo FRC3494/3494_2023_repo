@@ -23,6 +23,8 @@ public class AutoBalance extends CommandBase {
 	@Override
   	public void initialize() {
 		previousTime = System.currentTimeMillis() / 1000;
+		divider = 5;
+		balancedTime = 0;
   	}
 
 	@Override

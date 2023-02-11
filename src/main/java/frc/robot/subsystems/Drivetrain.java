@@ -24,7 +24,7 @@ public class Drivetrain extends SubsystemBase {
 			Mk4iSwerveModuleHelper.GearRatio.L1,
 			Constants.Subsystems.Drivetrain.FrontLeftModule.DRIVE_MOTOR_PORT,
 			Constants.Subsystems.Drivetrain.FrontLeftModule.STEER_MOTOR_PORT,
-			Constants.Subsystems.Drivetrain.FrontLeftModule.STEER_MOTOR_PORT,
+			Constants.Subsystems.Drivetrain.FrontLeftModule.ENCODER_MOTOR_PORT,
 			Constants.Subsystems.Drivetrain.FrontLeftModule.STEER_OFFSET);
 
 	SwerveModule frontRight = Mk4iSwerveModuleHelper.createAnalogNeo(
@@ -34,8 +34,8 @@ public class Drivetrain extends SubsystemBase {
 			Mk4iSwerveModuleHelper.GearRatio.L1,
 			Constants.Subsystems.Drivetrain.FrontRightModule.DRIVE_MOTOR_PORT,
 			Constants.Subsystems.Drivetrain.FrontRightModule.STEER_MOTOR_PORT,
-			Constants.Subsystems.Drivetrain.FrontRightModule.STEER_MOTOR_PORT,
-			Constants.Subsystems.Drivetrain.FrontLeftModule.STEER_OFFSET);
+			Constants.Subsystems.Drivetrain.FrontRightModule.ENCODER_MOTOR_PORT,
+			Constants.Subsystems.Drivetrain.FrontRightModule.STEER_OFFSET);
 
 	SwerveModule backLeft = Mk4iSwerveModuleHelper.createAnalogNeo(
 			Shuffleboard.getTab("Drivetrain").getLayout("Back Left Module", BuiltInLayouts.kList)
@@ -44,8 +44,8 @@ public class Drivetrain extends SubsystemBase {
 			Mk4iSwerveModuleHelper.GearRatio.L1,
 			Constants.Subsystems.Drivetrain.BackLeftModule.DRIVE_MOTOR_PORT,
 			Constants.Subsystems.Drivetrain.BackLeftModule.STEER_MOTOR_PORT,
-			Constants.Subsystems.Drivetrain.BackLeftModule.STEER_MOTOR_PORT,
-			Constants.Subsystems.Drivetrain.FrontLeftModule.STEER_OFFSET);
+			Constants.Subsystems.Drivetrain.BackLeftModule.ENCODER_MOTOR_PORT,
+			Constants.Subsystems.Drivetrain.BackLeftModule.STEER_OFFSET);
 
 	SwerveModule backRight = Mk4iSwerveModuleHelper.createAnalogNeo(
 			Shuffleboard.getTab("Drivetrain").getLayout("Back Right Module", BuiltInLayouts.kList)
@@ -54,8 +54,8 @@ public class Drivetrain extends SubsystemBase {
 			Mk4iSwerveModuleHelper.GearRatio.L1,
 			Constants.Subsystems.Drivetrain.BackRightModule.DRIVE_MOTOR_PORT,
 			Constants.Subsystems.Drivetrain.BackRightModule.STEER_MOTOR_PORT,
-			Constants.Subsystems.Drivetrain.BackRightModule.STEER_MOTOR_PORT,
-			Constants.Subsystems.Drivetrain.FrontLeftModule.STEER_OFFSET);
+			Constants.Subsystems.Drivetrain.BackRightModule.ENCODER_MOTOR_PORT,
+			Constants.Subsystems.Drivetrain.BackRightModule.STEER_OFFSET);
 
 	NavX navX;
 
