@@ -15,7 +15,7 @@ public class Claw extends SubsystemBase {
 	public Claw() {
         clawSolenoid = new DoubleSolenoid(Constants.Subsystems.Pneumatics.BASE_PCM, PneumaticsModuleType.REVPH, Constants.Subsystems.Claw.CLAW_SOLENOID_CHANNEL, Constants.Subsystems.Claw.CLAW_SOLENOID_CHANNEL + 1);
 	
-        set(ClawState.Open);
+        set(ClawState.Closed);
     }
     
     public void set(ClawState closed) {

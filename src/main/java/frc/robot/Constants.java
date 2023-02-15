@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import frc.robot.commands.teleop.driveForward;
 import frc.robot.subsystems.arm.ForearmState;
 
 public final class Constants extends AutoConfigurable {
@@ -128,7 +129,7 @@ public final class Constants extends AutoConfigurable {
 
             // public static final PIDController THETA_CONTROLLER = new PIDController(0.22, 0, 0.05);
 
-            public static final PIDController X_CONTROLLER = new PIDController(2.5, 1, 0);
+            public static final PIDController X_CONTROLLER = new PIDController(2.5, 1.5, 0);
             public static final PIDController Y_CONTROLLER = new PIDController(2.5, 1, 0);
             
 
@@ -159,8 +160,8 @@ public final class Constants extends AutoConfigurable {
         public static final class PathPlanner {
             public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(2, 1.5);
 
-            public static final HashMap<String, Command> PATH_EVENTS = new HashMap<>() {{
-                put("print", new PrintCommand("Passed print marker"));
+            public static HashMap<String, Command> PATH_EVENTS = new HashMap<>() {{
+                
             }};
         }
     }
