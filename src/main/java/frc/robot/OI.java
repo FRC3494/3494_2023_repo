@@ -61,5 +61,8 @@ public final class OI {
     public static BooleanEvent getAutoLineUpEvent() {
         return primaryController.b(eventLoop);
     }
+    public static Boolean getHopperIntake(){
+        return primaryController.getAButtonPressed();
+    }
     
 }

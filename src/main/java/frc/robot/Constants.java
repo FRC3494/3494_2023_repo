@@ -13,6 +13,12 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 
 public final class Constants extends AutoConfigurable {
     public static final class Subsystems {
+        public static final class Arm {
+            public static int PISTON1_SOLENOID_CHANNEL = 0; //FIX ME: GET REAL PORT
+            public static int PISTON2_SOLENOID_CHANNEL = 1; //FIX ME: GET REAL PORT
+            public static int ARM_MOTOR_CHANNEL = 2; //FIX ME GET REAL PORT 
+            public static int BASE_PCM = 0; //FIX ME GET REAL PORT
+        }
         public static final class Drivetrain {
             public static final class FrontLeftModule {
                 public static int DRIVE_MOTOR_PORT = 12;
