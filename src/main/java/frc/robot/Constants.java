@@ -16,7 +16,8 @@ public final class Constants extends AutoConfigurable {
     public static final class Subsystems {
         public static final class Arm {
             public static int PISTON1_SOLENOID_CHANNEL = 0; // #TODO: GET REAL PORT
-            public static int PISTON2_SOLENOID_CHANNEL = 1; // #TODO: GET REAL PORT
+            public static int PISTON2_SOLENOID_CHANNEL = 2; // #TODO: GET REAL PORT
+            public static int HOPPER_SOLENOID_CHANNEL = 4; // #TODO: GET REAL PORT
             public static int ARM_MOTOR_CHANNEL = 2; // #TODO: GET REAL PORT 
             public static int BASE_PCM = 0; // #TODO: GET REAL PORT
 

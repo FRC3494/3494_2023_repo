@@ -6,8 +6,9 @@ public enum ArmPosition {
     DoubleSubstation,
     N2,
     N1B2,
-    B2Base2,
+    B1Base4,
     Base2N1,
     Base1B1,
     Hybrid,
+    Store,
 }
