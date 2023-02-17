@@ -10,14 +10,37 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import frc.robot.subsystems.arm.ForearmState;
 
 public final class Constants extends AutoConfigurable {
     public static final class Subsystems {
         public static final class Arm {
-            public static int PISTON1_SOLENOID_CHANNEL = 0; //FIX ME: GET REAL PORT
-            public static int PISTON2_SOLENOID_CHANNEL = 1; //FIX ME: GET REAL PORT
-            public static int ARM_MOTOR_CHANNEL = 2; //FIX ME GET REAL PORT 
-            public static int BASE_PCM = 0; //FIX ME GET REAL PORT
+            public static int PISTON1_SOLENOID_CHANNEL = 0; // #TODO: GET REAL PORT
+            public static int PISTON2_SOLENOID_CHANNEL = 1; // #TODO: GET REAL PORT
+            public static int ARM_MOTOR_CHANNEL = 2; // #TODO: GET REAL PORT 
+            public static int BASE_PCM = 0; // #TODO: GET REAL PORT
+
+            public static class PIDF { // #TODO: TUNE
+                public static double P = 1;
+                public static double I = 0;
+                public static double D = 0;
+                public static double F = 0;
+            }
+
+            public static HashMap<ForearmState, Double> FOREARM_POSITION = new HashMap<>() {{ // #TODO: UPDATE THESE TO ACTUAL ENCODER POSITIONS
+                put(ForearmState.Intermediate, 0.0);
+                put(ForearmState.Hybrid, 0.0);
+                put(ForearmState.Ground, 0.0);
+                put(ForearmState.Cube1Left, 0.0);
+                put(ForearmState.Cone1Left, 0.0);
+                put(ForearmState.FramePerimeter, 0.0);
+                put(ForearmState.HopperGrab, 0.0);
+                put(ForearmState.Recieve, 0.0);
+                put(ForearmState.Cone2Right, 0.0);
+                put(ForearmState.DoubleSub, 0.0);
+                put(ForearmState.Cube2cone1Right, 0.0);
+                put(ForearmState.Cube1Right, 0.0);
+            }};
         }
         public static final class Drivetrain {
             public static final class FrontLeftModule {

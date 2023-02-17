@@ -1,4 +1,4 @@
-package frc.robot.Util;
+package frc.robot.util;
 
 public interface StateBehaviour {
     void call();

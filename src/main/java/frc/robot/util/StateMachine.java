@@ -1,13 +1,11 @@
-package frc.robot.Util;
+package frc.robot.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import edu.wpi.first.math.trajectory.Trajectory.State;
-
-public class StateMachine<T extends Enum<T>> {
+public class StateMachine<T> {
 
     protected T currentState;
 
@@ -104,7 +102,7 @@ public class StateMachine<T extends Enum<T>> {
         }
     }
 
-    private void transitionTo(T state) {
+    public void transitionTo(T state) {
         if (cleanupBehaviours.get(currentState) != null) {
             for (StateBehaviour cleanup : cleanupBehaviours.get(currentState)) {
                 cleanup.call();
