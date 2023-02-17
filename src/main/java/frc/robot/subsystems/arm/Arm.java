@@ -51,6 +51,9 @@ public class Arm extends SubsystemBase  {
         setForearmState(ForearmState.Cone1Left); // BE CAREFUL HERE, THESE CALLS SYNC UP EVERYTHING!!!
 
         populateHopperIntakeGraph();
+        populateGroundIntakeGraph();
+        populateDoubleSubstationGraph();
+        populateN2Graph();
     }
 
     @Override
@@ -252,7 +255,7 @@ public class Arm extends SubsystemBase  {
         //
 
         //branch1
-        addBranch("branch1 step1", "stop", "branch1 s2", 
+        addBranch("branch1 step1", "stop", "branch1 step2", 
             () -> currenForearmState == ForearmState.HopperGrab);
 
         addForearmMovement("branch1 step2", "branch1 step3", ForearmState.Intermediate);
@@ -280,11 +283,91 @@ public class Arm extends SubsystemBase  {
         //
 
         //branch1
-        addBranch("branch1 step1", "stop", "branch1 s2", 
+        addBranch("branch1 step1", "branch1 branch2 step1", "branch1 branch1 step1", 
             () -> currenForearmState == ForearmState.HopperGrab);
 
-        addForearmMovement("branch1 step2", "branch1 step3", ForearmState.Intermediate);
-        addShoulderMovement("branch1 step3", "branch2 step1", ShoulderState.Base2);
+
+        //branch1 branch1
+        addForearmMovement("branch1 branch1 step1", "branch1 branch1 step2", ForearmState.Intermediate);
+        addShoulderMovement("branch1 branch1 step2", "stop", ShoulderState.Base2);
+        //
+
+        //branch1 branch2
+        addShoulderMovement("branch1 branch2 step1", "branch4 step4", ShoulderState.Base2);
+        //
+        //
+    }
+
+    void populateDoubleSubstationGraph() {
+        setMovementAdderArmPosition(ArmPosition.DoubleSubstation);
+
+        addOneWayBranch( "start", "branch4 step1",
+            () -> currentShoulderState == ShoulderState.Base4);
+        addOneWayBranch( "start", "branch2 step1",
+            () -> currentShoulderState == ShoulderState.Base2);
+        addOneWayBranch( "start", "branch1 step1",
+            () -> currentShoulderState == ShoulderState.Base1);
+            
+        //branch4
+        addForearmMovement("branch4 step1", "stop", ForearmState.DoubleSub);
+        //
+
+        //branch2
+        addForearmMovement("branch2 step1", "branch2 step2", ForearmState.DoubleSub);
+        addHopperMovement("branch2 step2", "branch2 step3", true);
+        addParallelMovement("branch2 step3", "branch2 step4", ForearmState.DoubleSub, ShoulderState.Base4);
+        addHopperMovement("branch2 step4", "stop", false);
+        //
+
+        //branch1
+        addBranch("branch1 step1", "branch1 branch1 step1", "branch1 branch2 step1", 
+            () -> currenForearmState == ForearmState.HopperGrab);
+
+        //branch1 branch1
+        addParallelMovement("branch1 branch1 step1", "branch2 step2", ForearmState.Store, ShoulderState.Base2);
+        //
+
+        //branch1 branch2
+        addForearmMovement("branch1 branch2 step1", "branch1 branch2 step2", ForearmState.Intermediate);
+        addParallelMovement("branch1 branch2 step2", "branch2 step2", ForearmState.Store, ShoulderState.Base2);
+        //
+        //
+    }
+
+    void populateN2Graph() {
+        setMovementAdderArmPosition(ArmPosition.N2);
+
+        addOneWayBranch( "start", "branch4 step1",
+            () -> currentShoulderState == ShoulderState.Base4);
+        addOneWayBranch( "start", "branch2 step1",
+            () -> currentShoulderState == ShoulderState.Base2);
+        addOneWayBranch( "start", "branch1 step1",
+            () -> currentShoulderState == ShoulderState.Base1);
+            
+        //branch4
+        addForearmMovement("branch4 step1", "stop", ForearmState.N2);
+        //
+
+        //branch2
+        addForearmMovement("branch2 step1", "branch2 step2", ForearmState.N2);
+        addHopperMovement("branch2 step2", "branch2 step3", true);
+        addParallelMovement("branch2 step3", "branch2 step4", ForearmState.N2, ShoulderState.Base4);
+        addHopperMovement("branch2 step4", "stop", false);
+        //
+
+        //branch1
+        addBranch("branch1 step1", "branch1 branch1 step1", "branch1 branch2 step1", 
+            () -> currenForearmState == ForearmState.HopperGrab);
+
+        //branch1 branch1
+        addParallelMovement("branch1 branch1 step1", "branch2 step2", ForearmState.Store, ShoulderState.Base2);
+        //
+
+        //branch1 branch2
+        addForearmMovement("branch1 branch2 step1", "branch1 branch2 step2", ForearmState.Intermediate);
+        addParallelMovement("branch1 branch2 step2", "branch2 step2", ForearmState.Store, ShoulderState.Base2);
+        //
+        //
         //
     }
 }
