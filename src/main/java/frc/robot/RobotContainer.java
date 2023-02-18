@@ -17,19 +17,17 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 
-import frc.robot.commands.auto.AutoLineUp;
 import frc.robot.commands.auto.FollowPath;
 import frc.robot.commands.groups.AutoBalanceTeleopGroup;
 import frc.robot.commands.groups.AutoLineUpTeleopGroup;
 import frc.robot.commands.teleop.TeleopDrive;
 import frc.robot.commands.teleop.driveForward;
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.NavX;
 
 public class RobotContainer {
 	private final Drivetrain drivetrain;
-	private final Arm arm;
+	//private final Arm arm;
 	private FollowPath followPath;
 	private boolean alternateAutoBalance = true;
 	private boolean alternateAutoLineUp = true;
@@ -45,7 +43,7 @@ public class RobotContainer {
 	public RobotContainer() {
 		NavX.getNavX();
 		drivetrain = new Drivetrain();
-		arm = new Arm();
+		//arm = new Arm();
 		//Constants.InitializeShuffleBoard();
 		autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
 		autoLineUpDrivetrainCommand = AutoLineUpTeleopGroup.get(drivetrain);
@@ -96,7 +94,7 @@ public class RobotContainer {
 
 		// Configure default commands
 		//drivetrain.setDefaultCommand(new AutoLineUp(drivetrain));
-		drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, arm));
+		drivetrain.setDefaultCommand(new TeleopDrive(drivetrain));
 		//drivetrain.setDefaultCommand(new driveForward(drivetrain));
 
 		robotPosition = new Field2d();

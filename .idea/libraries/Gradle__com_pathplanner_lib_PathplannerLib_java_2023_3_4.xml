@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.pathplanner.lib:PathplannerLib-java:2023.3.4">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.pathplanner.lib/PathplannerLib-java/2023.3.4/c20b68b4057c286ebcd24c5bc75c86a8c55a64ac/PathplannerLib-java-2023.3.4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.pathplanner.lib/PathplannerLib-java/2023.3.4/49f3e631a5fa483b65c76292712f40698ab2d780/PathplannerLib-java-2023.3.4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
