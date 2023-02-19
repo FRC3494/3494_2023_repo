@@ -23,11 +23,13 @@ import frc.robot.commands.groups.AutoLineUpTeleopGroup;
 import frc.robot.commands.teleop.TeleopDrive;
 import frc.robot.commands.teleop.driveForward;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.NavX;
 
 public class RobotContainer {
 	private final Drivetrain drivetrain;
 	//private final Arm arm;
+	private final Intake intake;
 	private FollowPath followPath;
 	private boolean alternateAutoBalance = true;
 	private boolean alternateAutoLineUp = true;
@@ -44,6 +46,7 @@ public class RobotContainer {
 		NavX.getNavX();
 		drivetrain = new Drivetrain();
 		//arm = new Arm();
+		intake = new Intake();
 		//Constants.InitializeShuffleBoard();
 		autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
 		autoLineUpDrivetrainCommand = AutoLineUpTeleopGroup.get(drivetrain);
@@ -94,7 +97,7 @@ public class RobotContainer {
 
 		// Configure default commands
 		//drivetrain.setDefaultCommand(new AutoLineUp(drivetrain));
-		drivetrain.setDefaultCommand(new TeleopDrive(drivetrain));
+		drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, intake));
 		//drivetrain.setDefaultCommand(new driveForward(drivetrain));
 
 		robotPosition = new Field2d();
