@@ -16,16 +16,11 @@ public class Intake extends SubsystemBase  {
         rightMotor.setSmartCurrentLimit(Constants.Subsystems.Intake.AMP_LIMIT);
     }
 
-    public void setRightMotorSpeed(double percent){
-        rightMotor.set(percent);
-    }
-
     public void setLeftMotorSpeed(double percent){
         leftMotor.set(percent);
     }
 
-    public void setSpeed(double percent){
+    public void setRightMotorSpeed(double percent){
         rightMotor.set(percent);
-        leftMotor.set(-1.0 * percent);
     }
 }

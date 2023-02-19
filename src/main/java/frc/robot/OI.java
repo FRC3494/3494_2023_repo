@@ -65,4 +65,11 @@ public final class OI {
         return primaryController.getAButtonPressed();
     }
     
+    public static double getIntakeLeftVelocity(){
+        return primaryController.getLeftTriggerAxis() * (primaryController.getLeftBumper() ? -1.0 : 1.0);
+    }
+
+    public static double getIntakeRightVelocity(){
+        return primaryController.getRightTriggerAxis() * (primaryController.getRightBumper() ? 1.0 : -1.0);
+    }
 }
