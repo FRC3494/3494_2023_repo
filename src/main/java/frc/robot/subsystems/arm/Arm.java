@@ -9,33 +9,34 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.util.Conditions;
-import frc.robot.util.StateMachine;
+import frc.robot.util.statemachine.StateMachine;
+import frc.robot.util.statemachine.TransitionGraph;
+import frc.robot.util.statemachine.TransitionGraphNode;
 
 public class Arm extends SubsystemBase  {
-    private DoubleSolenoid basePiston1;
-    private DoubleSolenoid basePiston2;
+    private DoubleSolenoid topPiston;
+    private DoubleSolenoid bottomPiston;
 
     private DoubleSolenoid hopperPiston;
 
     private CANSparkMax forearmMotor;
 
-	StateMachine<ArmState> armStateMachine;
+	StateMachine<ArmPosition> armStateMachine;
     ShoulderState currentShoulderState;
-    ForearmState currenForearmState;
+    ForearmState currentForearmState;
 
     ArmPosition movementAdderArmPosition;
     
     public Arm(){
-        basePiston1 = new DoubleSolenoid(Constants.Subsystems.Arm.BASE_PCM, 
-            PneumaticsModuleType.REVPH, Constants.Subsystems.Arm.PISTON1_SOLENOID_CHANNEL, 
-            Constants.Subsystems.Arm.PISTON1_SOLENOID_CHANNEL + 1);
+        topPiston = new DoubleSolenoid(Constants.Subsystems.Pneumatics.BASE_PCM, 
+            PneumaticsModuleType.REVPH, Constants.Subsystems.Arm.TOP_PISTON_SOLENOID_CHANNEL, 
+            Constants.Subsystems.Arm.TOP_PISTON_SOLENOID_CHANNEL + 1);
 
-        basePiston2 = new DoubleSolenoid(Constants.Subsystems.Arm.BASE_PCM, 
-            PneumaticsModuleType.REVPH, Constants.Subsystems.Arm.PISTON2_SOLENOID_CHANNEL, 
-            Constants.Subsystems.Arm.PISTON2_SOLENOID_CHANNEL + 1);
+        bottomPiston = new DoubleSolenoid(Constants.Subsystems.Pneumatics.BASE_PCM, 
+            PneumaticsModuleType.REVPH, Constants.Subsystems.Arm.BOTTOM_PISTON_SOLENOID_CHANNEL, 
+            Constants.Subsystems.Arm.BOTTOM_PISTON_SOLENOID_CHANNEL + 1);
 
-        hopperPiston = new DoubleSolenoid(Constants.Subsystems.Arm.BASE_PCM, 
+        hopperPiston = new DoubleSolenoid(Constants.Subsystems.Pneumatics.BASE_PCM, 
             PneumaticsModuleType.REVPH, Constants.Subsystems.Arm.HOPPER_SOLENOID_CHANNEL, 
             Constants.Subsystems.Arm.HOPPER_SOLENOID_CHANNEL + 1);
 
@@ -46,14 +47,19 @@ public class Arm extends SubsystemBase  {
 		forearmMotor.getPIDController().setP(Constants.Subsystems.Arm.PIDF.D);
 		forearmMotor.getPIDController().setP(Constants.Subsystems.Arm.PIDF.F);
 
-        armStateMachine = new StateMachine<>(new ArmState(ArmPosition.Store, "stop"));
+        armStateMachine = new StateMachine<>(ArmPosition.Store);
         setShoulderState(ShoulderState.Base2);
-        setForearmState(ForearmState.Cone1Left); // BE CAREFUL HERE, THESE CALLS SYNC UP EVERYTHING!!!
+        setForearmState(ForearmState.Store); // BE CAREFUL HERE, THESE CALLS SYNC UP EVERYTHING!!!
 
         populateHopperIntakeGraph();
         populateGroundIntakeGraph();
         populateDoubleSubstationGraph();
         populateN2Graph();
+        populateN1B2Graph();
+        populateB1Base4Graph();
+        populateBase1B1Graph();
+        populateHybridGraph();
+        populateStoreGraph();
     }
 
     @Override
@@ -61,179 +67,133 @@ public class Arm extends SubsystemBase  {
         armStateMachine.update();
     }
 
+    void setTopPiston(Value value) {
+        topPiston.set((value == Value.kForward) ? Value.kForward : Value.kReverse);
+    }
+
+    void setBottomPiston(Value value) {
+        bottomPiston.set((value == Value.kReverse) ? Value.kForward : Value.kReverse);
+    }
+
+    void setHopperPiston(Value value) {
+        hopperPiston.set((value == Value.kForward) ? Value.kForward : Value.kReverse);
+    }
+
+    long lastShoulderActuationTime = System.currentTimeMillis();
+
     void setShoulderState(ShoulderState newState){
 		switch (newState) {
 			case Base1:
-            	basePiston1.set(Value.kReverse);
-            	basePiston2.set(Value.kReverse);
+                setTopPiston(Value.kReverse);
+            	setBottomPiston(Value.kReverse);
 				break;
 			case Base2:
-            	basePiston1.set(Value.kForward);
-            	basePiston2.set(Value.kReverse);
+                setTopPiston(Value.kReverse);
+            	setBottomPiston(Value.kForward);
 				break;
 			case Base3:
-            	basePiston1.set(Value.kReverse);
-            	basePiston2.set(Value.kForward);
+                setTopPiston(Value.kForward);
+                setBottomPiston(Value.kReverse);
 				break;
 			case Base4:
-            	basePiston1.set(Value.kForward);
-            	basePiston2.set(Value.kForward);
+                setTopPiston(Value.kForward);
+                setBottomPiston(Value.kForward);
 				break;
 		}
 
         currentShoulderState = newState;
+
+        lastShoulderActuationTime = System.currentTimeMillis();
+
+        System.out.println("Shoulder: " + newState.toString());
     }
 
     boolean isAtShoulderState(ShoulderState state) {
-        return true; // #TODO: check sensors
+        return (System.currentTimeMillis() - lastShoulderActuationTime) >= 1000; // #TODO: check sensors
     }
+
+    long lastForearmActuationTime = System.currentTimeMillis();
 
     void setForearmState(ForearmState newState) {
         forearmMotor.getPIDController().setReference(Constants.Subsystems.Arm.FOREARM_POSITION.get(newState), ControlType.kPosition);
     
-        currenForearmState = newState;
+        currentForearmState = newState;
+
+        lastForearmActuationTime = System.currentTimeMillis();
+
+        System.out.println("Forearm: " + newState.toString());
     }
 
     boolean isAtForearmState(ForearmState state) {
-        return true; // #TODO: check sensors
-    }
-    
-    void setHopperState(boolean extended) {
-        hopperPiston.set(extended ? Value.kForward : Value.kReverse);
+        return (System.currentTimeMillis() - lastForearmActuationTime) >= 1000; // #TODO: check sensors
     }
 
-    boolean isAtHopperState(boolean state) {
-        return true; // we don't actually have a sensor for this, might as well have a way just in case though
+    long lastHopperActuationTime = System.currentTimeMillis();
+    
+    void setHopperState(HopperState newState) {
+        hopperPiston.set((newState == HopperState.Extended) ? Value.kForward : Value.kReverse);
+
+        lastHopperActuationTime = System.currentTimeMillis();
+
+        System.out.println("Hopper: " + newState.toString());
+    }
+
+    boolean isAtHopperState(HopperState state) {
+        return (System.currentTimeMillis() - lastHopperActuationTime) >= 1000; // we don't actually have a sensor for this, might as well have a way just in case though
+    }
+
+    public void setArmState(ArmPosition newState) {
+        armStateMachine.transitionTo(newState);
     }
 
     //region Helper Functions for building the State Machine
 
-    public void setArmState(ArmPosition newState) {
-        armStateMachine.transitionTo(new ArmState(newState, "start"));
+    TransitionGraphNode shoulderMovement(ShoulderState newState, TransitionGraphNode next) {
+        return new TransitionGraphNode(
+            () -> setShoulderState(newState), 
+            () -> isAtShoulderState(newState), next);
     }
 
-    void setMovementAdderArmPosition(ArmPosition position) {
-        movementAdderArmPosition = position;
+    TransitionGraphNode forearmMovement(ForearmState newState, TransitionGraphNode next) {
+        return new TransitionGraphNode(
+            () -> setForearmState(newState), 
+            () -> isAtForearmState(newState), next);
     }
 
-    void addShoulderMovement(String on, String to, ShoulderState newState) {
-        armStateMachine.addBehaviour(
-            new ArmState(movementAdderArmPosition, on), 
-            () -> setShoulderState(newState));
-
-        armStateMachine.setTransitionCondition(
-            new ArmState(movementAdderArmPosition, on), 
-            new ArmState(movementAdderArmPosition, to), 
-            () -> isAtShoulderState(newState));
+    TransitionGraphNode hopperMovement(HopperState newState, TransitionGraphNode next) {
+        return new TransitionGraphNode(
+            () -> setHopperState(newState), 
+            () -> isAtHopperState(newState), next);
     }
 
-    void addForearmMovement(String on, String to, ForearmState newState) {
-        armStateMachine.addBehaviour(
-            new ArmState(movementAdderArmPosition, on), 
-            () -> setForearmState(newState));
-
-        armStateMachine.setTransitionCondition(
-            new ArmState(movementAdderArmPosition, on), 
-            new ArmState(movementAdderArmPosition, to), 
-            () -> isAtForearmState(newState));
+    TransitionGraphNode parallelMovement(ForearmState newForearmState, ShoulderState newShoulderState, TransitionGraphNode next) {
+        return new TransitionGraphNode(
+            () -> { setForearmState(newForearmState); setShoulderState(newShoulderState); }, 
+            () -> isAtForearmState(newForearmState) && isAtShoulderState(newShoulderState), next);
     }
 
-    void addHopperMovement(String on, String to, boolean newState) {
-        armStateMachine.addBehaviour(
-            new ArmState(movementAdderArmPosition, on), 
-            () -> setHopperState(newState));
-
-        armStateMachine.setTransitionCondition(
-            new ArmState(movementAdderArmPosition, on), 
-            new ArmState(movementAdderArmPosition, to), 
-            () -> isAtHopperState(newState));
+    TransitionGraphNode parallelMovement(ForearmState newForearmState, HopperState newHopperState, TransitionGraphNode next) {
+        return new TransitionGraphNode(
+            () -> { setForearmState(newForearmState); setHopperState(newHopperState); }, 
+            () -> isAtForearmState(newForearmState) && isAtHopperState(newHopperState), next);
     }
 
-    void addParallelMovement(String on, String to, ForearmState newForearmState, ShoulderState newShoulderState) {
-        armStateMachine.addBehaviour(
-            new ArmState(movementAdderArmPosition, on), 
-            () -> setForearmState(newForearmState));
-
-        armStateMachine.addBehaviour(
-            new ArmState(movementAdderArmPosition, on), 
-            () -> setShoulderState(newShoulderState));
-
-        armStateMachine.setTransitionCondition(
-            new ArmState(movementAdderArmPosition, on), 
-            new ArmState(movementAdderArmPosition, to), 
-            () -> isAtForearmState(newForearmState) && isAtShoulderState(newShoulderState));
+    TransitionGraphNode parallelMovement(ShoulderState newShoulderState, HopperState newHopperState, TransitionGraphNode next) {
+        return new TransitionGraphNode(
+            () -> { setShoulderState(newShoulderState); setHopperState(newHopperState); }, 
+            () -> isAtShoulderState(newShoulderState) && isAtHopperState(newHopperState), next);
     }
 
-    void addParallelMovement(String on, String to, ForearmState newForearmState, boolean newHopperState) {
-        armStateMachine.addBehaviour(
-            new ArmState(movementAdderArmPosition, on), 
-            () -> setForearmState(newForearmState));
-
-        armStateMachine.addBehaviour(
-            new ArmState(movementAdderArmPosition, on), 
-            () -> setHopperState(newHopperState));
-
-        armStateMachine.setTransitionCondition(
-            new ArmState(movementAdderArmPosition, on), 
-            new ArmState(movementAdderArmPosition, to), 
-            () -> isAtForearmState(newForearmState) && isAtHopperState(newHopperState));
-    }
-
-    void addParallelMovement(String on, String to, ShoulderState newForearmState, boolean newHopperState) {
-        armStateMachine.addBehaviour(
-            new ArmState(movementAdderArmPosition, on), 
-            () -> setShoulderState(newForearmState));
-
-        armStateMachine.addBehaviour(
-            new ArmState(movementAdderArmPosition, on), 
-            () -> setHopperState(newHopperState));
-
-        armStateMachine.setTransitionCondition(
-            new ArmState(movementAdderArmPosition, on), 
-            new ArmState(movementAdderArmPosition, to), 
-            () -> isAtShoulderState(newForearmState) && isAtHopperState(newHopperState));
-    }
-
-    void addParallelMovement(String on, String to, ForearmState newForearmState, ShoulderState newShoulderState, boolean newHopperState) {
-        armStateMachine.addBehaviour(
-            new ArmState(movementAdderArmPosition, on), 
-            () -> setForearmState(newForearmState));
-
-        armStateMachine.addBehaviour(
-            new ArmState(movementAdderArmPosition, on), 
-            () -> setShoulderState(newShoulderState));
-
-        armStateMachine.addBehaviour(
-            new ArmState(movementAdderArmPosition, on), 
-            () -> setHopperState(newHopperState));
-
-        armStateMachine.setTransitionCondition(
-            new ArmState(movementAdderArmPosition, on), 
-            new ArmState(movementAdderArmPosition, to), 
-            () -> isAtForearmState(newForearmState) && isAtShoulderState(newShoulderState) && isAtHopperState(newHopperState));
-    }
-
-    void addBranch(String on, String ifTrue, String ifFalse, Conditions condition) {
-        armStateMachine.setTransitionCondition(
-            new ArmState(movementAdderArmPosition, on), 
-            new ArmState(movementAdderArmPosition, ifTrue), 
-            condition);
-        armStateMachine.setTransitionCondition(
-            new ArmState(movementAdderArmPosition, on), 
-            new ArmState(movementAdderArmPosition, ifFalse), 
-            () -> !condition.check());
-    }
-
-    void addOneWayBranch(String on, String ifTrue, Conditions condition) {
-        armStateMachine.setTransitionCondition(
-            new ArmState(movementAdderArmPosition, on), 
-            new ArmState(movementAdderArmPosition, ifTrue), 
-            condition);
+    TransitionGraphNode parallelMovement(ForearmState newForearmState, ShoulderState newShoulderState, HopperState newHopperState, TransitionGraphNode next) {
+        return new TransitionGraphNode(
+            () -> { setForearmState(newForearmState); setShoulderState(newShoulderState); setHopperState(newHopperState); }, 
+            () -> isAtForearmState(newForearmState) && isAtShoulderState(newShoulderState) && isAtHopperState(newHopperState), next);
     }
 
     //endregion
 
     void populateHopperIntakeGraph() {
+        /*
         setMovementAdderArmPosition(ArmPosition.HopperIntake);
 
         addOneWayBranch( "start", "branch4 step1",
@@ -256,49 +216,46 @@ public class Arm extends SubsystemBase  {
 
         //branch1
         addBranch("branch1 step1", "stop", "branch1 step2", 
-            () -> currenForearmState == ForearmState.HopperGrab);
+            () -> currentForearmState == ForearmState.HopperGrab);
 
         addForearmMovement("branch1 step2", "branch1 step3", ForearmState.Intermediate);
         addShoulderMovement("branch1 step3", "branch2 step1", ShoulderState.Base2);
         //
+        */
     }
 
     void populateGroundIntakeGraph() {
-        setMovementAdderArmPosition(ArmPosition.GroundIntake);
+        armStateMachine.addBehaviour(ArmPosition.GroundIntake, () -> {});
+        armStateMachine.addTransitionGraph(null, ArmPosition.GroundIntake, new TransitionGraph(
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base4, 
+                parallelMovement(ForearmState.Store, HopperState.Extended, 
+                shoulderMovement(ShoulderState.Base2,
+                hopperMovement(HopperState.Retracted,
+                forearmMovement(ForearmState.Intermediate, 
+                shoulderMovement(ShoulderState.Base1, 
+                forearmMovement(ForearmState.Ground, null)))))), 
 
-        addOneWayBranch( "start", "branch4 step1",
-            () -> currentShoulderState == ShoulderState.Base4);
-        addOneWayBranch( "start", "branch4 step4",
-            () -> currentShoulderState == ShoulderState.Base2);
-        addOneWayBranch( "start", "branch1 step1",
-            () -> currentShoulderState == ShoulderState.Base1);
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base2, 
+                hopperMovement(HopperState.Retracted,
+                forearmMovement(ForearmState.Intermediate, 
+                shoulderMovement(ShoulderState.Base1, 
+                forearmMovement(ForearmState.Ground, null)))),
 
-        //branch4
-        addParallelMovement("branch4 step1", "branch4 step2", ForearmState.Store, true);
-        addShoulderMovement("branch4 step2", "branch4 step3", ShoulderState.Base2);
-        addHopperMovement("branch4 step3", "branch4 step4", false);
-        addForearmMovement("branch4 step4", "branch4 step5", ForearmState.Intermediate);
-        addShoulderMovement("branch4 step5", "branch4 step6", ShoulderState.Base1);
-        addForearmMovement("branch4 step6", "stop", ForearmState.Ground);
-        //
-
-        //branch1
-        addBranch("branch1 step1", "branch1 branch2 step1", "branch1 branch1 step1", 
-            () -> currenForearmState == ForearmState.HopperGrab);
-
-
-        //branch1 branch1
-        addForearmMovement("branch1 branch1 step1", "branch1 branch1 step2", ForearmState.Intermediate);
-        addShoulderMovement("branch1 branch1 step2", "stop", ShoulderState.Base2);
-        //
-
-        //branch1 branch2
-        addShoulderMovement("branch1 branch2 step1", "branch4 step4", ShoulderState.Base2);
-        //
-        //
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base1, 
+                new TransitionGraphNode(() -> currentForearmState == ForearmState.HopperGrab, 
+                    shoulderMovement(ShoulderState.Base2, 
+                    hopperMovement(HopperState.Retracted,
+                    forearmMovement(ForearmState.Intermediate, 
+                    shoulderMovement(ShoulderState.Base1, 
+                    forearmMovement(ForearmState.Ground, null))))), 
+                    
+                    forearmMovement(ForearmState.Ground, null)),
+            null)))
+        ));
     }
 
     void populateDoubleSubstationGraph() {
+        /*
         setMovementAdderArmPosition(ArmPosition.DoubleSubstation);
 
         addOneWayBranch( "start", "branch4 step1",
@@ -321,7 +278,7 @@ public class Arm extends SubsystemBase  {
 
         //branch1
         addBranch("branch1 step1", "branch1 branch1 step1", "branch1 branch2 step1", 
-            () -> currenForearmState == ForearmState.HopperGrab);
+            () -> currentForearmState == ForearmState.HopperGrab);
 
         //branch1 branch1
         addParallelMovement("branch1 branch1 step1", "branch2 step2", ForearmState.Store, ShoulderState.Base2);
@@ -332,9 +289,11 @@ public class Arm extends SubsystemBase  {
         addParallelMovement("branch1 branch2 step2", "branch2 step2", ForearmState.Store, ShoulderState.Base2);
         //
         //
+        */
     }
 
     void populateN2Graph() {
+        /*
         setMovementAdderArmPosition(ArmPosition.N2);
 
         addOneWayBranch( "start", "branch4 step1",
@@ -357,7 +316,7 @@ public class Arm extends SubsystemBase  {
 
         //branch1
         addBranch("branch1 step1", "branch1 branch1 step1", "branch1 branch2 step1", 
-            () -> currenForearmState == ForearmState.HopperGrab);
+            () -> currentForearmState == ForearmState.HopperGrab);
 
         //branch1 branch1
         addParallelMovement("branch1 branch1 step1", "branch2 step2", ForearmState.Store, ShoulderState.Base2);
@@ -369,5 +328,220 @@ public class Arm extends SubsystemBase  {
         //
         //
         //
+        */
+    }
+
+    void populateN1B2Graph() {
+        /*
+        setMovementAdderArmPosition(ArmPosition.N1B2);
+
+        addOneWayBranch( "start", "branch4 step1",
+            () -> currentShoulderState == ShoulderState.Base4);
+        addOneWayBranch( "start", "branch2 step1",
+            () -> currentShoulderState == ShoulderState.Base2);
+        addOneWayBranch( "start", "branch1 step1",
+            () -> currentShoulderState == ShoulderState.Base1);
+            
+        //branch4
+        addForearmMovement("branch4 step1", "stop", ForearmState.N1B2);
+        //
+
+        //branch2
+        addForearmMovement("branch2 step1", "branch2 step2", ForearmState.N1B2);
+        addHopperMovement("branch2 step2", "branch2 step3", true);
+        addParallelMovement("branch2 step3", "branch2 step4", ForearmState.N1B2, ShoulderState.Base4);
+        addHopperMovement("branch2 step4", "stop", false);
+        //
+
+        //branch1
+        addBranch("branch1 step1", "branch1 branch1 step1", "branch1 branch2 step1", 
+            () -> currentForearmState == ForearmState.HopperGrab);
+
+        //branch1 branch1
+        addParallelMovement("branch1 branch1 step1", "branch2 step2", ForearmState.Store, ShoulderState.Base2);
+        //
+
+        //branch1 branch2
+        addForearmMovement("branch1 branch2 step1", "branch1 branch2 step2", ForearmState.Intermediate);
+        addParallelMovement("branch1 branch2 step2", "branch2 step2", ForearmState.Store, ShoulderState.Base2);
+        //
+        //
+        //
+        */
+    }
+
+    void populateB1Base4Graph() {
+        /*
+        setMovementAdderArmPosition(ArmPosition.B1Base4);
+
+        addOneWayBranch( "start", "branch4 step1",
+            () -> currentShoulderState == ShoulderState.Base4);
+        addOneWayBranch( "start", "branch2 step1",
+            () -> currentShoulderState == ShoulderState.Base2);
+        addOneWayBranch( "start", "branch1 step1",
+            () -> currentShoulderState == ShoulderState.Base1);
+            
+        //branch4
+        addForearmMovement("branch4 step1", "stop", ForearmState.B1);
+        //
+
+        //branch2
+        addForearmMovement("branch2 step1", "branch2 step2", ForearmState.B1);
+        addHopperMovement("branch2 step2", "branch2 step3", true);
+        addParallelMovement("branch2 step3", "branch2 step4", ForearmState.B1, ShoulderState.Base4);
+        addHopperMovement("branch2 step4", "stop", false);
+        //
+
+        //branch1
+        addBranch("branch1 step1", "branch1 branch1 step1", "branch1 branch2 step1", 
+            () -> currentForearmState == ForearmState.HopperGrab);
+
+        //branch1 branch1
+        addParallelMovement("branch1 branch1 step1", "branch2 step2", ForearmState.Store, ShoulderState.Base2);
+        //
+
+        //branch1 branch2
+        addForearmMovement("branch1 branch2 step1", "branch1 branch2 step2", ForearmState.Intermediate);
+        addParallelMovement("branch1 branch2 step2", "branch2 step2", ForearmState.Store, ShoulderState.Base2);
+        //
+        //
+        //
+        */
+    }
+
+    void populateBase1B1Graph() {
+        /*
+        setMovementAdderArmPosition(ArmPosition.Base1B1);
+
+        addOneWayBranch( "start", "branch4 step1",
+            () -> currentShoulderState == ShoulderState.Base4);
+        addOneWayBranch( "start", "branch2 step1",
+            () -> currentShoulderState == ShoulderState.Base2);
+        addOneWayBranch( "start", "branch1 step1",
+            () -> currentShoulderState == ShoulderState.Base1);
+
+        //branch4
+        addForearmMovement("branch4 step1", "branch4 step2", ForearmState.Base1B1);
+        addShoulderMovement("branch4 step2", "branch4 step3", ShoulderState.Base1);
+        addForearmMovement("branch4 step3", "stop", ForearmState.Base1B1);
+        //
+
+        //branch2
+        addForearmMovement("branch2 step1", "branch2 step2", ForearmState.Base1B1);
+        addShoulderMovement("branch2 step2", "stop", ShoulderState.Base1);
+        //
+
+        //branch1
+        addBranch("branch1 step1", "branch1 branch2 step1", "branch1 branch1 step1", 
+            () -> currentForearmState == ForearmState.HopperGrab);
+
+
+        //branch1 branch1
+        addForearmMovement("branch1 branch1 step1", "branch1 branch1 step2", ForearmState.Intermediate);
+        addShoulderMovement("branch1 branch1 step2", "stop", ShoulderState.Base2);
+        //
+
+        //branch1 branch2
+        addShoulderMovement("branch1 branch2 step1", "branch1 branch2 step2", ShoulderState.Base2);
+        addForearmMovement("branch1 branch2 step2", "branch1 branch2 step3", ForearmState.Intermediate);
+        addShoulderMovement("branch1 branch2 step3", "branch1 branch2 step4", ShoulderState.Base1);
+        addForearmMovement("branch1 branch2 step4", "stop", ForearmState.Base1B1);
+        //
+        */
+    }
+
+    void populateHybridGraph() {
+        /*
+        setMovementAdderArmPosition(ArmPosition.Hybrid);
+
+        addOneWayBranch( "start", "branch4 step1",
+            () -> currentShoulderState == ShoulderState.Base4);
+        addOneWayBranch( "start", "branch4 step4",
+            () -> currentShoulderState == ShoulderState.Base2);
+        addOneWayBranch( "start", "branch1 step1",
+            () -> currentShoulderState == ShoulderState.Base1);
+
+        //branch4
+        addParallelMovement("branch4 step1", "branch4 step2", ForearmState.Store, true);
+        addShoulderMovement("branch4 step2", "branch4 step3", ShoulderState.Base2);
+        addHopperMovement("branch4 step3", "branch4 step4", false);
+        addForearmMovement("branch4 step4", "branch4 step5", ForearmState.Intermediate);
+        addShoulderMovement("branch4 step5", "branch4 step6", ShoulderState.Base1);
+        addForearmMovement("branch4 step6", "stop", ForearmState.Hybrid);
+        //
+
+        //branch1
+        addBranch("branch1 step1", "branch1 branch2 step1", "branch1 branch1 step1", 
+            () -> currentForearmState == ForearmState.HopperGrab);
+
+
+        //branch1 branch1
+        addForearmMovement("branch1 branch1 step1", "stop", ForearmState.Hybrid);
+        //
+
+        //branch1 branch2
+        addShoulderMovement("branch1 branch2 step1", "branch4 step4", ShoulderState.Base2);
+        //
+        //
+        */
+    }
+
+    void populateStoreGraph() {
+        /*
+        setMovementAdderArmPosition(ArmPosition.Store);
+
+        addOneWayBranch( "start", "branch4 step1",
+            () -> currentShoulderState == ShoulderState.Base4);
+        addOneWayBranch( "start", "branch2 step1",
+            () -> currentShoulderState == ShoulderState.Base2);
+        addOneWayBranch( "start", "branch1 step1",
+            () -> currentShoulderState == ShoulderState.Base1);
+
+        //branch4
+        addParallelMovement("branch4 step1", "branch4 step2", ForearmState.Store, true);
+        addShoulderMovement("branch4 step2", "branch4 step3", ShoulderState.Base2);
+        addHopperMovement("branch4 step3", "stop", false);
+        //
+
+        //branch2
+        addForearmMovement("branch2 step1", "stop", ForearmState.Store);
+        //
+
+        //branch1
+        addBranch("branch1 step1", "branch1 branch2 step1", "branch1 branch1 step1", 
+            () -> currentForearmState == ForearmState.HopperGrab);
+
+
+        //branch1 branch1
+        addForearmMovement("branch1 branch1 step1", "branch1 branch2 step1", ForearmState.Intermediate);
+        //
+
+        //branch1 branch2
+        addShoulderMovement("branch1 branch2 step1", "branch1 branch2 step2", ShoulderState.Base2);
+        addForearmMovement("branch1 branch2 step2", "stop", ForearmState.Store);
+        //
+        //
+        */
+        armStateMachine.addBehaviour(ArmPosition.Store, () -> {});
+        armStateMachine.addTransitionGraph(null, ArmPosition.Store, new TransitionGraph(
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base4, 
+                parallelMovement(ForearmState.Store, HopperState.Extended, 
+                shoulderMovement(ShoulderState.Base2,
+                hopperMovement(HopperState.Retracted,null))), 
+
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base2, 
+                forearmMovement(ForearmState.Store, null),
+
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base1, 
+                new TransitionGraphNode(() -> currentForearmState == ForearmState.HopperGrab, 
+                    shoulderMovement(ShoulderState.Base2, 
+                    forearmMovement(ForearmState.Store, null)), 
+                    
+                    forearmMovement(ForearmState.Intermediate, 
+                    shoulderMovement(ShoulderState.Base2, 
+                    forearmMovement(ForearmState.Store, null)))),
+
+            null)))
+        ));
     }
 }

@@ -1,3 +1,4 @@
+/*
 package frc.robot.commands.auto;
 
 import java.util.ArrayList;
@@ -128,3 +129,4 @@ public class AutoLineUp extends CommandBase {
 		drivetrain.drive(x, y, w, fieldRelative);
 	}
 }
+*/

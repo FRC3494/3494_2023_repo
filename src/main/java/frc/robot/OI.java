@@ -31,10 +31,6 @@ public final class OI {
         return value;
     }
     
-	public static void configureButtonBindings() {
-
-	}
-
     public static void update() {
         eventLoop.poll();
     }
@@ -61,8 +57,8 @@ public final class OI {
     public static BooleanEvent getAutoLineUpEvent() {
         return primaryController.b(eventLoop);
     }
-    public static Boolean getHopperIntake(){
-        return primaryController.getAButtonPressed();
+
+    public static BooleanEvent getArmTestButton(){
+        return primaryController.a(eventLoop);
     }
-    
 }
