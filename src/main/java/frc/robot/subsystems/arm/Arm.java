@@ -193,35 +193,27 @@ public class Arm extends SubsystemBase  {
     //endregion
 
     void populateHopperIntakeGraph() {
-        /*
-        setMovementAdderArmPosition(ArmPosition.HopperIntake);
+        armStateMachine.addBehaviour(ArmPosition.HopperIntake, () -> {});
+        armStateMachine.addTransitionGraph(null, ArmPosition.HopperIntake, new TransitionGraph(
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base4, 
+                forearmMovement(ForearmState.N1B2, 
+                shoulderMovement(ShoulderState.Base1, 
+                forearmMovement(ForearmState.HopperGrab, null))), 
 
-        addOneWayBranch( "start", "branch4 step1",
-            () -> currentShoulderState == ShoulderState.Base4);
-        addOneWayBranch( "start", "branch2 step1",
-            () -> currentShoulderState == ShoulderState.Base2);
-        addOneWayBranch( "start", "branch1 step1",
-            () -> currentShoulderState == ShoulderState.Base1);
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base2, 
+                forearmMovement(ForearmState.HopperGrab, 
+                shoulderMovement(ShoulderState.Base1, null)),
 
-        //branch4
-        addForearmMovement("branch4 step1", "branch4 step2", ForearmState.N1B2);
-        addShoulderMovement("branch4 step2", "branch4 step3", ShoulderState.Base1);
-        addForearmMovement("branch4 step3", "stop", ForearmState.HopperGrab);
-        //
-
-        //branch2
-        addForearmMovement("branch2 step1", "branch2 step2", ForearmState.HopperGrab);
-        addShoulderMovement("branch2 step2", "stop", ShoulderState.Base1);
-        //
-
-        //branch1
-        addBranch("branch1 step1", "stop", "branch1 step2", 
-            () -> currentForearmState == ForearmState.HopperGrab);
-
-        addForearmMovement("branch1 step2", "branch1 step3", ForearmState.Intermediate);
-        addShoulderMovement("branch1 step3", "branch2 step1", ShoulderState.Base2);
-        //
-        */
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base1, 
+                new TransitionGraphNode(() -> currentForearmState == ForearmState.HopperGrab, 
+                    null, 
+                    
+                    forearmMovement(ForearmState.Intermediate, 
+                    shoulderMovement(ShoulderState.Base2, 
+                    forearmMovement(ForearmState.HopperGrab, 
+                    shoulderMovement(ShoulderState.Base1, null))))),
+            null)))
+        ));
     }
 
     void populateGroundIntakeGraph() {
@@ -255,273 +247,171 @@ public class Arm extends SubsystemBase  {
     }
 
     void populateDoubleSubstationGraph() {
-        /*
-        setMovementAdderArmPosition(ArmPosition.DoubleSubstation);
+        armStateMachine.addBehaviour(ArmPosition.DoubleSubstation, () -> {});
+        armStateMachine.addTransitionGraph(null, ArmPosition.DoubleSubstation, new TransitionGraph(
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base4, 
+                forearmMovement(ForearmState.DoubleSub, null), 
 
-        addOneWayBranch( "start", "branch4 step1",
-            () -> currentShoulderState == ShoulderState.Base4);
-        addOneWayBranch( "start", "branch2 step1",
-            () -> currentShoulderState == ShoulderState.Base2);
-        addOneWayBranch( "start", "branch1 step1",
-            () -> currentShoulderState == ShoulderState.Base1);
-            
-        //branch4
-        addForearmMovement("branch4 step1", "stop", ForearmState.DoubleSub);
-        //
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base2, 
+                forearmMovement(ForearmState.DoubleSub, 
+                hopperMovement(HopperState.Extended, 
+                parallelMovement(ForearmState.DoubleSub, ShoulderState.Base4, 
+                hopperMovement(HopperState.Retracted, null)))),
 
-        //branch2
-        addForearmMovement("branch2 step1", "branch2 step2", ForearmState.DoubleSub);
-        addHopperMovement("branch2 step2", "branch2 step3", true);
-        addParallelMovement("branch2 step3", "branch2 step4", ForearmState.DoubleSub, ShoulderState.Base4);
-        addHopperMovement("branch2 step4", "stop", false);
-        //
-
-        //branch1
-        addBranch("branch1 step1", "branch1 branch1 step1", "branch1 branch2 step1", 
-            () -> currentForearmState == ForearmState.HopperGrab);
-
-        //branch1 branch1
-        addParallelMovement("branch1 branch1 step1", "branch2 step2", ForearmState.Store, ShoulderState.Base2);
-        //
-
-        //branch1 branch2
-        addForearmMovement("branch1 branch2 step1", "branch1 branch2 step2", ForearmState.Intermediate);
-        addParallelMovement("branch1 branch2 step2", "branch2 step2", ForearmState.Store, ShoulderState.Base2);
-        //
-        //
-        */
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base1, 
+                new TransitionGraphNode(() -> currentForearmState == ForearmState.HopperGrab, 
+                    parallelMovement(ForearmState.Store, ShoulderState.Base2, 
+                    hopperMovement(HopperState.Extended, 
+                    parallelMovement(ForearmState.DoubleSub, ShoulderState.Base4, 
+                    hopperMovement(HopperState.Retracted, null)))), 
+                    
+                    forearmMovement(ForearmState.Intermediate, 
+                    parallelMovement(ForearmState.Store, ShoulderState.Base2, 
+                    hopperMovement(HopperState.Extended, 
+                    parallelMovement(ForearmState.DoubleSub, ShoulderState.Base4, 
+                    hopperMovement(HopperState.Retracted, null)))))),
+            null)))
+        ));
     }
 
     void populateN2Graph() {
-        /*
-        setMovementAdderArmPosition(ArmPosition.N2);
+        armStateMachine.addBehaviour(ArmPosition.N2, () -> {});
+        armStateMachine.addTransitionGraph(null, ArmPosition.N2, new TransitionGraph(
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base4, 
+                forearmMovement(ForearmState.N2, null), 
 
-        addOneWayBranch( "start", "branch4 step1",
-            () -> currentShoulderState == ShoulderState.Base4);
-        addOneWayBranch( "start", "branch2 step1",
-            () -> currentShoulderState == ShoulderState.Base2);
-        addOneWayBranch( "start", "branch1 step1",
-            () -> currentShoulderState == ShoulderState.Base1);
-            
-        //branch4
-        addForearmMovement("branch4 step1", "stop", ForearmState.N2);
-        //
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base2, 
+                forearmMovement(ForearmState.N2, 
+                hopperMovement(HopperState.Extended, 
+                parallelMovement(ForearmState.N2, ShoulderState.Base4, 
+                hopperMovement(HopperState.Retracted, null)))),
 
-        //branch2
-        addForearmMovement("branch2 step1", "branch2 step2", ForearmState.N2);
-        addHopperMovement("branch2 step2", "branch2 step3", true);
-        addParallelMovement("branch2 step3", "branch2 step4", ForearmState.N2, ShoulderState.Base4);
-        addHopperMovement("branch2 step4", "stop", false);
-        //
-
-        //branch1
-        addBranch("branch1 step1", "branch1 branch1 step1", "branch1 branch2 step1", 
-            () -> currentForearmState == ForearmState.HopperGrab);
-
-        //branch1 branch1
-        addParallelMovement("branch1 branch1 step1", "branch2 step2", ForearmState.Store, ShoulderState.Base2);
-        //
-
-        //branch1 branch2
-        addForearmMovement("branch1 branch2 step1", "branch1 branch2 step2", ForearmState.Intermediate);
-        addParallelMovement("branch1 branch2 step2", "branch2 step2", ForearmState.Store, ShoulderState.Base2);
-        //
-        //
-        //
-        */
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base1, 
+                new TransitionGraphNode(() -> currentForearmState == ForearmState.HopperGrab, 
+                    parallelMovement(ForearmState.Store, ShoulderState.Base2, 
+                    hopperMovement(HopperState.Extended, 
+                    parallelMovement(ForearmState.N2, ShoulderState.Base4, 
+                    hopperMovement(HopperState.Retracted, null)))), 
+                    
+                    forearmMovement(ForearmState.Intermediate, 
+                    parallelMovement(ForearmState.Store, ShoulderState.Base2, 
+                    hopperMovement(HopperState.Extended, 
+                    parallelMovement(ForearmState.N2, ShoulderState.Base4, 
+                    hopperMovement(HopperState.Retracted, null)))))),
+            null)))
+        ));
     }
 
     void populateN1B2Graph() {
-        /*
-        setMovementAdderArmPosition(ArmPosition.N1B2);
+        armStateMachine.addBehaviour(ArmPosition.N1B2, () -> {});
+        armStateMachine.addTransitionGraph(null, ArmPosition.N1B2, new TransitionGraph(
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base4, 
+                forearmMovement(ForearmState.N1B2, null), 
 
-        addOneWayBranch( "start", "branch4 step1",
-            () -> currentShoulderState == ShoulderState.Base4);
-        addOneWayBranch( "start", "branch2 step1",
-            () -> currentShoulderState == ShoulderState.Base2);
-        addOneWayBranch( "start", "branch1 step1",
-            () -> currentShoulderState == ShoulderState.Base1);
-            
-        //branch4
-        addForearmMovement("branch4 step1", "stop", ForearmState.N1B2);
-        //
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base2, 
+                forearmMovement(ForearmState.N1B2, 
+                hopperMovement(HopperState.Extended, 
+                parallelMovement(ForearmState.N1B2, ShoulderState.Base4, 
+                hopperMovement(HopperState.Retracted, null)))),
 
-        //branch2
-        addForearmMovement("branch2 step1", "branch2 step2", ForearmState.N1B2);
-        addHopperMovement("branch2 step2", "branch2 step3", true);
-        addParallelMovement("branch2 step3", "branch2 step4", ForearmState.N1B2, ShoulderState.Base4);
-        addHopperMovement("branch2 step4", "stop", false);
-        //
-
-        //branch1
-        addBranch("branch1 step1", "branch1 branch1 step1", "branch1 branch2 step1", 
-            () -> currentForearmState == ForearmState.HopperGrab);
-
-        //branch1 branch1
-        addParallelMovement("branch1 branch1 step1", "branch2 step2", ForearmState.Store, ShoulderState.Base2);
-        //
-
-        //branch1 branch2
-        addForearmMovement("branch1 branch2 step1", "branch1 branch2 step2", ForearmState.Intermediate);
-        addParallelMovement("branch1 branch2 step2", "branch2 step2", ForearmState.Store, ShoulderState.Base2);
-        //
-        //
-        //
-        */
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base1, 
+                new TransitionGraphNode(() -> currentForearmState == ForearmState.HopperGrab, 
+                    parallelMovement(ForearmState.Store, ShoulderState.Base2, 
+                    hopperMovement(HopperState.Extended, 
+                    parallelMovement(ForearmState.N1B2, ShoulderState.Base4, 
+                    hopperMovement(HopperState.Retracted, null)))), 
+                    
+                    forearmMovement(ForearmState.Intermediate, 
+                    parallelMovement(ForearmState.Store, ShoulderState.Base2, 
+                    hopperMovement(HopperState.Extended, 
+                    parallelMovement(ForearmState.N1B2, ShoulderState.Base4, 
+                    hopperMovement(HopperState.Retracted, null)))))),
+            null)))
+        ));
     }
 
     void populateB1Base4Graph() {
-        /*
-        setMovementAdderArmPosition(ArmPosition.B1Base4);
+        armStateMachine.addBehaviour(ArmPosition.B1Base4, () -> {});
+        armStateMachine.addTransitionGraph(null, ArmPosition.B1Base4, new TransitionGraph(
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base4, 
+                forearmMovement(ForearmState.B1, null), 
 
-        addOneWayBranch( "start", "branch4 step1",
-            () -> currentShoulderState == ShoulderState.Base4);
-        addOneWayBranch( "start", "branch2 step1",
-            () -> currentShoulderState == ShoulderState.Base2);
-        addOneWayBranch( "start", "branch1 step1",
-            () -> currentShoulderState == ShoulderState.Base1);
-            
-        //branch4
-        addForearmMovement("branch4 step1", "stop", ForearmState.B1);
-        //
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base2, 
+                forearmMovement(ForearmState.B1, 
+                hopperMovement(HopperState.Extended, 
+                parallelMovement(ForearmState.B1, ShoulderState.Base4, 
+                hopperMovement(HopperState.Retracted, null)))),
 
-        //branch2
-        addForearmMovement("branch2 step1", "branch2 step2", ForearmState.B1);
-        addHopperMovement("branch2 step2", "branch2 step3", true);
-        addParallelMovement("branch2 step3", "branch2 step4", ForearmState.B1, ShoulderState.Base4);
-        addHopperMovement("branch2 step4", "stop", false);
-        //
-
-        //branch1
-        addBranch("branch1 step1", "branch1 branch1 step1", "branch1 branch2 step1", 
-            () -> currentForearmState == ForearmState.HopperGrab);
-
-        //branch1 branch1
-        addParallelMovement("branch1 branch1 step1", "branch2 step2", ForearmState.Store, ShoulderState.Base2);
-        //
-
-        //branch1 branch2
-        addForearmMovement("branch1 branch2 step1", "branch1 branch2 step2", ForearmState.Intermediate);
-        addParallelMovement("branch1 branch2 step2", "branch2 step2", ForearmState.Store, ShoulderState.Base2);
-        //
-        //
-        //
-        */
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base1, 
+                new TransitionGraphNode(() -> currentForearmState == ForearmState.HopperGrab, 
+                    parallelMovement(ForearmState.Store, ShoulderState.Base2, 
+                    hopperMovement(HopperState.Extended, 
+                    parallelMovement(ForearmState.B1, ShoulderState.Base4, 
+                    hopperMovement(HopperState.Retracted, null)))), 
+                    
+                    forearmMovement(ForearmState.Intermediate, 
+                    parallelMovement(ForearmState.Store, ShoulderState.Base2, 
+                    hopperMovement(HopperState.Extended, 
+                    parallelMovement(ForearmState.B1, ShoulderState.Base4, 
+                    hopperMovement(HopperState.Retracted, null)))))),
+            null)))
+        ));
     }
 
     void populateBase1B1Graph() {
-        /*
-        setMovementAdderArmPosition(ArmPosition.Base1B1);
+        armStateMachine.addBehaviour(ArmPosition.Base1B1, () -> {});
+        armStateMachine.addTransitionGraph(null, ArmPosition.Base1B1, new TransitionGraph(
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base4, 
+                forearmMovement(ForearmState.Base1B1, 
+                shoulderMovement(ShoulderState.Base1, 
+                forearmMovement(ForearmState.Base1B1, null))), 
 
-        addOneWayBranch( "start", "branch4 step1",
-            () -> currentShoulderState == ShoulderState.Base4);
-        addOneWayBranch( "start", "branch2 step1",
-            () -> currentShoulderState == ShoulderState.Base2);
-        addOneWayBranch( "start", "branch1 step1",
-            () -> currentShoulderState == ShoulderState.Base1);
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base2, 
+                forearmMovement(ForearmState.Base1B1, 
+                shoulderMovement(ShoulderState.Base1, null)),
 
-        //branch4
-        addForearmMovement("branch4 step1", "branch4 step2", ForearmState.Base1B1);
-        addShoulderMovement("branch4 step2", "branch4 step3", ShoulderState.Base1);
-        addForearmMovement("branch4 step3", "stop", ForearmState.Base1B1);
-        //
-
-        //branch2
-        addForearmMovement("branch2 step1", "branch2 step2", ForearmState.Base1B1);
-        addShoulderMovement("branch2 step2", "stop", ShoulderState.Base1);
-        //
-
-        //branch1
-        addBranch("branch1 step1", "branch1 branch2 step1", "branch1 branch1 step1", 
-            () -> currentForearmState == ForearmState.HopperGrab);
-
-
-        //branch1 branch1
-        addForearmMovement("branch1 branch1 step1", "branch1 branch1 step2", ForearmState.Intermediate);
-        addShoulderMovement("branch1 branch1 step2", "stop", ShoulderState.Base2);
-        //
-
-        //branch1 branch2
-        addShoulderMovement("branch1 branch2 step1", "branch1 branch2 step2", ShoulderState.Base2);
-        addForearmMovement("branch1 branch2 step2", "branch1 branch2 step3", ForearmState.Intermediate);
-        addShoulderMovement("branch1 branch2 step3", "branch1 branch2 step4", ShoulderState.Base1);
-        addForearmMovement("branch1 branch2 step4", "stop", ForearmState.Base1B1);
-        //
-        */
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base1, 
+                new TransitionGraphNode(() -> currentForearmState == ForearmState.HopperGrab, 
+                    shoulderMovement(ShoulderState.Base2, 
+                    forearmMovement(ForearmState.Intermediate, 
+                    shoulderMovement(ShoulderState.Base1, 
+                    forearmMovement(ForearmState.Base1B1, null)))), 
+                    
+                    forearmMovement(ForearmState.Intermediate, 
+                    shoulderMovement(ShoulderState.Base2, null))),
+            null)))
+        ));
     }
 
     void populateHybridGraph() {
-        /*
-        setMovementAdderArmPosition(ArmPosition.Hybrid);
+        armStateMachine.addBehaviour(ArmPosition.Hybrid, () -> {});
+        armStateMachine.addTransitionGraph(null, ArmPosition.Hybrid, new TransitionGraph(
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base4, 
+                parallelMovement(ForearmState.Store, HopperState.Extended, 
+                shoulderMovement(ShoulderState.Base2, 
+                hopperMovement(HopperState.Retracted, 
+                forearmMovement(ForearmState.Intermediate, 
+                shoulderMovement(ShoulderState.Base1, 
+                forearmMovement(ForearmState.Hybrid, null)))))), 
 
-        addOneWayBranch( "start", "branch4 step1",
-            () -> currentShoulderState == ShoulderState.Base4);
-        addOneWayBranch( "start", "branch4 step4",
-            () -> currentShoulderState == ShoulderState.Base2);
-        addOneWayBranch( "start", "branch1 step1",
-            () -> currentShoulderState == ShoulderState.Base1);
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base2, 
+                forearmMovement(ForearmState.Intermediate, 
+                shoulderMovement(ShoulderState.Base1, 
+                forearmMovement(ForearmState.Hybrid, null))),
 
-        //branch4
-        addParallelMovement("branch4 step1", "branch4 step2", ForearmState.Store, true);
-        addShoulderMovement("branch4 step2", "branch4 step3", ShoulderState.Base2);
-        addHopperMovement("branch4 step3", "branch4 step4", false);
-        addForearmMovement("branch4 step4", "branch4 step5", ForearmState.Intermediate);
-        addShoulderMovement("branch4 step5", "branch4 step6", ShoulderState.Base1);
-        addForearmMovement("branch4 step6", "stop", ForearmState.Hybrid);
-        //
-
-        //branch1
-        addBranch("branch1 step1", "branch1 branch2 step1", "branch1 branch1 step1", 
-            () -> currentForearmState == ForearmState.HopperGrab);
-
-
-        //branch1 branch1
-        addForearmMovement("branch1 branch1 step1", "stop", ForearmState.Hybrid);
-        //
-
-        //branch1 branch2
-        addShoulderMovement("branch1 branch2 step1", "branch4 step4", ShoulderState.Base2);
-        //
-        //
-        */
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base1, 
+                new TransitionGraphNode(() -> currentForearmState == ForearmState.HopperGrab, 
+                    shoulderMovement(ShoulderState.Base2, 
+                    forearmMovement(ForearmState.Intermediate, 
+                    shoulderMovement(ShoulderState.Base1, 
+                    forearmMovement(ForearmState.Hybrid, null)))), 
+                    
+                    forearmMovement(ForearmState.Hybrid, null)),
+            null)))
+        ));
     }
 
     void populateStoreGraph() {
-        /*
-        setMovementAdderArmPosition(ArmPosition.Store);
-
-        addOneWayBranch( "start", "branch4 step1",
-            () -> currentShoulderState == ShoulderState.Base4);
-        addOneWayBranch( "start", "branch2 step1",
-            () -> currentShoulderState == ShoulderState.Base2);
-        addOneWayBranch( "start", "branch1 step1",
-            () -> currentShoulderState == ShoulderState.Base1);
-
-        //branch4
-        addParallelMovement("branch4 step1", "branch4 step2", ForearmState.Store, true);
-        addShoulderMovement("branch4 step2", "branch4 step3", ShoulderState.Base2);
-        addHopperMovement("branch4 step3", "stop", false);
-        //
-
-        //branch2
-        addForearmMovement("branch2 step1", "stop", ForearmState.Store);
-        //
-
-        //branch1
-        addBranch("branch1 step1", "branch1 branch2 step1", "branch1 branch1 step1", 
-            () -> currentForearmState == ForearmState.HopperGrab);
-
-
-        //branch1 branch1
-        addForearmMovement("branch1 branch1 step1", "branch1 branch2 step1", ForearmState.Intermediate);
-        //
-
-        //branch1 branch2
-        addShoulderMovement("branch1 branch2 step1", "branch1 branch2 step2", ShoulderState.Base2);
-        addForearmMovement("branch1 branch2 step2", "stop", ForearmState.Store);
-        //
-        //
-        */
         armStateMachine.addBehaviour(ArmPosition.Store, () -> {});
         armStateMachine.addTransitionGraph(null, ArmPosition.Store, new TransitionGraph(
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base4, 
