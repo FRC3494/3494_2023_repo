@@ -2,14 +2,26 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
@@ -17,6 +29,18 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Drivetrain extends SubsystemBase {
+	double aprilTagYaw;
+	double aprilTagID;  
+    JsonParser myParser = new JsonParser();
+    JsonObject limeLightData;
+	JsonArray limeLightDataArray;
+    //static HashMap<String, GenericEntry> tagMap = new HashMap<String, GenericEntry>(); 
+
+	private JsonArray limeLightAprilTagPosition;
+	double tagX;
+	double tagY;
+	double tagZ;
+	
 	SwerveModule frontLeft = Mk4iSwerveModuleHelper.createAnalogNeo(
 			Shuffleboard.getTab("Drivetrain").getLayout("Front Left Module", BuiltInLayouts.kList)
 					.withSize(2, 4)
@@ -174,12 +198,40 @@ public class Drivetrain extends SubsystemBase {
 		if (NavX.getNavX().isMagnetometerCalibrated()) {
 			// We will only get valid fused headings if the magnetometer is calibrated
 			return Rotation2d.fromDegrees(NavX.getYaw());
-		}
+		};
 
 		return Rotation2d.fromDegrees(360.0 - NavX.getYaw());
 	}
 
 	public void zeroYaw() {
 		NavX.zeroYaw();
+	}
+
+	public PathPlannerTrajectory getPathToTag(){
+		limeLightData = (JsonObject) JsonParser.parseString(
+            NetworkTableInstance.getDefault()
+            .getTable("limelight")
+            .getEntry("json")
+            .getString("{}")
+        );
+		limeLightDataArray =  (JsonArray) ((JsonObject) limeLightData.get("Results")).get("Fiducial");
+		if(limeLightDataArray.size() != 0){
+			System.out.println(limeLightDataArray.get(0).getAsJsonObject().get("fID"));
+			System.out.println(limeLightDataArray.get(0).getAsJsonObject().get("tx"));
+			aprilTagID =  limeLightDataArray.get(0).getAsJsonObject().get("fID").getAsDouble();
+			aprilTagYaw = limeLightDataArray.get(0).getAsJsonObject().get("tx").getAsDouble();
+		}
+		else{
+			aprilTagID = -1;
+			aprilTagYaw = 0;
+		}
+		odometry.resetPosition(getGyroscopeRotation(), getSwerveModulePositions(), new Pose2d(tagX, tagZ, getPose().getRotation()));
+		System.out.println("ODometery:"+ odometry.getPoseMeters());
+		//new PathPoint(new Translation2d(0,0), new Rotation2d(0)),
+		ArrayList<PathPoint> toTagPath = new ArrayList<PathPoint>(Arrays.asList(
+			new PathPoint(new Translation2d(0, 0), new Rotation2d(0)),
+			new PathPoint(new Translation2d(1,0), new Rotation2d(0))));
+		
+		return PathPlanner.generatePath(new PathConstraints(0.2, 0.2), toTagPath);
 	}
 }

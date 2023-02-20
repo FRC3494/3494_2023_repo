@@ -11,12 +11,15 @@ import frc.robot.subsystems.Drivetrain;
 public class TeleopDrive extends CommandBase {
 	Drivetrain drivetrain;
 	Arm arm;
-	StateMachine<ArmState> armStateMachine;
+
 	public TeleopDrive(Drivetrain drivetrain, Arm arm) {
+
 		this.drivetrain = drivetrain;
 		this.arm = arm;
 		addRequirements(drivetrain);
 		addRequirements(arm);
+
+		// logic
 	}
 	@Override
 	public void execute() {
@@ -59,7 +62,6 @@ public class TeleopDrive extends CommandBase {
 							arm.setArmState(ArmState.Base1);
 							stop();
 						}
-						
 					}
 				}
 			}

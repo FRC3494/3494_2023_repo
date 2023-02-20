@@ -25,15 +25,15 @@ public class Arm extends SubsystemBase  {
 
     
     public Arm(){
-        basePiston1 = new DoubleSolenoid(Constants.Subsystems.Arm.BASE_PCM, 
-            PneumaticsModuleType.CTREPCM, Constants.Subsystems.Arm.PISTON1_SOLENOID_CHANNEL, 
-            Constants.Subsystems.Arm.PISTON1_SOLENOID_CHANNEL + 1);
-        basePiston2 = new DoubleSolenoid(Constants.Subsystems.Arm.BASE_PCM, 
-            PneumaticsModuleType.CTREPCM, Constants.Subsystems.Arm.PISTON2_SOLENOID_CHANNEL, 
-            Constants.Subsystems.Arm.PISTON2_SOLENOID_CHANNEL + 1);
-        forearmMotor = new CANSparkMax(Constants.Subsystems.Arm.ARM_MOTOR_CHANNEL, MotorType.kBrushless);
-        currentArmState = ArmState.Base2;
-        targetArmState = ArmState.Base2;
+        // basePiston1 = new DoubleSolenoid(Constants.Subsystems.Arm.BASE_PCM, 
+        //     PneumaticsModuleType.CTREPCM, Constants.Subsystems.Arm.PISTON1_SOLENOID_CHANNEL, 
+        //     Constants.Subsystems.Arm.PISTON1_SOLENOID_CHANNEL + 1);
+        // basePiston2 = new DoubleSolenoid(Constants.Subsystems.Arm.BASE_PCM, 
+        //     PneumaticsModuleType.CTREPCM, Constants.Subsystems.Arm.PISTON2_SOLENOID_CHANNEL, 
+        //     Constants.Subsystems.Arm.PISTON2_SOLENOID_CHANNEL + 1);
+        // forearmMotor = new CANSparkMax(Constants.Subsystems.Arm.ARM_MOTOR_CHANNEL, MotorType.kBrushless);
+        // currentArmState = ArmState.Base2;
+        // targetArmState = ArmState.Base2;
     }
     public void setArmState(ArmState newState){
         targetArmState = newState;
@@ -43,28 +43,28 @@ public class Arm extends SubsystemBase  {
     }
     @Override
     public void periodic(){
-        //FIXE Me: Change current Position based on encoder Values right now you assume pnematics move instantly
-        if(targetArmState == ArmState.Base1){
-            basePiston1.set(Value.kReverse);
-            basePiston2.set(Value.kReverse);
-            currentArmState = ArmState.Base1;
+    //     //FIXE Me: Change current Position based on encoder Values right now you assume pnematics move instantly
+    //     if(targetArmState == ArmState.Base1){
+    //         basePiston1.set(Value.kReverse);
+    //         basePiston2.set(Value.kReverse);
+    //         currentArmState = ArmState.Base1;
 
-        }
-        else if(targetArmState == ArmState.Base2){
-            basePiston1.set(Value.kForward);
-            basePiston2.set(Value.kReverse);
-            currentArmState = ArmState.Base2;
-        }
-        else if(targetArmState == ArmState.Base3){
-            basePiston1.set(Value.kReverse);
-            basePiston2.set(Value.kForward);
-            currentArmState = ArmState.Base3;
-        }
-        else if(targetArmState == ArmState.Base4){
-            basePiston1.set(Value.kForward);
-            basePiston2.set(Value.kForward);
-            currentArmState = ArmState.Base4;
-        }
+    //     }
+    //     else if(targetArmState == ArmState.Base2){
+    //         basePiston1.set(Value.kForward);
+    //         basePiston2.set(Value.kReverse);
+    //         currentArmState = ArmState.Base2;
+    //     }
+    //     else if(targetArmState == ArmState.Base3){
+    //         basePiston1.set(Value.kReverse);
+    //         basePiston2.set(Value.kForward);
+    //         currentArmState = ArmState.Base3;
+    //     }
+    //     else if(targetArmState == ArmState.Base4){
+    //         basePiston1.set(Value.kForward);
+    //         basePiston2.set(Value.kForward);
+    //         currentArmState = ArmState.Base4;
+    //     }
     }
 
 }

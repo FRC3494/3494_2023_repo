@@ -48,7 +48,7 @@ public class RobotContainer {
 		arm = new Arm();
 		//Constants.InitializeShuffleBoard();
 		autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
-		autoLineUpDrivetrainCommand = AutoLineUpTeleopGroup.get(drivetrain);
+		autoLineUpDrivetrainCommand = AutoLineUpTeleopGroup.get(drivetrain, new Field2d());
 
 
 		// Configure the button bindings

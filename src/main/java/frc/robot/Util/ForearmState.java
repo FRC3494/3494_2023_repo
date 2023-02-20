@@ -8,7 +8,7 @@ public enum ForearmState {
     cone1Left,
     FramePerimeter,
     HopperGrab,
-    Recieve,
+    Store,
     cone2Right,
     doubleSub,
     cube2cone1Right,
