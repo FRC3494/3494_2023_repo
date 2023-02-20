@@ -25,6 +25,8 @@ import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmPosition;
+import frc.robot.subsystems.arm.ForearmState;
+import frc.robot.subsystems.arm.ShoulderState;
 
 public class RobotContainer {
 	private final Drivetrain drivetrain;
@@ -38,11 +40,10 @@ public class RobotContainer {
 
 	private Field2d robotPosition;
 	private Command autoBalanceDrivetrainCommand;
-	private Command autoLineUpDrivetrainCommand;
 
 	private boolean alternateAutoBalance = true;
-	private boolean alternateAutoLineUp = true;
-	private boolean alternateArmPositions = true;
+	
+	private int nextArmPosition = 0;
 	
 	public RobotContainer() {
 		NavX.getNavX();
@@ -51,7 +52,6 @@ public class RobotContainer {
 		arm = new Arm();
 		
 		autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
-		autoLineUpDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
 
 		// Configure the button bindings
 		configureButtonBindings();
@@ -121,7 +121,7 @@ public class RobotContainer {
 	}
 
 	public void configureButtonBindings() {
-		OI.getResetHeadingEvent().rising().ifHigh(drivetrain::zeroYaw);
+		//OI.getResetHeadingEvent().rising().ifHigh(drivetrain::zeroYaw);
 		
 		OI.getAutoBalanceEvent().rising().ifHigh(() -> {
 			if (alternateAutoBalance) autoBalanceDrivetrainCommand.schedule();
@@ -129,18 +129,19 @@ public class RobotContainer {
 			
 			alternateAutoBalance = !alternateAutoBalance;
 		});
-		OI.getAutoLineUpEvent().rising().ifHigh(() -> {
-			if (alternateAutoLineUp) autoLineUpDrivetrainCommand.schedule();
-			else autoLineUpDrivetrainCommand.cancel();
-			
-			alternateAutoLineUp = !alternateAutoLineUp;
+
+		OI.getResetHeadingEvent().rising().ifHigh(() -> { //x
+			nextArmPosition++;
+
+			if (nextArmPosition >= ForearmState.values().length) nextArmPosition = 0;
+
+			System.out.print("Next Up: ");
+			System.out.println(ForearmState.values()[nextArmPosition]);
 		});
 
-		OI.getArmTestButton().rising().ifHigh(() -> {
-			if (alternateArmPositions) arm.setArmState(ArmPosition.GroundIntake);
-			else arm.setArmState(ArmPosition.Store);
-			
-			alternateArmPositions = !alternateArmPositions;
+		OI.getArmTestButton().rising().ifHigh(() -> { //a
+			arm.setShoulderState(ShoulderState.Base4);
+			arm.setForearmState(ForearmState.values()[nextArmPosition]);
 		});
 	}
 }

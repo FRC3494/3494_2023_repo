@@ -54,10 +54,10 @@ public final class OI {
     public static BooleanEvent getAutoBalanceEvent() {
         return primaryController.y(eventLoop);
     }
-    public static BooleanEvent getAutoLineUpEvent() {
+
+    public static BooleanEvent getArmResetButton() {
         return primaryController.b(eventLoop);
     }
-
     public static BooleanEvent getArmTestButton(){
         return primaryController.a(eventLoop);
     }

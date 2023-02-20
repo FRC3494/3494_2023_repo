@@ -10,5 +10,6 @@ public enum ForearmState {
     Ground,
     DoubleSub,
     Base1B1,
+    Base2N1,
     Hybrid,
 }

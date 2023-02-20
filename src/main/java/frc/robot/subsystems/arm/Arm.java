@@ -58,6 +58,7 @@ public class Arm extends SubsystemBase  {
         populateN1B2Graph();
         populateB1Base4Graph();
         populateBase1B1Graph();
+        populateBase2N1Graph();
         populateHybridGraph();
         populateStoreGraph();
     }
@@ -81,7 +82,7 @@ public class Arm extends SubsystemBase  {
 
     long lastShoulderActuationTime = System.currentTimeMillis();
 
-    void setShoulderState(ShoulderState newState){
+    public void setShoulderState(ShoulderState newState){
 		switch (newState) {
 			case Base1:
                 setTopPiston(Value.kReverse);
@@ -109,12 +110,12 @@ public class Arm extends SubsystemBase  {
     }
 
     boolean isAtShoulderState(ShoulderState state) {
-        return (System.currentTimeMillis() - lastShoulderActuationTime) >= 1000; // #TODO: check sensors
+        return (System.currentTimeMillis() - lastShoulderActuationTime) >= 2000; // #TODO: check sensors
     }
 
     long lastForearmActuationTime = System.currentTimeMillis();
 
-    void setForearmState(ForearmState newState) {
+    public void setForearmState(ForearmState newState) {
         forearmMotor.getPIDController().setReference(Constants.Subsystems.Arm.FOREARM_POSITION.get(newState), ControlType.kPosition);
     
         currentForearmState = newState;
@@ -125,7 +126,7 @@ public class Arm extends SubsystemBase  {
     }
 
     boolean isAtForearmState(ForearmState state) {
-        return (System.currentTimeMillis() - lastForearmActuationTime) >= 1000; // #TODO: check sensors
+        return (System.currentTimeMillis() - lastForearmActuationTime) >= 2000; // #TODO: check sensors
     }
 
     long lastHopperActuationTime = System.currentTimeMillis();
@@ -139,7 +140,7 @@ public class Arm extends SubsystemBase  {
     }
 
     boolean isAtHopperState(HopperState state) {
-        return (System.currentTimeMillis() - lastHopperActuationTime) >= 1000; // we don't actually have a sensor for this, might as well have a way just in case though
+        return (System.currentTimeMillis() - lastHopperActuationTime) >= 2000; // we don't actually have a sensor for this, might as well have a way just in case though
     }
 
     public void setArmState(ArmPosition newState) {
@@ -190,6 +191,12 @@ public class Arm extends SubsystemBase  {
             () -> isAtForearmState(newForearmState) && isAtShoulderState(newShoulderState) && isAtHopperState(newHopperState), next);
     }
 
+    TransitionGraphNode done() {
+        return new TransitionGraphNode(
+            () -> System.out.println("--------------------"), 
+            () -> true, null);
+    }
+
     //endregion
 
     void populateHopperIntakeGraph() {
@@ -197,52 +204,63 @@ public class Arm extends SubsystemBase  {
         armStateMachine.addTransitionGraph(null, ArmPosition.HopperIntake, new TransitionGraph(
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base4, 
                 forearmMovement(ForearmState.N1B2, 
+                hopperMovement(HopperState.Extended, 
+                shoulderMovement(ShoulderState.Base2, 
+                forearmMovement(ForearmState.HopperGrab, 
+                hopperMovement(HopperState.Retracted, 
                 shoulderMovement(ShoulderState.Base1, 
-                forearmMovement(ForearmState.HopperGrab, null))), 
+                done())))))), 
 
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base2, 
                 forearmMovement(ForearmState.HopperGrab, 
-                shoulderMovement(ShoulderState.Base1, null)),
+                shoulderMovement(ShoulderState.Base1, 
+                done())),
 
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base1, 
                 new TransitionGraphNode(() -> currentForearmState == ForearmState.HopperGrab, 
-                    null, 
+                    done(), 
                     
                     forearmMovement(ForearmState.Intermediate, 
                     shoulderMovement(ShoulderState.Base2, 
                     forearmMovement(ForearmState.HopperGrab, 
-                    shoulderMovement(ShoulderState.Base1, null))))),
-            null)))
+                    shoulderMovement(ShoulderState.Base1, 
+                    done()))))),
+            done())))
         ));
     }
 
     void populateGroundIntakeGraph() {
         armStateMachine.addBehaviour(ArmPosition.GroundIntake, () -> {});
         armStateMachine.addTransitionGraph(null, ArmPosition.GroundIntake, new TransitionGraph(
-            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base4, 
-                parallelMovement(ForearmState.Store, HopperState.Extended, 
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base4,
+                hopperMovement(HopperState.Extended,  
+                forearmMovement(ForearmState.Store, 
                 shoulderMovement(ShoulderState.Base2,
                 hopperMovement(HopperState.Retracted,
                 forearmMovement(ForearmState.Intermediate, 
                 shoulderMovement(ShoulderState.Base1, 
-                forearmMovement(ForearmState.Ground, null)))))), 
+                forearmMovement(ForearmState.Ground, 
+                done()))))))), 
 
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base2, 
                 hopperMovement(HopperState.Retracted,
                 forearmMovement(ForearmState.Intermediate, 
                 shoulderMovement(ShoulderState.Base1, 
-                forearmMovement(ForearmState.Ground, null)))),
+                forearmMovement(ForearmState.Ground, 
+                done())))),
 
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base1, 
                 new TransitionGraphNode(() -> currentForearmState == ForearmState.HopperGrab, 
-                    shoulderMovement(ShoulderState.Base2, 
                     hopperMovement(HopperState.Retracted,
+                    shoulderMovement(ShoulderState.Base2, 
                     forearmMovement(ForearmState.Intermediate, 
                     shoulderMovement(ShoulderState.Base1, 
-                    forearmMovement(ForearmState.Ground, null))))), 
+                    forearmMovement(ForearmState.Ground, 
+                    done()))))), 
                     
-                    forearmMovement(ForearmState.Ground, null)),
-            null)))
+                    forearmMovement(ForearmState.Ground, 
+                    done())),
+            done())))
         ));
     }
 
@@ -250,27 +268,29 @@ public class Arm extends SubsystemBase  {
         armStateMachine.addBehaviour(ArmPosition.DoubleSubstation, () -> {});
         armStateMachine.addTransitionGraph(null, ArmPosition.DoubleSubstation, new TransitionGraph(
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base4, 
-                forearmMovement(ForearmState.DoubleSub, null), 
+                forearmMovement(ForearmState.DoubleSub, 
+                done()), 
 
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base2, 
-                forearmMovement(ForearmState.DoubleSub, 
+                forearmMovement(ForearmState.Store, 
                 hopperMovement(HopperState.Extended, 
                 parallelMovement(ForearmState.DoubleSub, ShoulderState.Base4, 
-                hopperMovement(HopperState.Retracted, null)))),
+                done()))),
 
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base1, 
                 new TransitionGraphNode(() -> currentForearmState == ForearmState.HopperGrab, 
                     parallelMovement(ForearmState.Store, ShoulderState.Base2, 
                     hopperMovement(HopperState.Extended, 
                     parallelMovement(ForearmState.DoubleSub, ShoulderState.Base4, 
-                    hopperMovement(HopperState.Retracted, null)))), 
+                    done()))), 
                     
                     forearmMovement(ForearmState.Intermediate, 
-                    parallelMovement(ForearmState.Store, ShoulderState.Base2, 
+                    shoulderMovement(ShoulderState.Base2, 
+                    forearmMovement(ForearmState.Store,
                     hopperMovement(HopperState.Extended, 
                     parallelMovement(ForearmState.DoubleSub, ShoulderState.Base4, 
-                    hopperMovement(HopperState.Retracted, null)))))),
-            null)))
+                    done())))))),
+            done())))
         ));
     }
 
@@ -278,27 +298,30 @@ public class Arm extends SubsystemBase  {
         armStateMachine.addBehaviour(ArmPosition.N2, () -> {});
         armStateMachine.addTransitionGraph(null, ArmPosition.N2, new TransitionGraph(
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base4, 
-                forearmMovement(ForearmState.N2, null), 
+                forearmMovement(ForearmState.N2, 
+                done()), 
 
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base2, 
                 forearmMovement(ForearmState.N2, 
                 hopperMovement(HopperState.Extended, 
                 parallelMovement(ForearmState.N2, ShoulderState.Base4, 
-                hopperMovement(HopperState.Retracted, null)))),
+                hopperMovement(HopperState.Retracted, 
+                done())))),
 
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base1, 
                 new TransitionGraphNode(() -> currentForearmState == ForearmState.HopperGrab, 
                     parallelMovement(ForearmState.Store, ShoulderState.Base2, 
                     hopperMovement(HopperState.Extended, 
                     parallelMovement(ForearmState.N2, ShoulderState.Base4, 
-                    hopperMovement(HopperState.Retracted, null)))), 
-                    
+                    done()))), 
+
                     forearmMovement(ForearmState.Intermediate, 
-                    parallelMovement(ForearmState.Store, ShoulderState.Base2, 
+                    shoulderMovement(ShoulderState.Base2, 
+                    forearmMovement(ForearmState.Store,
                     hopperMovement(HopperState.Extended, 
                     parallelMovement(ForearmState.N2, ShoulderState.Base4, 
-                    hopperMovement(HopperState.Retracted, null)))))),
-            null)))
+                    done())))))),
+            done())))
         ));
     }
 
@@ -306,27 +329,30 @@ public class Arm extends SubsystemBase  {
         armStateMachine.addBehaviour(ArmPosition.N1B2, () -> {});
         armStateMachine.addTransitionGraph(null, ArmPosition.N1B2, new TransitionGraph(
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base4, 
-                forearmMovement(ForearmState.N1B2, null), 
+                forearmMovement(ForearmState.N1B2, 
+                done()), 
 
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base2, 
                 forearmMovement(ForearmState.N1B2, 
                 hopperMovement(HopperState.Extended, 
                 parallelMovement(ForearmState.N1B2, ShoulderState.Base4, 
-                hopperMovement(HopperState.Retracted, null)))),
+                hopperMovement(HopperState.Retracted, 
+                done())))),
 
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base1, 
                 new TransitionGraphNode(() -> currentForearmState == ForearmState.HopperGrab, 
                     parallelMovement(ForearmState.Store, ShoulderState.Base2, 
                     hopperMovement(HopperState.Extended, 
                     parallelMovement(ForearmState.N1B2, ShoulderState.Base4, 
-                    hopperMovement(HopperState.Retracted, null)))), 
+                    done()))), 
                     
                     forearmMovement(ForearmState.Intermediate, 
-                    parallelMovement(ForearmState.Store, ShoulderState.Base2, 
+                    shoulderMovement(ShoulderState.Base2,
+                    forearmMovement(ForearmState.Store, 
                     hopperMovement(HopperState.Extended, 
                     parallelMovement(ForearmState.N1B2, ShoulderState.Base4, 
-                    hopperMovement(HopperState.Retracted, null)))))),
-            null)))
+                    done())))))),
+            done())))
         ));
     }
 
@@ -334,27 +360,30 @@ public class Arm extends SubsystemBase  {
         armStateMachine.addBehaviour(ArmPosition.B1Base4, () -> {});
         armStateMachine.addTransitionGraph(null, ArmPosition.B1Base4, new TransitionGraph(
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base4, 
-                forearmMovement(ForearmState.B1, null), 
+                forearmMovement(ForearmState.B1, 
+                done()), 
 
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base2, 
                 forearmMovement(ForearmState.B1, 
                 hopperMovement(HopperState.Extended, 
                 parallelMovement(ForearmState.B1, ShoulderState.Base4, 
-                hopperMovement(HopperState.Retracted, null)))),
+                hopperMovement(HopperState.Retracted, 
+                done())))),
 
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base1, 
                 new TransitionGraphNode(() -> currentForearmState == ForearmState.HopperGrab, 
                     parallelMovement(ForearmState.Store, ShoulderState.Base2, 
                     hopperMovement(HopperState.Extended, 
                     parallelMovement(ForearmState.B1, ShoulderState.Base4, 
-                    hopperMovement(HopperState.Retracted, null)))), 
+                    done()))), 
                     
                     forearmMovement(ForearmState.Intermediate, 
-                    parallelMovement(ForearmState.Store, ShoulderState.Base2, 
+                    shoulderMovement( ShoulderState.Base2,
+                    forearmMovement(ForearmState.Store, 
                     hopperMovement(HopperState.Extended, 
-                    parallelMovement(ForearmState.B1, ShoulderState.Base4, 
-                    hopperMovement(HopperState.Retracted, null)))))),
-            null)))
+                    parallelMovement(ForearmState.B1, ShoulderState.Base4,
+                    done())))))),
+            done())))
         ));
     }
 
@@ -362,24 +391,57 @@ public class Arm extends SubsystemBase  {
         armStateMachine.addBehaviour(ArmPosition.Base1B1, () -> {});
         armStateMachine.addTransitionGraph(null, ArmPosition.Base1B1, new TransitionGraph(
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base4, 
+                hopperMovement(HopperState.Extended, 
+                parallelMovement(ForearmState.Store, ShoulderState.Base2, 
+                hopperMovement(HopperState.Retracted, 
                 forearmMovement(ForearmState.Base1B1, 
                 shoulderMovement(ShoulderState.Base1, 
-                forearmMovement(ForearmState.Base1B1, null))), 
+                done()))))), 
 
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base2, 
                 forearmMovement(ForearmState.Base1B1, 
-                shoulderMovement(ShoulderState.Base1, null)),
+                shoulderMovement(ShoulderState.Base1, 
+                done())),
 
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base1, 
                 new TransitionGraphNode(() -> currentForearmState == ForearmState.HopperGrab, 
                     shoulderMovement(ShoulderState.Base2, 
-                    forearmMovement(ForearmState.Intermediate, 
+                    forearmMovement(ForearmState.Base1B1, 
                     shoulderMovement(ShoulderState.Base1, 
-                    forearmMovement(ForearmState.Base1B1, null)))), 
+                    done()))), 
+                    
+                    forearmMovement(ForearmState.Base1B1, 
+                    done())),
+            done())))
+        ));
+    }
+
+    void populateBase2N1Graph() {
+        armStateMachine.addBehaviour(ArmPosition.Base2N1, () -> {});
+        armStateMachine.addTransitionGraph(null, ArmPosition.Base2N1, new TransitionGraph(
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base4, 
+                hopperMovement(HopperState.Extended, 
+                forearmMovement(ForearmState.Store, 
+                shoulderMovement(ShoulderState.Base2, 
+                hopperMovement(HopperState.Retracted, 
+                forearmMovement(ForearmState.Base2N1, 
+                done()))))), 
+
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base2, 
+                forearmMovement(ForearmState.Base2N1,
+                done()),
+
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base1, 
+                new TransitionGraphNode(() -> currentForearmState == ForearmState.HopperGrab, 
+                    shoulderMovement(ShoulderState.Base2, 
+                    forearmMovement(ForearmState.Base2N1, 
+                    done())), 
                     
                     forearmMovement(ForearmState.Intermediate, 
-                    shoulderMovement(ShoulderState.Base2, null))),
-            null)))
+                    shoulderMovement(ShoulderState.Base2, 
+                    forearmMovement(ForearmState.Base2N1,
+                    done())))),
+            done())))
         ));
     }
 
@@ -387,51 +449,61 @@ public class Arm extends SubsystemBase  {
         armStateMachine.addBehaviour(ArmPosition.Hybrid, () -> {});
         armStateMachine.addTransitionGraph(null, ArmPosition.Hybrid, new TransitionGraph(
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base4, 
-                parallelMovement(ForearmState.Store, HopperState.Extended, 
+                hopperMovement(HopperState.Extended,
+                forearmMovement(ForearmState.Store, 
                 shoulderMovement(ShoulderState.Base2, 
                 hopperMovement(HopperState.Retracted, 
                 forearmMovement(ForearmState.Intermediate, 
                 shoulderMovement(ShoulderState.Base1, 
-                forearmMovement(ForearmState.Hybrid, null)))))), 
+                forearmMovement(ForearmState.Hybrid, 
+                done()))))))), 
 
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base2, 
                 forearmMovement(ForearmState.Intermediate, 
                 shoulderMovement(ShoulderState.Base1, 
-                forearmMovement(ForearmState.Hybrid, null))),
+                forearmMovement(ForearmState.Hybrid, 
+                done()))),
 
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base1, 
                 new TransitionGraphNode(() -> currentForearmState == ForearmState.HopperGrab, 
                     shoulderMovement(ShoulderState.Base2, 
                     forearmMovement(ForearmState.Intermediate, 
                     shoulderMovement(ShoulderState.Base1, 
-                    forearmMovement(ForearmState.Hybrid, null)))), 
+                    forearmMovement(ForearmState.Hybrid, 
+                    done())))), 
                     
-                    forearmMovement(ForearmState.Hybrid, null)),
-            null)))
+                    forearmMovement(ForearmState.Hybrid, 
+                    done())),
+            done())))
         ));
     }
 
     void populateStoreGraph() {
         armStateMachine.addBehaviour(ArmPosition.Store, () -> {});
         armStateMachine.addTransitionGraph(null, ArmPosition.Store, new TransitionGraph(
-            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base4, 
-                parallelMovement(ForearmState.Store, HopperState.Extended, 
+            new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base4,
+                hopperMovement(HopperState.Extended,
+                forearmMovement(ForearmState.Store, 
                 shoulderMovement(ShoulderState.Base2,
-                hopperMovement(HopperState.Retracted,null))), 
+                hopperMovement(HopperState.Retracted,
+                done())))), 
 
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base2, 
-                forearmMovement(ForearmState.Store, null),
+                forearmMovement(ForearmState.Store, 
+                done()),
 
             new TransitionGraphNode(() -> currentShoulderState == ShoulderState.Base1, 
                 new TransitionGraphNode(() -> currentForearmState == ForearmState.HopperGrab, 
                     shoulderMovement(ShoulderState.Base2, 
-                    forearmMovement(ForearmState.Store, null)), 
+                    forearmMovement(ForearmState.Store, 
+                    done())), 
                     
                     forearmMovement(ForearmState.Intermediate, 
                     shoulderMovement(ShoulderState.Base2, 
-                    forearmMovement(ForearmState.Store, null)))),
+                    forearmMovement(ForearmState.Store, 
+                    done())))),
 
-            null)))
+            done())))
         ));
     }
 }

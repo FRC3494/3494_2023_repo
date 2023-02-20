@@ -37,6 +37,7 @@ public final class Constants extends AutoConfigurable {
                 put(ForearmState.Ground, 0.0);
                 put(ForearmState.DoubleSub, 0.0);
                 put(ForearmState.Base1B1, 0.0);
+                put(ForearmState.Base2N1, 0.0);
                 put(ForearmState.Hybrid, 0.0);
             }};
         }
