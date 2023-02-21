@@ -37,7 +37,7 @@ public class FollowPath extends PPSwerveControllerCommand {
 				
 		Constants.Commands.FollowPath.THETA_CONTROLLER.enableContinuousInput(-Math.PI, Math.PI);
 		
-		drivetrain.resetOdometry(trajectory.getInitialPose());
+		//drivetrain.resetOdometry(trajectory.getInitialPose());
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class FollowPath extends PPSwerveControllerCommand {
 
   		timer.reset();
   		timer.start();
-		System.out.println(trajectory.getInitialPose());
+		//System.out.println(trajectory.getInitialPose());
 		
   	}
 
@@ -57,7 +57,7 @@ public class FollowPath extends PPSwerveControllerCommand {
 		double curTime = timer.get();
 
 		fieldObject2d.setPose(trajectory.sample(curTime).poseMeters);
-		System.out.println(trajectory.sample(curTime).poseMeters);
+		//System.out.println(trajectory.sample(curTime).poseMeters);
 	}
 
   	@Override

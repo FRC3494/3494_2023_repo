@@ -27,6 +27,7 @@ import com.swervedrivespecialties.swervelib.SwerveModule;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Util.LimelightHelpers;
 
 public class Drivetrain extends SubsystemBase {
 	double aprilTagYaw;
@@ -96,6 +97,10 @@ public class Drivetrain extends SubsystemBase {
 	@Override
 	public void periodic() {
 		odometry.update(getGyroscopeRotation(), getSwerveModulePositions());
+
+		//update limelight position here
+
+		Pose2d limelightBotPose = LimelightHelpers.getBotPose2d("limelight");
 	}
 
 	/**
@@ -207,7 +212,7 @@ public class Drivetrain extends SubsystemBase {
 		NavX.zeroYaw();
 	}
 
-	public PathPlannerTrajectory getPathToTag(){
+	/*public PathPlannerTrajectory getPathToTag(){
 		limeLightData = (JsonObject) JsonParser.parseString(
             NetworkTableInstance.getDefault()
             .getTable("limelight")
@@ -226,12 +231,12 @@ public class Drivetrain extends SubsystemBase {
 			aprilTagYaw = 0;
 		}
 		odometry.resetPosition(getGyroscopeRotation(), getSwerveModulePositions(), new Pose2d(tagX, tagZ, getPose().getRotation()));
-		System.out.println("ODometery:"+ odometry.getPoseMeters());
+		System.out.println("Odometery:"+ odometry.getPoseMeters());
 		//new PathPoint(new Translation2d(0,0), new Rotation2d(0)),
 		ArrayList<PathPoint> toTagPath = new ArrayList<PathPoint>(Arrays.asList(
-			new PathPoint(new Translation2d(0, 0), new Rotation2d(0)),
-			new PathPoint(new Translation2d(1,0), new Rotation2d(0))));
+			new PathPoint(new Translation2d(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY()), new Rotation2d(0)),
+			new PathPoint(new Translation2d(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY()+0.1), new Rotation2d(0))));
 		
 		return PathPlanner.generatePath(new PathConstraints(0.2, 0.2), toTagPath);
-	}
+	}*/
 }

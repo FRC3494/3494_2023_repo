@@ -13,7 +13,7 @@ import frc.robot.commands.teleop.AutoDriveTeleop;
 
 public class AutoLineUpTeleopGroup {
     public static Command get(Drivetrain drivetrain, Field2d f) {
-        drivetrain.resetOdometry(new Pose2d());
+        //drivetrain.resetOdometry(new Pose2d());
         return new FollowPath(drivetrain, drivetrain.getPathToTag(), f);
     }
 }
