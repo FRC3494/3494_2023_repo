@@ -72,6 +72,8 @@ public final class Constants extends AutoConfigurable {
 			        ThriftyBotModuleConfigurations.STANDARD.getWheelDiameter() * Math.PI*0.1;
 
             public static final double MAX_VOLTAGE = 12.0;
+
+            public static final double MAX_STANDARD_DEVIATION_LIMELIGHT = 1;
         }
     }
 

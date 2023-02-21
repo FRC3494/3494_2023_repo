@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -41,6 +42,10 @@ public class Drivetrain extends SubsystemBase {
 	double tagX;
 	double tagY;
 	double tagZ;
+	int i = -1;
+	private List<Double> standardDeviationX = new ArrayList<>();
+	private List<Double> standardDeviationY = new ArrayList<>();
+
 	
 	SwerveModule frontLeft = Mk4iSwerveModuleHelper.createAnalogNeo(
 			Shuffleboard.getTab("Drivetrain").getLayout("Front Left Module", BuiltInLayouts.kList)
@@ -96,11 +101,42 @@ public class Drivetrain extends SubsystemBase {
 
 	@Override
 	public void periodic() {
+		
 		odometry.update(getGyroscopeRotation(), getSwerveModulePositions());
 
 		//update limelight position here
 
 		Pose2d limelightBotPose = LimelightHelpers.getBotPose2d("limelight");
+
+		if (nextStandardDeviation(limelightBotPose.getX(), limelightBotPose.getY()) <= Constants.Subsystems.Drivetrain.MAX_STANDARD_DEVIATION_LIMELIGHT)
+			resetOdometry(limelightBotPose);
+			
+	}
+
+	double nextStandardDeviation(double nextX, double nextY) {
+		standardDeviationX.add(0, nextX);
+		standardDeviationY.add(0, nextY);
+
+		if (standardDeviationX.size() >= 11) 
+			standardDeviationX.remove(standardDeviationX.size() - 1);
+		if (standardDeviationY.size() >= 11) 
+			standardDeviationY.remove(standardDeviationY.size() - 1);
+
+		return Math.pow(Math.pow(standardDeviation(standardDeviationX), 2) + Math.pow(standardDeviation(standardDeviationY), 2), 0.5);
+	}
+
+	double standardDeviation(List<Double> list) {
+		double acc = 0;
+		for (int i = 0; i < list.size(); i++){
+			acc += list.get(i);
+		}
+		double mean = acc / list.size();
+		double midSectionOfTheEquationThatMustBeIterated = 0;
+		for (int i = 0; i < list.size(); i++){
+			midSectionOfTheEquationThatMustBeIterated += Math.pow(list.get(i) - mean, 2);
+		}
+		return Math.pow((midSectionOfTheEquationThatMustBeIterated) / (list.size() - 1), 0.5);
+
 	}
 
 	/**
