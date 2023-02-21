@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
@@ -65,21 +64,21 @@ public class AutoConfigurable {
         }
         
     }
-    public List<Field> getAllVariablesAndInit(Class getFieldsFrom, List<Field> fieldsSoFar){
+    public List<Field> getAllVariablesAndInit(Class<?> getFieldsFrom, List<Field> fieldsSoFar){
         if(fieldsSoFar == null){ fieldsSoFar = new ArrayList<>();}
         if(getFieldsFrom == null){getFieldsFrom = this.getClass();}
         for(Field f: getFieldsFrom.getDeclaredFields()){
             fieldsSoFar.add(f);
             initShuffles(f, getFieldsFrom);
         }
-        for(Class c: getFieldsFrom.getDeclaredClasses()){
+        for(Class<?> c: getFieldsFrom.getDeclaredClasses()){
             if(c.getName() != "dontGrabFrom"){
                 getAllVariablesAndInit(c,fieldsSoFar);
             }
         }
         return fieldsSoFar;
     }
-    public void initShuffles (Field fieldToInit, Class classFieldIn){
+    public void initShuffles (Field fieldToInit, Class<?> classFieldIn){
         fieldToInit.setAccessible(true);
         System.out.println(fieldToInit.getName());
         if(fieldToInit.getType() == int.class ||fieldToInit.getType() == float.class ||fieldToInit.getType() == double.class){

@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import edu.wpi.first.math.trajectory.Trajectory.State;
-
 public class StateMachine<T extends Enum<T>> {
 
     protected T currentState;

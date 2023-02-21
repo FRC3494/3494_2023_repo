@@ -21,7 +21,6 @@ import frc.robot.commands.auto.FollowPath;
 import frc.robot.commands.groups.AutoBalanceTeleopGroup;
 import frc.robot.commands.groups.AutoLineUpTeleopGroup;
 import frc.robot.commands.teleop.TeleopDrive;
-import frc.robot.commands.teleop.driveForward;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.NavX;

@@ -66,10 +66,10 @@ public final class OI {
     }
     
     public static double getIntakeLeftVelocity(){
-        return primaryController.getLeftTriggerAxis() * (primaryController.getLeftBumper() ? -1.0 : 1.0);
+        return primaryController.getLeftTriggerAxis() * (primaryController.getLeftBumper() ? -0.5 : 0.5);
     }
 
     public static double getIntakeRightVelocity(){
-        return primaryController.getRightTriggerAxis() * (primaryController.getRightBumper() ? 1.0 : -1.0);
+        return primaryController.getRightTriggerAxis() * (primaryController.getRightBumper() ? 0.5 : -0.5);
     }
 }
