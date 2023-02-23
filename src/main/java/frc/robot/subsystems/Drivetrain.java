@@ -1,31 +1,23 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPoint;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Util.LimelightHelpers;
@@ -45,7 +37,7 @@ public class Drivetrain extends SubsystemBase {
 	int i = -1;
 	private List<Double> standardDeviationX = new ArrayList<>();
 	private List<Double> standardDeviationY = new ArrayList<>();
-
+	public Pose2d limelightBotPose;
 	
 	SwerveModule frontLeft = Mk4iSwerveModuleHelper.createAnalogNeo(
 			Shuffleboard.getTab("Drivetrain").getLayout("Front Left Module", BuiltInLayouts.kList)
@@ -105,11 +97,15 @@ public class Drivetrain extends SubsystemBase {
 		odometry.update(getGyroscopeRotation(), getSwerveModulePositions());
 
 		//update limelight position here
+		
+		limelightBotPose = LimelightHelpers.getBotPose2d("limelight");
 
-		Pose2d limelightBotPose = LimelightHelpers.getBotPose2d("limelight");
-
-		if (nextStandardDeviation(limelightBotPose.getX(), limelightBotPose.getY()) <= Constants.Subsystems.Drivetrain.MAX_STANDARD_DEVIATION_LIMELIGHT)
+		/*if (nextStandardDeviation(limelightBotPose.getX(), limelightBotPose.getY()) <= Constants.Subsystems.Drivetrain.MAX_STANDARD_DEVIATION_LIMELIGHT){
+			System.out.println("Odometery Reset" +nextStandardDeviation(limelightBotPose.getX(), limelightBotPose.getY()));
 			resetOdometry(limelightBotPose);
+		}*/
+			
+	
 			
 	}
 

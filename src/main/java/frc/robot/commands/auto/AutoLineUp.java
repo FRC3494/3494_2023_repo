@@ -76,36 +76,6 @@ public class AutoLineUp extends CommandBase {
 
 	@Override
 	public void execute() {
-        // limeLightData = (JsonObject) JsonParser.parseString(
-        //     NetworkTableInstance.getDefault()
-        //     .getTable("limelight")
-        //     .getEntry("json")
-        //     .getString("{}")
-        // );
-		// limeLightDataArray =  (JsonArray) ((JsonObject) limeLightData.get("Results")).get("Fiducial");
-		// limeLightAprilTagPosition = (JsonArray)limeLightDataArray.get(0).getAsJsonObject().get("t6t_cs");
-		// tagX = limeLightAprilTagPosition.get(0).getAsDouble(); //WE acre abou this
-		// tagY = limeLightAprilTagPosition.get(0).getAsDouble();
-		// tagZ = limeLightAprilTagPosition.get(0).getAsDouble(); // WE carea bou this one too
-
-		
-		// if(limeLightDataArray.size() != 0){
-		// 	//System.out.println(limeLightDataArray.get(0).getAsJsonObject().get("fID"));
-		// 	//System.out.println(limeLightDataArray.get(0).getAsJsonObject().get("tx"));
-		// 	aprilTagID =  limeLightDataArray.get(0).getAsJsonObject().get("fID").getAsDouble();
-		// 	aprilTagYaw = limeLightDataArray.get(0).getAsJsonObject().get("tx").getAsDouble();
-		// }
-		// else{
-		// 	aprilTagID = -1;
-		// 	aprilTagYaw = 0;
-		// }
-
-		// if(aprilTagID != -1 && Math.abs(aprilTagYaw)>Constants.Commands.AutoLineUp.YAW_ERROR_ALLOWANCE){
-		// 	setDrivetrain(0, getStrafePower(aprilTagYaw), 0, false);
-		// }
-		// else{
-		// 	this.cancel();
-		// }
 	}
 	public double getStrafePower(double aprilTagYaw){
 		double power = isNegative(aprilTagYaw) * Math.pow(Math.abs(aprilTagYaw), 0.5)/5 * Constants.Commands.AutoLineUp.MAX_STRAFE_SPEED;

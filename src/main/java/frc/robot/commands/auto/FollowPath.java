@@ -20,6 +20,7 @@ public class FollowPath extends PPSwerveControllerCommand {
 	FieldObject2d fieldObject2d;
 
 	public FollowPath(Drivetrain drivetrain, PathPlannerTrajectory trajectory, Field2d field2d) {
+		
 		super(trajectory,
 				drivetrain::getPose,
 				drivetrain.getKinematics(),
@@ -34,7 +35,7 @@ public class FollowPath extends PPSwerveControllerCommand {
 		this.trajectory = trajectory;
 		this.field2d = field2d;
 		this.fieldObject2d = field2d.getObject("Target Position");
-				
+		//drivetrain.resetOdometry(trajectory.getInitialPose());
 		Constants.Commands.FollowPath.THETA_CONTROLLER.enableContinuousInput(-Math.PI, Math.PI);
 		
 		//drivetrain.resetOdometry(trajectory.getInitialPose());
@@ -55,8 +56,8 @@ public class FollowPath extends PPSwerveControllerCommand {
 		super.execute();
 
 		double curTime = timer.get();
-
-		fieldObject2d.setPose(trajectory.sample(curTime).poseMeters);
+		fieldObject2d.setPose(drivetrain.getPose());
+		//fieldObject2d.setPose(trajectory.sample(curTime).poseMeters);
 		//System.out.println(trajectory.sample(curTime).poseMeters);
 	}
 

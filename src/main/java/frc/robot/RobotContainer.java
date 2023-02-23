@@ -48,7 +48,7 @@ public class RobotContainer {
 		arm = new Arm();
 		//Constants.InitializeShuffleBoard();
 		autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
-		autoLineUpDrivetrainCommand = AutoLineUpTeleopGroup.get(drivetrain, new Field2d());
+		//autoLineUpDrivetrainCommand = ;
 
 
 		// Configure the button bindings
@@ -57,17 +57,15 @@ public class RobotContainer {
 		OI.getResetHeadingEvent().rising().ifHigh(drivetrain::zeroYaw);
 		
 		OI.getAutoBalanceEvent().rising().ifHigh(() -> {
-			if (alternateAutoBalance) autoBalanceDrivetrainCommand.schedule();
+			System.out.println("Current Odo " + drivetrain.getPose().getX() + ":" + drivetrain.getPose().getY());
+			/*if (alternateAutoBalance) autoBalanceDrivetrainCommand.schedule();
 			else autoBalanceDrivetrainCommand.cancel();
 			
-			alternateAutoBalance = !alternateAutoBalance;
+			alternateAutoBalance = !alternateAutoBalance;*/
 		});
 		OI.getAutoLineUpEvent().rising().ifHigh(
 			() -> {
-				if (alternateAutoLineUp) autoLineUpDrivetrainCommand.schedule();
-				else autoLineUpDrivetrainCommand.cancel();
-				
-				alternateAutoLineUp = !alternateAutoLineUp;
+				drivetrain.resetOdometry(AutoLineUpTeleopGroup.get(drivetrain, robotPosition));
 			});
 		
 
@@ -115,7 +113,8 @@ public class RobotContainer {
 
 	public Command getAutonomousCommand() {
 		PathPlannerTrajectory loadedPath = PathPlanner.loadPath(autoChooser.getSelected(), Constants.RobotContainer.PathPlanner.PATH_CONSTRAINTS);
-
+		drivetrain.resetOdometry(loadedPath.getInitialPose());
+		robotPosition.setRobotPose(drivetrain.getPose());
 		followPath = new FollowPath(drivetrain, loadedPath, robotPosition);
 
         return new FollowPathWithEvents(
