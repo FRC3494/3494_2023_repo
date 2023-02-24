@@ -15,30 +15,38 @@ import frc.robot.subsystems.arm.ForearmState;
 public final class Constants extends AutoConfigurable {
     public static final class Subsystems {
         public static final class Arm {
-            public static int TOP_PISTON_SOLENOID_CHANNEL = 2; // #TODO: GET REAL PORT
-            public static int BOTTOM_PISTON_SOLENOID_CHANNEL = 0; // #TODO: GET REAL PORT
-            public static int HOPPER_SOLENOID_CHANNEL = 6; // #TODO: GET REAL PORT
-            public static int ARM_MOTOR_CHANNEL = 9; // #TODO: GET REAL PORT 
+            public static int TOP_PISTON_SOLENOID_CHANNEL = 2; // TODO: GET REAL PORT
+            public static int BOTTOM_PISTON_SOLENOID_CHANNEL = 0; // TODO: GET REAL PORT
 
-            public static class PIDF { // #TODO: TUNE
-                public static double P = 1;
+            public static int HOPPER_SOLENOID_CHANNEL = 6; // TODO: GET REAL PORT
+
+            public static int FOREARM_MOTOR_CHANNEL = 9; // TODO: GET REAL PORT 
+            public static double FOREARM_MOTOR_REDUCTION = (1.0 / 60.0) * (12.0 / 22.0);
+
+            public static int FOREARM_ENCODER_CHANNEL = 2; // TODO: GET REAL PORT 
+            public static double FOREARM_ENCODER_OFFSET = 331.12251217887376;
+
+            public static double FOREARM_TARGET_POSITION_TOLERANCE = 10; //degrees
+
+            public static class PIDF { // TODO: TUNE
+                public static double P = 0.1;
                 public static double I = 0;
                 public static double D = 0;
                 public static double F = 0;
             }
 
-            public static HashMap<ForearmState, Double> FOREARM_POSITION = new HashMap<>() {{ // #TODO: UPDATE THESE TO ACTUAL ENCODER POSITIONS
-                put(ForearmState.N1B2, 0.0);
-                put(ForearmState.N2, 0.0);
-                put(ForearmState.B1, 0.0);
-                put(ForearmState.HopperGrab, 0.0);
-                put(ForearmState.Intermediate, 0.0);
+            public static HashMap<ForearmState, Double> FOREARM_POSITION = new HashMap<>() {{ // TODO: UPDATE THESE TO ACTUAL ENCODER POSITIONS
+                put(ForearmState.N1B2, 90.0);
+                put(ForearmState.N2, 80.0);
+                put(ForearmState.B1, 60.0);
+                put(ForearmState.HopperGrab, 40.0);
+                put(ForearmState.Intermediate, 20.0);
                 put(ForearmState.Store, 0.0);
-                put(ForearmState.Ground, 0.0);
-                put(ForearmState.DoubleSub, 0.0);
-                put(ForearmState.Base1B1, 0.0);
-                put(ForearmState.Base2N1, 0.0);
-                put(ForearmState.Hybrid, 0.0);
+                put(ForearmState.Ground, -20.0);
+                put(ForearmState.DoubleSub, -40.0);
+                put(ForearmState.Base1B1, -60.0);
+                put(ForearmState.Base2N1, -80.0);
+                put(ForearmState.Hybrid, -90.0);
             }};
         }
         
@@ -47,7 +55,7 @@ public final class Constants extends AutoConfigurable {
                 public static int DRIVE_MOTOR_PORT = 17;//12;
                 public static int STEER_MOTOR_PORT = 19;//11;
 
-                public static int ENCODER_MOTOR_PORT = 0;
+                public static int ENCODER_MOTOR_PORT = 4;
 
                 public static double STEER_OFFSET = -Math.toRadians(290f-36f+0.6-94.4);
             }
@@ -56,7 +64,7 @@ public final class Constants extends AutoConfigurable {
                 public static int DRIVE_MOTOR_PORT = 16;//7;
                 public static int STEER_MOTOR_PORT = 18;//8;
 
-                public static int ENCODER_MOTOR_PORT = 1;
+                public static int ENCODER_MOTOR_PORT = 5;
 
                 public static double STEER_OFFSET = -Math.toRadians(243f-123.0+2.5-6);
             }
@@ -65,7 +73,7 @@ public final class Constants extends AutoConfigurable {
                 public static int DRIVE_MOTOR_PORT = 2;//14;
                 public static int STEER_MOTOR_PORT = 30;//15;
 
-                public static int ENCODER_MOTOR_PORT = 2;
+                public static int ENCODER_MOTOR_PORT = 6;
 
                 public static double STEER_OFFSET = -Math.toRadians(290f-36f-0.8-154.7);
             }
@@ -73,7 +81,7 @@ public final class Constants extends AutoConfigurable {
             public static final class BackRightModule {
                 public static int DRIVE_MOTOR_PORT = 1;//5;
                 public static int STEER_MOTOR_PORT = 3;//4;
-                public static int ENCODER_MOTOR_PORT = 3;
+                public static int ENCODER_MOTOR_PORT = 7;
                 public static double STEER_OFFSET = -Math.toRadians(164f+8f+2f+10f+5f+3.8f-8.3-119);
             }
 
@@ -98,7 +106,7 @@ public final class Constants extends AutoConfigurable {
         }
     
         public static final class Pneumatics {
-            public static int BASE_PCM = 21; // #TODO: GET REAL PORT
+            public static int BASE_PCM = 21; // TODO: GET REAL PORT
             
             public static double MIN_PRESSURE = 100;
             public static double MAX_PRESSURE = 120;

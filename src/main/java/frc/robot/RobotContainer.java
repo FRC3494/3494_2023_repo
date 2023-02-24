@@ -24,7 +24,6 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.ArmPosition;
 import frc.robot.subsystems.arm.ForearmState;
 import frc.robot.subsystems.arm.ShoulderState;
 
