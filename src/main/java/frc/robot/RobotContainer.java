@@ -138,9 +138,17 @@ public class RobotContainer {
 			System.out.println(ForearmState.values()[nextArmPosition]);
 		});
 
-		OI.getArmTestButton().rising().ifHigh(() -> { //a
-			arm.setShoulderState(ShoulderState.Base4);
+		/*OI.getArmTestButton().rising().ifHigh(() -> { //a
 			arm.setForearmState(ForearmState.values()[nextArmPosition]);
+		});*/
+		OI.getArmBase1Button().rising().ifHigh(() -> {
+			arm.setShoulderState(ShoulderState.Base1);
+		});
+		OI.getArmBase2Button().rising().ifHigh(() -> {
+			arm.setShoulderState(ShoulderState.Base2);
+		});
+		OI.getArmBase4Button().rising().ifHigh(() -> {
+			arm.setShoulderState(ShoulderState.Base4);
 		});
 	}
 }

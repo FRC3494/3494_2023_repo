@@ -36,17 +36,17 @@ public final class Constants extends AutoConfigurable {
             }
 
             public static HashMap<ForearmState, Double> FOREARM_POSITION = new HashMap<>() {{ // TODO: UPDATE THESE TO ACTUAL ENCODER POSITIONS
-                put(ForearmState.N1B2, 90.0);
-                put(ForearmState.N2, 80.0);
-                put(ForearmState.B1, 60.0);
-                put(ForearmState.HopperGrab, 40.0);
-                put(ForearmState.Intermediate, 20.0);
-                put(ForearmState.Store, 0.0);
-                put(ForearmState.Ground, -20.0);
-                put(ForearmState.DoubleSub, -40.0);
-                put(ForearmState.Base1B1, -60.0);
-                put(ForearmState.Base2N1, -80.0);
-                put(ForearmState.Hybrid, -90.0);
+                put(ForearmState.N1B2, 0.0); //
+                put(ForearmState.N2, 0.0); //
+                put(ForearmState.B1, 0.0); //
+                put(ForearmState.HopperGrab, 0.0); //
+                put(ForearmState.Intermediate, 0.0); //
+                put(ForearmState.Store, 0.0); //
+                put(ForearmState.Ground, -5.222965543920344);
+                put(ForearmState.DoubleSub, 0.0); //
+                put(ForearmState.Base1B1, 0.0); //
+                put(ForearmState.Base2N1, 0.0); //
+                put(ForearmState.Hybrid, 27.971931110728868);
             }};
         }
         

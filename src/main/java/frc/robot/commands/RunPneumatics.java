@@ -11,11 +11,6 @@ public class RunPneumatics extends CommandBase {
 
 		addRequirements(pneumatics);
 
-        //pneumatics.enable();
-	}
-
-	@Override
-	public void end(boolean interrupted) {
-        pneumatics.disable();
+        pneumatics.enable();
 	}
 }

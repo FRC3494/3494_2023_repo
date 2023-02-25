@@ -80,7 +80,7 @@ public class Arm extends SubsystemBase  {
     public void periodic() {
         armStateMachine.update();
 
-        //System.out.println(getForearmPosition());
+        System.out.println(getForearmPosition());
     }
 
     double getShoulderPosition() { // Striaght up is zero, positive is towards the front
@@ -156,19 +156,17 @@ public class Arm extends SubsystemBase  {
         return (System.currentTimeMillis() - lastShoulderActuationTime) >= 3000; // TODO: check sensors
     }
 
-    long lastForearmActuationTime = System.currentTimeMillis();
-
     public void setForearmState(ForearmState newState) {
         double rotationsNeeded = -Constants.Subsystems.Arm.FOREARM_POSITION.get(newState) / 360.0 / Constants.Subsystems.Arm.FOREARM_MOTOR_REDUCTION;
 
-        forearmMotor.getPIDController().setOutputRange(-1, 1);
-        forearmMotor.getPIDController().setReference(rotationsNeeded, ControlType.kPosition);
+        // forearmMotor.getPIDController().setOutputRange(-1, 1);
+        // forearmMotor.getPIDController().setReference(rotationsNeeded, ControlType.kPosition);
     
         currentForearmState = newState;
+    }
 
-        lastForearmActuationTime = System.currentTimeMillis();
-
-        System.out.println("Forearm: " + newState.toString());
+    public void directDriveArm(double power) { // TODO: REMOVE AFTER TESTING, DO NOT USE
+        forearmMotor.set(power);
     }
 
     boolean isAtForearmState(ForearmState state) {

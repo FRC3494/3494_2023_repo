@@ -16,8 +16,8 @@ public class TeleopDrive extends CommandBase {
 	}
 	@Override
 	public void execute() {
-		drivetrain.drive(OI.getTeleopXVelocity(), OI.getTeleopYVelocity(), OI.getTeleopTurnVelocity(), true);
-		
+		//drivetrain.drive(OI.getTeleopXVelocity(), OI.getTeleopYVelocity(), OI.getTeleopTurnVelocity(), true);
+		arm.directDriveArm(OI.getArmDirectDrivePower());
 	}
 
 	@Override

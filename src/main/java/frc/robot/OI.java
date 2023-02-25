@@ -47,6 +47,10 @@ public final class OI {
         return modifyAxis(primaryController.getRightX()) * Constants.OI.MAX_TURN_SPEED;
     }
 
+    public static double getArmDirectDrivePower() {
+        return deadband(primaryController.getRightY(), 0.05) * 0.3;
+    }
+
     public static BooleanEvent getResetHeadingEvent() {
         return primaryController.x(eventLoop);
     }
@@ -58,7 +62,16 @@ public final class OI {
     public static BooleanEvent getArmResetButton() {
         return primaryController.b(eventLoop);
     }
-    public static BooleanEvent getArmTestButton(){
+    public static BooleanEvent getArmTestButton() {
         return primaryController.a(eventLoop);
+    }
+    public static BooleanEvent getArmBase1Button() {
+        return primaryController.povDown(eventLoop);
+    }
+    public static BooleanEvent getArmBase2Button() {
+        return primaryController.povLeft(eventLoop);
+    }
+    public static BooleanEvent getArmBase4Button() {
+        return primaryController.povUp(eventLoop);
     }
 }
