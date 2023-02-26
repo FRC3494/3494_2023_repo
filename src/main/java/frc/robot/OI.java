@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
@@ -48,7 +49,7 @@ public final class OI {
     }
 
     public static double getArmDirectDrivePower() {
-        return deadband(primaryController.getRightY(), 0.05) * 0.3;
+        return deadband(primaryController.getRightY() * 0.3, 0.05);
     }
 
     public static BooleanEvent getResetHeadingEvent() {
@@ -59,19 +60,58 @@ public final class OI {
         return primaryController.y(eventLoop);
     }
 
-    public static BooleanEvent getArmResetButton() {
-        return primaryController.b(eventLoop);
-    }
-    public static BooleanEvent getArmTestButton() {
+    public static BooleanEvent getClawToggleEvent() {
         return primaryController.a(eventLoop);
     }
-    public static BooleanEvent getArmBase1Button() {
-        return primaryController.povDown(eventLoop);
+    /*
+     * ArmPosition {
+     *     HopperIntake,
+     *     GroundIntake,
+     *     DoubleSubstation,
+     *     N2,
+     *     N1B2,
+     *     B1Base4,
+     *     Base2N1,
+     *     Base1B1,
+     *     Hybrid,
+     *     Store,
+     * }
+     */
+
+
+     private static Joystick leftButtonBoard = new Joystick(Constants.OI.SECONDARY_LEFT_CONTROLLER_PORT);
+    private static Joystick rightButtonBoard = new Joystick(Constants.OI.SECONDARY_RIGHT_CONTROLLER_PORT);
+
+    public static BooleanEvent armHybrid() {
+        return leftButtonBoard.button(, eventLoop);
     }
-    public static BooleanEvent getArmBase2Button() {
-        return primaryController.povLeft(eventLoop);
+    public static BooleanEvent armHopperIntake() {
+        return leftButtonBoard.button(, eventLoop);
     }
-    public static BooleanEvent getArmBase4Button() {
-        return primaryController.povUp(eventLoop);
+    public static BooleanEvent armGroundIntake() {
+        return leftButtonBoard.button(, eventLoop);
+    }
+    public static BooleanEvent armDoubleSubstation() {
+        return leftButtonBoard.button(, eventLoop);
+    }
+
+
+    public static BooleanEvent armN2() {
+        return leftButtonBoard.button(, eventLoop);
+    }
+    public static BooleanEvent armN1B2() {
+        return leftButtonBoard.button(, eventLoop);
+    }
+    public static BooleanEvent armB1Base4() {
+        return leftButtonBoard.button(, eventLoop);
+    }
+    public static BooleanEvent armBase2N1() {
+        return leftButtonBoard.button(, eventLoop);
+    }
+    public static BooleanEvent armBase1B1() {
+        return leftButtonBoard.button(, eventLoop);
+    }
+    public static BooleanEvent armStore() {
+        return leftButtonBoard.button(, eventLoop);
     }
 }

@@ -1,7 +1,6 @@
 package frc.robot.commands.teleop;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.OI;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.arm.Arm;
 
@@ -17,7 +16,7 @@ public class TeleopDrive extends CommandBase {
 	@Override
 	public void execute() {
 		//drivetrain.drive(OI.getTeleopXVelocity(), OI.getTeleopYVelocity(), OI.getTeleopTurnVelocity(), true);
-		arm.directDriveArm(OI.getArmDirectDrivePower());
+		//arm.directDriveArm(OI.getArmDirectDrivePower());
 	}
 
 	@Override
