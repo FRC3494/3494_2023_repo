@@ -1,12 +1,14 @@
 package frc.robot.commands.groups;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.subsystems.Drivetrain;
-//import frc.robot.commands.auto.AutoLineUp;
 
 public class AutoLineUpTeleopGroup {
-    public static Command get(Drivetrain drivetrain) {
-        return new PrintCommand("oops, i removed the autolineup and forgor to put it back");//AutoLineUp(drivetrain);
+    public static Pose2d get(Drivetrain drivetrain, Field2d f) {
+        return new Pose2d(new Translation2d(10, 10), new Rotation2d(0));
+        //FollowPath(drivetrain, drivetrain.getPathToTag(), f);
     }
 }

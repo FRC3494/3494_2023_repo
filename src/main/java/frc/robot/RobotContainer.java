@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.RunPneumatics;
 import frc.robot.commands.auto.FollowPath;
+import frc.robot.commands.groups.AutoBalanceTeleopGroup;
+import frc.robot.commands.groups.AutoLineUpTeleopGroup;
 import frc.robot.commands.teleop.TeleopDrive;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
@@ -39,6 +41,9 @@ public class RobotContainer {
 
 	private Field2d robotPosition;
 	
+	private Command autoBalanceDrivetrainCommand;
+	private boolean alternateAutoBalance = true;
+	
 	public RobotContainer() {
 		NavX.getNavX();
 		drivetrain = new Drivetrain();
@@ -47,6 +52,8 @@ public class RobotContainer {
 		claw = new Claw();
 		
 		//autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
+
+		autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
 
 		// Configure the button bindings
 		configureButtonBindings();
@@ -62,7 +69,8 @@ public class RobotContainer {
 
 	public Command getAutonomousCommand() {
 		PathPlannerTrajectory loadedPath = PathPlanner.loadPath(autoChooser.getSelected(), Constants.RobotContainer.PathPlanner.PATH_CONSTRAINTS);
-
+		drivetrain.resetOdometry(loadedPath.getInitialPose());
+		robotPosition.setRobotPose(drivetrain.getPose());
 		followPath = new FollowPath(drivetrain, loadedPath, robotPosition);
 
         return new FollowPathWithEvents(
@@ -116,37 +124,26 @@ public class RobotContainer {
 	}
 
 	public void configureButtonBindings() {
-		//OI.getResetHeadingEvent().rising().ifHigh(drivetrain::zeroYaw);
+
+		OI.getResetHeadingEvent().rising().ifHigh(drivetrain::zeroYaw);
 		
-		/*OI.getAutoBalanceEvent().rising().ifHigh(() -> {
+		OI.getAutoBalanceEvent().rising().ifHigh(() -> {
 			if (alternateAutoBalance) autoBalanceDrivetrainCommand.schedule();
 			else autoBalanceDrivetrainCommand.cancel();
 			
 			alternateAutoBalance = !alternateAutoBalance;
 		});
 
-		OI.getResetHeadingEvent().rising().ifHigh(() -> { //x
-			nextArmPosition++;
-
-			if (nextArmPosition >= ForearmState.values().length) nextArmPosition = 0;
-
-			System.out.print("Next Up: ");
-			System.out.println(ForearmState.values()[nextArmPosition]);
+		OI.getAutoLineUpEvent().rising().ifHigh(() -> {
+			drivetrain.resetOdometry(AutoLineUpTeleopGroup.get(drivetrain, robotPosition));
+		});
+		
+		OI.getPrintOdometryEvent().rising().ifHigh(() -> {
+			System.out.println("Current Odo " + drivetrain.getPose().getX() + ":" + drivetrain.getPose().getY());
 		});
 
-		OI.armHopperIntake().rising().ifHigh(() -> { //a
-			//arm.setForearmState(ForearmState.values()[nextArmPosition]);
-			claw.toggle();
-		});
-		OI.armB1Base4().rising().ifHigh(() -> {
-			arm.setShoulderState(ShoulderState.Base1);
-		});
-		OI.getArmBase2Button().rising().ifHigh(() -> {
-			arm.setShoulderState(ShoulderState.Base2);
-		});
-		OI.armN1B2().rising().ifHigh(() -> {
-			arm.setShoulderState(ShoulderState.Base4);
-		});*/
+
+
 
 		OI.getClawToggleEvent().rising().ifHigh(() -> { //a
 			claw.toggle();

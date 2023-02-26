@@ -20,6 +20,7 @@ public class FollowPath extends PPSwerveControllerCommand {
 	FieldObject2d fieldObject2d;
 
 	public FollowPath(Drivetrain drivetrain, PathPlannerTrajectory trajectory, Field2d field2d) {
+		
 		super(trajectory,
 				drivetrain::getPose,
 				drivetrain.getKinematics(),
@@ -34,12 +35,10 @@ public class FollowPath extends PPSwerveControllerCommand {
 		this.trajectory = trajectory;
 		this.field2d = field2d;
 		this.fieldObject2d = field2d.getObject("Target Position");
-				
+		//drivetrain.resetOdometry(trajectory.getInitialPose());
 		Constants.Commands.FollowPath.THETA_CONTROLLER.enableContinuousInput(-Math.PI, Math.PI);
 		
-		drivetrain.resetOdometry(trajectory.getInitialPose());
-
-		this.andThen(() -> drivetrain.drive(0, 0, 0, false));
+		//drivetrain.resetOdometry(trajectory.getInitialPose());
 	}
 
 	@Override
@@ -48,20 +47,25 @@ public class FollowPath extends PPSwerveControllerCommand {
 
   		timer.reset();
   		timer.start();
+		//System.out.println(trajectory.getInitialPose());
+		
   	}
 
 	@Override
 	public void execute() {
 		super.execute();
 
-		double curTime = timer.get();
-
-		fieldObject2d.setPose(trajectory.sample(curTime).poseMeters);
+		//double curTime = timer.get();
+		fieldObject2d.setPose(drivetrain.getPose());
+		//fieldObject2d.setPose(trajectory.sample(curTime).poseMeters);
+		//System.out.println(trajectory.sample(curTime).poseMeters);
 	}
 
   	@Override
   	public void end(boolean interrupted) {
 		super.end(interrupted);
+
+		drivetrain.drive(0, 0, 0, false);
 
   		timer.stop();
   	}
