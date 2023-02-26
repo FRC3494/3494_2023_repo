@@ -55,7 +55,7 @@ public class FollowPath extends PPSwerveControllerCommand {
 	public void execute() {
 		super.execute();
 
-		double curTime = timer.get();
+		//double curTime = timer.get();
 		fieldObject2d.setPose(drivetrain.getPose());
 		//fieldObject2d.setPose(trajectory.sample(curTime).poseMeters);
 		//System.out.println(trajectory.sample(curTime).poseMeters);

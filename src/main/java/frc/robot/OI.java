@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
@@ -31,10 +32,6 @@ public final class OI {
         return value;
     }
     
-	public static void configureButtonBindings() {
-
-	}
-
     public static void update() {
         eventLoop.poll();
     }
@@ -51,6 +48,10 @@ public final class OI {
         return modifyAxis(primaryController.getRightX()) * Constants.OI.MAX_TURN_SPEED;
     }
 
+    public static double getArmDirectDrivePower() {
+        return deadband(primaryController.getRightY() * 0.3, 0.05);
+    }
+
     public static BooleanEvent getResetHeadingEvent() {
         return primaryController.x(eventLoop);
     }
@@ -58,11 +59,53 @@ public final class OI {
     public static BooleanEvent getAutoBalanceEvent() {
         return primaryController.y(eventLoop);
     }
+
     public static BooleanEvent getAutoLineUpEvent() {
+        return primaryController.a(eventLoop);
+    }
+
+    public static BooleanEvent getPrintOdometryEvent() {
         return primaryController.b(eventLoop);
     }
-    public static Boolean getHopperIntake(){
-        return primaryController.getAButtonPressed();
+
+
+    private static Joystick leftButtonBoard = new Joystick(Constants.OI.SECONDARY_LEFT_CONTROLLER_PORT);
+    private static Joystick rightButtonBoard = new Joystick(Constants.OI.SECONDARY_RIGHT_CONTROLLER_PORT);
+
+    public static BooleanEvent armHybrid() {
+        return leftButtonBoard.button(0, eventLoop);
     }
-    
+    public static BooleanEvent armHopperIntake() {
+        return leftButtonBoard.button(0, eventLoop);
+    }
+    public static BooleanEvent armGroundIntake() {
+        return leftButtonBoard.button(0, eventLoop);
+    }
+    public static BooleanEvent armDoubleSubstation() {
+        return leftButtonBoard.button(0, eventLoop);
+    }
+
+
+    public static BooleanEvent armN2() {
+        return leftButtonBoard.button(0, eventLoop);
+    }
+    public static BooleanEvent armN1B2() {
+        return leftButtonBoard.button(0, eventLoop);
+    }
+    public static BooleanEvent armB1Base4() {
+        return leftButtonBoard.button(0, eventLoop);
+    }
+    public static BooleanEvent armBase2N1() {
+        return leftButtonBoard.button(0, eventLoop);
+    }
+    public static BooleanEvent armBase1B1() {
+        return leftButtonBoard.button(0, eventLoop);
+    }
+    public static BooleanEvent armStore() {
+        return leftButtonBoard.button(0, eventLoop);
+    }
+
+    public static BooleanEvent getClawToggleEvent() {
+        return rightButtonBoard.button(0, eventLoop);
+    }
 }

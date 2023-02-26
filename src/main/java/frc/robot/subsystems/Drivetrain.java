@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
@@ -20,17 +19,15 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Util.LimelightHelpers;
+import frc.robot.util.LimelightHelpers;
 
 public class Drivetrain extends SubsystemBase {
 	double aprilTagYaw;
 	double aprilTagID;  
-    JsonParser myParser = new JsonParser();
     JsonObject limeLightData;
 	JsonArray limeLightDataArray;
     //static HashMap<String, GenericEntry> tagMap = new HashMap<String, GenericEntry>(); 
 
-	private JsonArray limeLightAprilTagPosition;
 	double tagX;
 	double tagY;
 	double tagZ;

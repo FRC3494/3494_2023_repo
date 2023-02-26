@@ -1,22 +1,22 @@
-package frc.robot.Util;
+package frc.robot.util.statemachine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import edu.wpi.first.math.trajectory.Trajectory.State;
-
 public class StateMachine<T extends Enum<T>> {
-
     protected T currentState;
 
     protected HashMap<T, List<StateBehaviour>> behaviours = new HashMap<>();
     protected HashMap<T, List<StateBehaviour>> loopedBehaviours = new HashMap<>();
     protected HashMap<T, List<StateBehaviour>> cleanupBehaviours = new HashMap<>();
-    protected HashMap<T, List<StateBehaviour>> ListedBehaviourTransitionConditions = new HashMap<>();
+    protected HashMap<T, HashMap<T, StateCondition>> transitions = new HashMap<>();
+    protected HashMap<T, Tuple<T, TransitionGraph>> transitionGraphs = new HashMap<>();
 
-    protected HashMap<T, HashMap<T, Conditions>> transitions = new HashMap<>();
+    protected boolean inTransitionEdge = false;
+    protected TransitionGraph currentTransitionEdge = null;
+    protected T targetState;
     
     /*
      * Allows a subsystem to register a method to be called when the <pre>EventEmitter</pre> transitions to state.
@@ -53,14 +53,9 @@ public class StateMachine<T extends Enum<T>> {
         loopedBehaviours.get(state).add(loopedBehaviour);
         cleanupBehaviours.get(state).add(cleanupBehaviour);
     }
-    public void addListedBehaviorTransitionCondition(T activeState, T targetState, Conditions condition, Conditions[] transitionCondition){
-        //transition to active state
-        transitions.computeIfAbsent(activeState, k -> new HashMap<>());
-        transitions.get(activeState).put(targetState, condition);
-        
 
-
-
+    public void addTransitionGraph(T from, T to, TransitionGraph transitionGraph){
+        transitionGraphs.put(to, new Tuple<>(from, transitionGraph));
     }
 
     /*
@@ -70,18 +65,28 @@ public class StateMachine<T extends Enum<T>> {
      * @param targetState The state to transition to when <pre>condition</pre> goes true
      * @param   condition The condition to check before transitioning to <pre>targetState</pre>
      */
-    public void setTransitionCondition(T activeState, T targetState, Conditions condition) {
+    public void setTransitionCondition(T activeState, T targetState, StateCondition condition) {
         transitions.computeIfAbsent(activeState, k -> new HashMap<>());
 
-        transitions.get(activeState).put(targetState, condition);
+        transitions.get(targetState).put(activeState, condition);
     }
 
     /*
      * The function to periodically call in order to allow the <pre>EventEmitter</pre> to make transitions.
      */
     public void update() {
+        if (inTransitionEdge) {
+            if (!currentTransitionEdge.update()) return;
+
+            inTransitionEdge = false;
+            this.targetState = null;
+            currentTransitionEdge = null;
+
+            completeTransition(targetState);
+        }
+
         // Check transitions
-        HashMap<T, Conditions> activeTransitions = transitions.get(currentState);
+        HashMap<T, StateCondition> activeTransitions = transitions.get(currentState);
 
         if (activeTransitions != null) {
             Set<T> conditions = activeTransitions.keySet();
@@ -104,17 +109,37 @@ public class StateMachine<T extends Enum<T>> {
         }
     }
 
-    private void transitionTo(T state) {
+    public void transitionTo(T targetState) {
         if (cleanupBehaviours.get(currentState) != null) {
             for (StateBehaviour cleanup : cleanupBehaviours.get(currentState)) {
                 cleanup.call();
             }
         }
 
-        currentState = state;
+        if (transitionGraphs.get(targetState) != null) {
+            if (transitionGraphs.get(targetState).first == null || transitionGraphs.get(targetState).first == currentState) {
+                currentTransitionEdge = transitionGraphs.get(targetState).second;
+                this.targetState = targetState;
+                inTransitionEdge = true;
 
-        if (behaviours.get(state) != null) {
-            for (StateBehaviour method : behaviours.get(state)) {
+                currentTransitionEdge.prepare();
+
+                if (!currentTransitionEdge.update()) return;
+
+                inTransitionEdge = false;
+                this.targetState = null;
+                currentTransitionEdge = null;
+            }
+        }
+
+        completeTransition(targetState);
+    }
+
+    void completeTransition(T targetState) {
+        currentState = targetState;
+
+        if (behaviours.get(targetState) != null) {
+            for (StateBehaviour method : behaviours.get(targetState)) {
                 try {
                     method.call();
                 } catch (Exception e) {
@@ -123,6 +148,7 @@ public class StateMachine<T extends Enum<T>> {
             }
         }
     }
+
     // If you read this your cringe why are you reading this stinky library :)
     /*
      * Gets the current state of the <pre>EventEmitter</pre>
