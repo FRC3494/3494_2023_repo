@@ -21,12 +21,13 @@ import frc.robot.commands.auto.FollowPath;
 import frc.robot.commands.groups.AutoBalanceTeleopGroup;
 import frc.robot.commands.groups.AutoLineUpTeleopGroup;
 import frc.robot.commands.teleop.TeleopDrive;
-import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmPosition;
+import frc.robot.subsystems.claw.Claw;
+import frc.robot.subsystems.claw.ClawState;
 
 public class RobotContainer {
 	private final Drivetrain drivetrain;
@@ -125,32 +126,56 @@ public class RobotContainer {
 
 	public void configureButtonBindings() {
 
-		OI.getResetHeadingEvent().rising().ifHigh(drivetrain::zeroYaw);
+		OI.resetHeadingEvent().rising().ifHigh(drivetrain::zeroYaw);
 		
-		OI.getAutoBalanceEvent().rising().ifHigh(() -> {
+		OI.autoBalanceEvent().rising().ifHigh(() -> {
 			if (alternateAutoBalance) autoBalanceDrivetrainCommand.schedule();
 			else autoBalanceDrivetrainCommand.cancel();
 			
 			alternateAutoBalance = !alternateAutoBalance;
 		});
 
-		OI.getAutoLineUpEvent().rising().ifHigh(() -> {
+		OI.autoLineUpEvent().rising().ifHigh(() -> {
 			drivetrain.resetOdometry(AutoLineUpTeleopGroup.get(drivetrain, robotPosition));
 		});
 		
-		OI.getPrintOdometryEvent().rising().ifHigh(() -> {
+		OI.printOdometryEvent().rising().ifHigh(() -> {
 			System.out.println("Current Odo " + drivetrain.getPose().getX() + ":" + drivetrain.getPose().getY());
 		});
 
 
 
-
-		OI.getClawToggleEvent().rising().ifHigh(() -> { //a
-			claw.toggle();
+		OI.clawOpenEvent().rising().ifHigh(() -> {
+			claw.set(ClawState.Closed);
 		});
 
-		OI.armHopperIntake().rising().ifHigh(() -> {
-			arm.setArmState(ArmPosition.HopperIntake);
+		OI.clawCloseEvent().rising().ifHigh(() -> {
+			claw.set(ClawState.Open);
+		});
+
+
+
+		OI.forearmFineAdjustPositiveEvent().ifHigh(() -> {
+			arm.directDriveForearm(Constants.OI.FOREARM_FINE_ADJUST_SPEED);
+		});
+		OI.forearmFineAdjustNegativeEvent().ifHigh(() -> {
+			arm.directDriveForearm(-Constants.OI.FOREARM_FINE_ADJUST_SPEED);
+		});
+		OI.forearmFineAdjustPositiveEvent().or(
+			OI.forearmFineAdjustNegativeEvent()
+		).rising().ifHigh(() -> {
+			arm.enableForearmDirectDrive();
+		});
+		OI.forearmFineAdjustPositiveEvent().negate().and(
+			OI.forearmFineAdjustNegativeEvent().negate()
+		).rising().ifHigh(() -> {
+			arm.disableForearmDirectDrive();
+		});
+
+
+
+		OI.armHopperGrab().rising().ifHigh(() -> {
+			arm.setArmState(ArmPosition.HopperGrab);
 		});
 
 		OI.armGroundIntake().rising().ifHigh(() -> {
@@ -161,32 +186,32 @@ public class RobotContainer {
 			arm.setArmState(ArmPosition.DoubleSubstation);
 		});
 
-		OI.armN2().rising().ifHigh(() -> {
-			arm.setArmState(ArmPosition.N2);
-		});
-
-		OI.armN1B2().rising().ifHigh(() -> {
-			arm.setArmState(ArmPosition.N1B2);
-		});
-
-		OI.armB1Base4().rising().ifHigh(() -> {
-			arm.setArmState(ArmPosition.B1Base4);
-		});
-
-		OI.armBase2N1().rising().ifHigh(() -> {
-			arm.setArmState(ArmPosition.Base2N1);
-		});
-
-		OI.armBase1B1().rising().ifHigh(() -> {
-			arm.setArmState(ArmPosition.Base1B1);
-		});
-
 		OI.armHybrid().rising().ifHigh(() -> {
 			arm.setArmState(ArmPosition.Hybrid);
 		});
 
 		OI.armStore().rising().ifHigh(() -> {
 			arm.setArmState(ArmPosition.Store);
+		});
+
+		OI.armBase4Cone2().rising().ifHigh(() -> {
+			arm.setArmState(ArmPosition.Base4Cone2);
+		});
+
+		OI.armBase4Cube2().rising().ifHigh(() -> {
+			arm.setArmState(ArmPosition.Base4Cube2);
+		});
+
+		OI.armBase4Cube1().rising().ifHigh(() -> {
+			arm.setArmState(ArmPosition.Base4Cube1);
+		});
+
+		OI.armBase2Cone1().rising().ifHigh(() -> {
+			arm.setArmState(ArmPosition.Base2Cone1);
+		});
+
+		OI.armBase1Cube1().rising().ifHigh(() -> {
+			arm.setArmState(ArmPosition.Base1Cube1);
 		});
 	}
 }

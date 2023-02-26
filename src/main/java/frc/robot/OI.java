@@ -36,76 +36,90 @@ public final class OI {
         eventLoop.poll();
     }
 
-    public static double getTeleopXVelocity() {
+    public static double teleopXVelocity() {
         return modifyAxis(primaryController.getLeftY()) * Constants.OI.MAX_DRIVE_SPEED;
     }
 
-    public static double getTeleopYVelocity() {
+    public static double teleopYVelocity() {
         return modifyAxis(primaryController.getLeftX()) * Constants.OI.MAX_DRIVE_SPEED;
     }
 
-    public static double getTeleopTurnVelocity() {
+    public static double teleopTurnVelocity() {
         return modifyAxis(primaryController.getRightX()) * Constants.OI.MAX_TURN_SPEED;
     }
 
-    public static double getArmDirectDrivePower() {
+    public static double armDirectDrivePower() {
         return deadband(primaryController.getRightY() * 0.3, 0.05);
     }
 
-    public static BooleanEvent getResetHeadingEvent() {
+    public static BooleanEvent resetHeadingEvent() {
         return primaryController.x(eventLoop);
     }
 
-    public static BooleanEvent getAutoBalanceEvent() {
+    public static BooleanEvent autoBalanceEvent() {
         return primaryController.y(eventLoop);
     }
 
-    public static BooleanEvent getAutoLineUpEvent() {
+    public static BooleanEvent autoLineUpEvent() {
         return primaryController.a(eventLoop);
     }
 
-    public static BooleanEvent getPrintOdometryEvent() {
+    public static BooleanEvent printOdometryEvent() {
         return primaryController.b(eventLoop);
     }
 
 
     private static Joystick leftButtonBoard = new Joystick(Constants.OI.SECONDARY_LEFT_CONTROLLER_PORT);
-    private static Joystick rightButtonBoard = new Joystick(Constants.OI.SECONDARY_RIGHT_CONTROLLER_PORT);
+    // private static Joystick rightButtonBoard = new Joystick(Constants.OI.SECONDARY_RIGHT_CONTROLLER_PORT);
 
-    public static BooleanEvent armHybrid() {
-        return leftButtonBoard.button(0, eventLoop);
+    public static BooleanEvent armBase1Cube1() {
+        return leftButtonBoard.button(1, eventLoop);
     }
-    public static BooleanEvent armHopperIntake() {
-        return leftButtonBoard.button(0, eventLoop);
+    public static BooleanEvent armBase4Cube1() {
+        return leftButtonBoard.button(2, eventLoop);
+    }
+    public static BooleanEvent armBase4Cube2() {
+        return leftButtonBoard.button(3, eventLoop);
+    }
+
+    
+    public static BooleanEvent armBase2Cone1() {
+        return leftButtonBoard.button(5, eventLoop);
+    }
+    public static BooleanEvent armBase4Cone2() {
+        return leftButtonBoard.button(6, eventLoop);
+    }
+
+
+    public static BooleanEvent armStore() {
+        return leftButtonBoard.button(4, eventLoop);
+    }
+    public static BooleanEvent armHybrid() {
+        return leftButtonBoard.button(7, eventLoop);
+    }
+    public static BooleanEvent armHopperGrab() {
+        return leftButtonBoard.button(8, eventLoop);
     }
     public static BooleanEvent armGroundIntake() {
-        return leftButtonBoard.button(0, eventLoop);
+        return leftButtonBoard.button(9, eventLoop);
     }
     public static BooleanEvent armDoubleSubstation() {
-        return leftButtonBoard.button(0, eventLoop);
+        return leftButtonBoard.button(10, eventLoop);
     }
 
 
-    public static BooleanEvent armN2() {
-        return leftButtonBoard.button(0, eventLoop);
+    public static BooleanEvent clawOpenEvent() {
+        return leftButtonBoard.button(18, eventLoop);
     }
-    public static BooleanEvent armN1B2() {
-        return leftButtonBoard.button(0, eventLoop);
-    }
-    public static BooleanEvent armB1Base4() {
-        return leftButtonBoard.button(0, eventLoop);
-    }
-    public static BooleanEvent armBase2N1() {
-        return leftButtonBoard.button(0, eventLoop);
-    }
-    public static BooleanEvent armBase1B1() {
-        return leftButtonBoard.button(0, eventLoop);
-    }
-    public static BooleanEvent armStore() {
-        return leftButtonBoard.button(0, eventLoop);
+    public static BooleanEvent clawCloseEvent() {
+        return leftButtonBoard.button(19, eventLoop);
     }
 
-    public static BooleanEvent getClawToggleEvent() {
-        return rightButtonBoard.button(0, eventLoop);
+
+    public static BooleanEvent forearmFineAdjustPositiveEvent() {
+        return leftButtonBoard.button(21, eventLoop);
+    }
+    public static BooleanEvent forearmFineAdjustNegativeEvent() {
+        return leftButtonBoard.button(20, eventLoop);
     }
 }

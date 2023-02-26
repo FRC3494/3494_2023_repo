@@ -1,14 +1,14 @@
 package frc.robot.subsystems.arm;
 
 public enum ArmPosition {
-    HopperIntake,
+    HopperGrab,
     GroundIntake,
     DoubleSubstation,
-    N2,
-    N1B2,
-    B1Base4,
-    Base2N1,
-    Base1B1,
     Hybrid,
     Store,
+    Base4Cone2,
+    Base4Cube2,
+    Base4Cube1,
+    Base2Cone1,
+    Base1Cube1
 }

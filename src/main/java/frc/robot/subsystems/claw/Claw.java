@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.claw;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -15,16 +15,20 @@ public class Claw extends SubsystemBase {
 	public Claw() {
         clawSolenoid = new DoubleSolenoid(Constants.Subsystems.Pneumatics.BASE_PCM, PneumaticsModuleType.REVPH, Constants.Subsystems.Claw.CLAW_SOLENOID_CHANNEL, Constants.Subsystems.Claw.CLAW_SOLENOID_CHANNEL + 1);
 	
-        set(false);
+        set(ClawState.Open);
     }
     
-    public void set(boolean closed) {
+    public void set(ClawState closed) {
+        setSolenoid(closed == ClawState.Closed);
+    }
+    
+    void setSolenoid(boolean closed) {
         clawSolenoid.set(closed ? Value.kForward : Value.kReverse);
 
         currentlyClosed = closed;
     }
 
     public void toggle() {
-        set(!currentlyClosed);
+        setSolenoid(!currentlyClosed);
     }
 }

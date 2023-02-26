@@ -24,7 +24,7 @@ public class AutoDriveTeleop extends CommandBase {
 
 	@Override
 	public void execute() {
-		drivetrain.drive(xVelocity + OI.getTeleopXVelocity(), yVelocity + OI.getTeleopYVelocity(), rotationVelocity + OI.getTeleopTurnVelocity(), fieldRelative);
+		drivetrain.drive(xVelocity + OI.teleopXVelocity(), yVelocity + OI.teleopYVelocity(), rotationVelocity + OI.teleopTurnVelocity(), fieldRelative);
 	}
 
 	@Override

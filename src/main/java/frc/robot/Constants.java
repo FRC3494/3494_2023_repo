@@ -40,11 +40,11 @@ public final class Constants extends AutoConfigurable {
                 put(ForearmState.Base4Cone2, -99.1); // real -99.0
                 // Base4Cone1 -76.1 // real -74.8
                 put(ForearmState.Base4Cube1, -57.7); // real -56.8
-                put(ForearmState.Base1HopperGrab, -34.0); // -33.09
+                put(ForearmState.HopperGrab, -34.0); // -33.09
                 put(ForearmState.Intermediate, 66.7); // real 47.9
-                put(ForearmState.Base2Store, -20.0); // real -20.0
-                put(ForearmState.Base1Ground, 15.0); // real 0.0
-                put(ForearmState.Base4DoubleSub, -99.1); // real -99.0
+                put(ForearmState.Store, -20.0); // real -20.0
+                put(ForearmState.GroundIntake, 15.0); // real 0.0
+                put(ForearmState.DoubleSubstation, -99.1); // real -99.0
                 put(ForearmState.Base1Cube1, 101.3); // real 67.4 // change to base2!!!
                 put(ForearmState.Base2Cone1, 108.7); // real 90
                 put(ForearmState.Base1Hybrid, 26.5); // real 13.0
@@ -165,5 +165,7 @@ public final class Constants extends AutoConfigurable {
 
         public static final double MAX_DRIVE_SPEED = 9; // m/s
         public static final double MAX_TURN_SPEED = 9; // rad/s
+
+        public static final double FOREARM_FINE_ADJUST_SPEED = 0.3;
     }
 }

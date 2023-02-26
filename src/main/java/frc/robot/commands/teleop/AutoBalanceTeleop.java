@@ -11,6 +11,6 @@ public class AutoBalanceTeleop extends AutoBalance {
 
 	@Override
 	public void setDrivetrain(double x, double y, double w, boolean fieldRelative) { 
-		drivetrain.drive(x + OI.getTeleopXVelocity(), OI.getTeleopYVelocity(), OI.getTeleopTurnVelocity(), fieldRelative);
+		drivetrain.drive(x + OI.teleopXVelocity(), OI.teleopYVelocity(), OI.teleopTurnVelocity(), fieldRelative);
 	}
 }
