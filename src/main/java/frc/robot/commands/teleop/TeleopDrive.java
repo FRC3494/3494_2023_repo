@@ -3,23 +3,18 @@ package frc.robot.commands.teleop;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.OI;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.arm.Arm;
 
 public class TeleopDrive extends CommandBase {
 	Drivetrain drivetrain;
-	Arm arm;
 
-	public TeleopDrive(Drivetrain drivetrain, Arm arm) {
+	public TeleopDrive(Drivetrain drivetrain) {
 		this.drivetrain = drivetrain;
-		this.arm = arm;
 		addRequirements(drivetrain);
-		addRequirements(arm);
 	}
 	
 	@Override
 	public void execute() {
-		drivetrain.drive(OI.teleopXVelocity(), OI.teleopYVelocity(), OI.teleopTurnVelocity(), true);
-		//arm.directDriveArm(OI.getArmDirectDrivePower());
+		drivetrain.drive(-OI.teleopXVelocity(), -OI.teleopYVelocity(), -OI.teleopTurnVelocity(), true);
 	}
 
 	@Override

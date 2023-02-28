@@ -61,7 +61,7 @@ public class RobotContainer {
 
 		// Configure default commands
 		//drivetrain.setDefaultCommand(new AutoLineUp(drivetrain));
-		drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, arm));
+		drivetrain.setDefaultCommand(new TeleopDrive(drivetrain));
 		//drivetrain.setDefaultCommand(new driveForward(drivetrain));
 		pneumatics.setDefaultCommand(new RunPneumatics(pneumatics));
 

@@ -37,15 +37,15 @@ public final class OI {
     }
 
     public static double teleopXVelocity() {
-        return modifyAxis(primaryController.getLeftY()) * Constants.OI.MAX_DRIVE_SPEED;
+        return modifyAxis(primaryController.getLeftY()) * Constants.OI.MAX_DRIVE_SPEED / 8;
     }
 
     public static double teleopYVelocity() {
-        return modifyAxis(primaryController.getLeftX()) * Constants.OI.MAX_DRIVE_SPEED;
+        return modifyAxis(primaryController.getLeftX()) * Constants.OI.MAX_DRIVE_SPEED / 8;
     }
 
     public static double teleopTurnVelocity() {
-        return modifyAxis(primaryController.getRightX()) * Constants.OI.MAX_TURN_SPEED;
+        return modifyAxis(primaryController.getRightX()) * Constants.OI.MAX_TURN_SPEED / 2;
     }
 
     public static double armDirectDrivePower() {
@@ -109,17 +109,21 @@ public final class OI {
 
 
     public static BooleanEvent clawOpenEvent() {
-        return leftButtonBoard.button(18, eventLoop);
+        // return leftButtonBoard.button(18, eventLoop);
+        return leftButtonBoard.axisGreaterThan(1, 0.1, eventLoop);
     }
     public static BooleanEvent clawCloseEvent() {
-        return leftButtonBoard.button(19, eventLoop);
+        // return leftButtonBoard.button(19, eventLoop);
+        return leftButtonBoard.axisLessThan(1, -0.1, eventLoop);
     }
 
 
     public static BooleanEvent forearmFineAdjustPositiveEvent() {
-        return leftButtonBoard.button(21, eventLoop);
+        // return leftButtonBoard.button(21, eventLoop);
+        return leftButtonBoard.axisGreaterThan(0, 0.1, eventLoop);
     }
     public static BooleanEvent forearmFineAdjustNegativeEvent() {
-        return leftButtonBoard.button(20, eventLoop);
+        // return leftButtonBoard.button(20, eventLoop);
+        return leftButtonBoard.axisLessThan(0, -0.1, eventLoop);
     }
 }

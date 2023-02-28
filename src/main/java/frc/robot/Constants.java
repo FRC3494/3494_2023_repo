@@ -3,7 +3,7 @@ package frc.robot;
 import java.util.HashMap;
 
 import com.pathplanner.lib.PathConstraints;
-import com.swervedrivespecialties.swervelib.ThriftyBotModuleConfigurations;
+import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -53,41 +53,41 @@ public final class Constants extends AutoConfigurable {
         
         public static final class Drivetrain {
             public static final class FrontLeftModule {
-                public static int DRIVE_MOTOR_PORT = 17;//12;
-                public static int STEER_MOTOR_PORT = 19;//11;
+                public static int DRIVE_MOTOR_PORT = 19;//12;
+                public static int STEER_MOTOR_PORT = 17;//11;
 
-                public static int ENCODER_MOTOR_PORT = 4;
+                public static int ENCODER_MOTOR_PORT = 1;
 
-                public static double STEER_OFFSET = -Math.toRadians(290f-36f+0.6-94.4);
+                public static double STEER_OFFSET = Math.toRadians(17.783);
             }
 
             public static final class FrontRightModule {
                 public static int DRIVE_MOTOR_PORT = 16;//7;
                 public static int STEER_MOTOR_PORT = 18;//8;
 
-                public static int ENCODER_MOTOR_PORT = 5;
+                public static int ENCODER_MOTOR_PORT = 2;
 
-                public static double STEER_OFFSET = -Math.toRadians(243f-123.0+2.5-6);
+                public static double STEER_OFFSET = Math.toRadians(16.056);
             }
 
             public static final class BackLeftModule {
-                public static int DRIVE_MOTOR_PORT = 2;//14;
-                public static int STEER_MOTOR_PORT = 30;//15;
+                public static int DRIVE_MOTOR_PORT = 30;//14;
+                public static int STEER_MOTOR_PORT = 2;//15;
 
-                public static int ENCODER_MOTOR_PORT = 6;
+                public static int ENCODER_MOTOR_PORT = 0;
 
-                public static double STEER_OFFSET = -Math.toRadians(290f-36f-0.8-154.7);
+                public static double STEER_OFFSET = Math.toRadians(241.404);
             }
 
             public static final class BackRightModule {
-                public static int DRIVE_MOTOR_PORT = 1;//5;
-                public static int STEER_MOTOR_PORT = 3;//4;
-                public static int ENCODER_MOTOR_PORT = 7;
-                public static double STEER_OFFSET = -Math.toRadians(164f+8f+2f+10f+5f+3.8f-8.3-119);
+                public static int DRIVE_MOTOR_PORT = 3;//5;
+                public static int STEER_MOTOR_PORT = 1;//4;
+                public static int ENCODER_MOTOR_PORT = 3;
+                public static double STEER_OFFSET = -Math.toRadians(8.247);
             }
 
-            public static final double TRACKWIDTH_METERS = 0.7112;
-            public static final double TRACKLENGTH_METERS = 0.7112;
+            public static final double TRACKWIDTH_METERS = 0.47625;
+            public static final double TRACKLENGTH_METERS = 0.52705;
 
             public static SwerveDriveKinematics SWERVE_KINEMATICS = new SwerveDriveKinematics(
                     // Front left
@@ -100,8 +100,8 @@ public final class Constants extends AutoConfigurable {
                     new Translation2d(-TRACKWIDTH_METERS / 2.0, -TRACKLENGTH_METERS / 2.0));
 
             public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
-			        ThriftyBotModuleConfigurations.STANDARD.getDriveReduction() *
-			        ThriftyBotModuleConfigurations.STANDARD.getWheelDiameter() * Math.PI*0.1;
+			        SdsModuleConfigurations.MK4I_L1.getDriveReduction() *
+			        SdsModuleConfigurations.MK4I_L1.getWheelDiameter() * Math.PI * 0.1;
 
             public static final double MAX_VOLTAGE = 12.0;
 
@@ -115,7 +115,7 @@ public final class Constants extends AutoConfigurable {
         public static final class Pneumatics {
             public static int BASE_PCM = 21;
             
-            public static double MIN_PRESSURE = 100;
+            public static double MIN_PRESSURE = 110;
             public static double MAX_PRESSURE = 120;
         }
     }

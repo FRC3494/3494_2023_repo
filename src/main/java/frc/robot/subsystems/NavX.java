@@ -15,7 +15,7 @@ public class NavX {
     }
 
     public static double getYaw() {
-        return ahrs.getFusedHeading() - pitchOffset;
+        return -ahrs.getFusedHeading() - pitchOffset;
     }
 
     public static double getPitch() {
