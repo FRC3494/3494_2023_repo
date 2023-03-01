@@ -57,7 +57,8 @@ public final class NeoDriveControllerFactoryBuilder {
             }
 
             if (hasRampRate()) {
-                checkNeoError(motor.setOpenLoopRampRate(currentLimit), "Failed to set ramp rate for NEO");
+                checkNeoError(motor.setClosedLoopRampRate(currentLimit), "Failed to set closed loop ramp rate for NEO");
+                checkNeoError(motor.setOpenLoopRampRate(currentLimit), "Failed to set open loop ramp rate for NEO");
             }
 
             if (hasCurrentLimit()) {

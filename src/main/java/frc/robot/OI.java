@@ -24,10 +24,10 @@ public final class OI {
 
     private static double modifyAxis(double value) {
         // Deadband
-        value = deadband(value, 0.05);
+        value = deadband(value, 0.0001);
 
         // Square the axis
-        value = Math.copySign(value * value * value, value);
+        value = Math.copySign(Math.pow(value, 3), value);
 
         return value;
     }
@@ -37,15 +37,27 @@ public final class OI {
     }
 
     public static double teleopXVelocity() {
-        return modifyAxis(primaryController.getLeftY()) * Constants.OI.MAX_DRIVE_SPEED / 8;
+		double forward = primaryController.getLeftY();
+		double left = primaryController.getLeftX();
+
+		double angle = Math.atan2(forward, left);
+		double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), Constants.OI.MAX_DRIVE_SPEED);
+
+        return modifyAxis(-velocity * Math.cos(angle)) * Constants.OI.MAX_DRIVE_SPEED;
     }
 
     public static double teleopYVelocity() {
-        return modifyAxis(primaryController.getLeftX()) * Constants.OI.MAX_DRIVE_SPEED / 8;
+		double forward = primaryController.getLeftY();
+		double left = primaryController.getLeftX();
+
+		double angle = Math.atan2(forward, left);
+		double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), Constants.OI.MAX_DRIVE_SPEED);
+
+        return modifyAxis(velocity * Math.sin(angle)) * Constants.OI.MAX_DRIVE_SPEED;
     }
 
     public static double teleopTurnVelocity() {
-        return modifyAxis(primaryController.getRightX()) * Constants.OI.MAX_TURN_SPEED / 2;
+        return modifyAxis(primaryController.getRightX()) * Constants.OI.MAX_TURN_SPEED;
     }
 
     public static double armDirectDrivePower() {

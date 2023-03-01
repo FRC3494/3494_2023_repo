@@ -175,11 +175,11 @@ public class RobotContainer {
 
 
 		OI.armHopperGrab().rising().ifHigh(() -> {
-			arm.setArmState(ArmPosition.HopperGrab);
+			arm.setArmState(ArmPosition.LowerHopperGrab);
 		});
 
 		OI.armGroundIntake().rising().ifHigh(() -> {
-			arm.setArmState(ArmPosition.GroundIntake);
+			arm.setArmState(ArmPosition.UpperHopperGrab);
 		});
 
 		OI.armDoubleSubstation().rising().ifHigh(() -> {

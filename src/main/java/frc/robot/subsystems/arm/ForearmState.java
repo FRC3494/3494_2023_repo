@@ -2,7 +2,8 @@ package frc.robot.subsystems.arm;
 
 public enum ForearmState {
     Intermediate,
-    HopperGrab,
+    LowerHopperGrab,
+    UpperHopperGrab,
     GroundIntake,
     DoubleSubstation,
     Base1Hybrid,
