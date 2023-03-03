@@ -7,15 +7,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class NavX {
     private static AHRS ahrs = new AHRS();
 
-    private static double pitchOffset = 0;
-
     public static void initialize() {
         ahrs.calibrate();
-        pitchOffset = ahrs.getRoll();
     }
 
     public static double getYaw() {
-        return -ahrs.getFusedHeading() - pitchOffset;
+        return -ahrs.getFusedHeading();
     }
 
     public static double getPitch() {
@@ -26,12 +23,7 @@ public class NavX {
         return ahrs.getRoll();
     }
 
-    public static void zeroYaw() {
-        pitchOffset = ahrs.getFusedHeading();
-    }
-
     public static void putShuffleBoardData() {
-        SmartDashboard.putNumber("NavX offset", pitchOffset);
         SmartDashboard.putNumber("Current Angle", ahrs.getFusedHeading());
     }
 

@@ -236,10 +236,6 @@ public class Drivetrain extends SubsystemBase {
 		return Rotation2d.fromDegrees(360.0 - NavX.getYaw());
 	}
 
-	public void zeroYaw() {
-		NavX.zeroYaw();
-	}
-
 	/*public PathPlannerTrajectory getPathToTag(){
 		limeLightData = (JsonObject) JsonParser.parseString(
             NetworkTableInstance.getDefault()

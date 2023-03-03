@@ -70,8 +70,10 @@ public class RobotContainer {
 
 	public Command getAutonomousCommand() {
 		PathPlannerTrajectory loadedPath = PathPlanner.loadPath(autoChooser.getSelected(), Constants.RobotContainer.PathPlanner.PATH_CONSTRAINTS);
+
 		drivetrain.resetOdometry(loadedPath.getInitialPose());
 		robotPosition.setRobotPose(drivetrain.getPose());
+		
 		followPath = new FollowPath(drivetrain, loadedPath, robotPosition);
 
         return new FollowPathWithEvents(
@@ -126,7 +128,8 @@ public class RobotContainer {
 
 	public void configureButtonBindings() {
 
-		OI.resetHeadingEvent().rising().ifHigh(drivetrain::zeroYaw);
+		//OI.resetHeadingEvent().rising().ifHigh(drivetrain::zeroYaw);
+		OI.resetHeadingEvent().rising().ifHigh(OI::zeroControls);
 		
 		OI.autoBalanceEvent().rising().ifHigh(() -> {
 			if (alternateAutoBalance) autoBalanceDrivetrainCommand.schedule();
@@ -179,7 +182,7 @@ public class RobotContainer {
 		});
 
 		OI.armGroundIntake().rising().ifHigh(() -> {
-			arm.setArmState(ArmPosition.UpperHopperGrab);
+			arm.setArmState(ArmPosition.GroundIntake);
 		});
 
 		OI.armDoubleSubstation().rising().ifHigh(() -> {

@@ -92,13 +92,13 @@ public final class Constants extends AutoConfigurable {
 
             public static SwerveDriveKinematics SWERVE_KINEMATICS = new SwerveDriveKinematics(
                     // Front left
-                    new Translation2d(TRACKWIDTH_METERS / 2.0, TRACKLENGTH_METERS / 2.0),
+                    new Translation2d(TRACKLENGTH_METERS / 2.0, TRACKWIDTH_METERS / 2.0),
                     // Front right
-                    new Translation2d(TRACKWIDTH_METERS / 2.0, -TRACKLENGTH_METERS / 2.0),
+                    new Translation2d(TRACKLENGTH_METERS / 2.0, -TRACKWIDTH_METERS / 2.0),
                     // Back left
-                    new Translation2d(-TRACKWIDTH_METERS / 2.0, TRACKLENGTH_METERS / 2.0),
+                    new Translation2d(-TRACKLENGTH_METERS / 2.0, TRACKWIDTH_METERS / 2.0),
                     // Back right
-                    new Translation2d(-TRACKWIDTH_METERS / 2.0, -TRACKLENGTH_METERS / 2.0));
+                    new Translation2d(-TRACKLENGTH_METERS / 2.0, -TRACKWIDTH_METERS / 2.0));
 
             public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
 			        SdsModuleConfigurations.MK4I_L1.getDriveReduction() *
@@ -123,8 +123,14 @@ public final class Constants extends AutoConfigurable {
 
     public static final class Commands {
         public static final class FollowPath {
-            public static final PIDController X_CONTROLLER = new PIDController(1, 0, 0);
-            public static final PIDController Y_CONTROLLER = new PIDController(1, 0, 0);
+            // public static final PIDController X_CONTROLLER = new PIDController(1, 0, 0);
+            // public static final PIDController Y_CONTROLLER = new PIDController(1, 0, 0);
+
+            // public static final PIDController THETA_CONTROLLER = new PIDController(0.22, 0, 0.05);
+
+            public static final PIDController X_CONTROLLER = new PIDController(2.5, 1, 0);
+            public static final PIDController Y_CONTROLLER = new PIDController(2.5, 1, 0);
+            
 
             public static final PIDController THETA_CONTROLLER = new PIDController(0.22, 0, 0.05);
             
@@ -151,7 +157,7 @@ public final class Constants extends AutoConfigurable {
 
     public static final class RobotContainer {
         public static final class PathPlanner {
-            public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(2, 2);
+            public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(2, 1.5);
 
             public static final HashMap<String, Command> PATH_EVENTS = new HashMap<>() {{
                 put("print", new PrintCommand("Passed print marker"));
@@ -164,7 +170,7 @@ public final class Constants extends AutoConfigurable {
         public static final int SECONDARY_LEFT_CONTROLLER_PORT = 1;
         public static final int SECONDARY_RIGHT_CONTROLLER_PORT = 2;
 
-        public static final double MAX_DRIVE_SPEED = 1; // m/s
+        public static final double MAX_DRIVE_SPEED = 0.7; // m/s
         public static final double MAX_TURN_SPEED = 0.3; // rad/s
 
         public static final double FOREARM_FINE_ADJUST_SPEED = 0.3;

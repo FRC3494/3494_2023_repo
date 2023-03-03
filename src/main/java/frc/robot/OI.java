@@ -4,11 +4,18 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
+import frc.robot.subsystems.NavX;
 
 public final class OI {
     private static EventLoop eventLoop = new EventLoop();
 
 	private static XboxController primaryController = new XboxController(Constants.OI.PRIMARY_CONTROLLER_PORT);
+
+    private static double offset = 0;
+
+    public static void zeroControls() {
+        offset = NavX.getYaw() - 90;
+    }
 
     private static double deadband(double value, double deadband) {
         if (Math.abs(value) > deadband) {
@@ -40,7 +47,7 @@ public final class OI {
 		double forward = primaryController.getLeftY();
 		double left = primaryController.getLeftX();
 
-		double angle = Math.atan2(forward, left);
+		double angle = Math.atan2(forward, left) + Math.toRadians(offset);
 		double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), Constants.OI.MAX_DRIVE_SPEED);
 
         return modifyAxis(-velocity * Math.cos(angle)) * Constants.OI.MAX_DRIVE_SPEED;
@@ -50,7 +57,7 @@ public final class OI {
 		double forward = primaryController.getLeftY();
 		double left = primaryController.getLeftX();
 
-		double angle = Math.atan2(forward, left);
+		double angle = Math.atan2(forward, left) + Math.toRadians(offset);
 		double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), Constants.OI.MAX_DRIVE_SPEED);
 
         return modifyAxis(velocity * Math.sin(angle)) * Constants.OI.MAX_DRIVE_SPEED;

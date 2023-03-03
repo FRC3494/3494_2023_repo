@@ -1,7 +1,6 @@
 package frc.robot.commands.teleop;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.OI;
 import frc.robot.subsystems.Drivetrain;
 
