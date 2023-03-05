@@ -13,14 +13,14 @@ import frc.robot.subsystems.Drivetrain;
 public class FollowPath extends PPSwerveControllerCommand {
 	Drivetrain drivetrain;
 	Trajectory trajectory;
-	
+
 	Timer timer = new Timer();
 
 	Field2d field2d;
 	FieldObject2d fieldObject2d;
 
 	public FollowPath(Drivetrain drivetrain, PathPlannerTrajectory trajectory, Field2d field2d) {
-		
+
 		super(trajectory,
 				drivetrain::getPose,
 				drivetrain.getKinematics(),
@@ -35,38 +35,44 @@ public class FollowPath extends PPSwerveControllerCommand {
 		this.trajectory = trajectory;
 		this.field2d = field2d;
 		this.fieldObject2d = field2d.getObject("Target Position");
-		//drivetrain.resetOdometry(trajectory.getInitialPose());
+		// drivetrain.resetOdometry(trajectory.getInitialPose());
 		Constants.Commands.FollowPath.THETA_CONTROLLER.enableContinuousInput(-Math.PI, Math.PI);
-		
-		//drivetrain.resetOdometry(trajectory.getInitialPose());
+
+		// drivetrain.resetOdometry(trajectory.getInitialPose());
 	}
 
 	@Override
-  	public void initialize() {
+	public void initialize() {
 		super.initialize();
 
-  		timer.reset();
-  		timer.start();
-		//System.out.println(trajectory.getInitialPose());
-		
-  	}
+		drivetrain.resetOdometry(trajectory.getInitialPose());
+
+		field2d.setRobotPose(drivetrain.getPose());
+
+		timer.reset();
+		timer.start();
+	}
 
 	@Override
 	public void execute() {
 		super.execute();
 
-		//double curTime = timer.get();
-		fieldObject2d.setPose(drivetrain.getPose());
-		//fieldObject2d.setPose(trajectory.sample(curTime).poseMeters);
-		//System.out.println(trajectory.sample(curTime).poseMeters);
+		double curTime = timer.get();
+		field2d.setRobotPose(drivetrain.getPose());
+		fieldObject2d.setPose(trajectory.sample(curTime).poseMeters);
 	}
 
-  	@Override
-  	public void end(boolean interrupted) {
+	@Override
+	public boolean isFinished() {
+		return trajectory.getTotalTimeSeconds() <= timer.get();
+	}
+
+	@Override
+	public void end(boolean interrupted) {
 		super.end(interrupted);
 
 		drivetrain.drive(0, 0, 0, false);
 
-  		timer.stop();
-  	}
+		timer.stop();
+	}
 }

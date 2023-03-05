@@ -21,11 +21,11 @@ public class AutoBalance extends CommandBase {
 	}
 
 	@Override
-  	public void initialize() {
+	public void initialize() {
 		previousTime = System.currentTimeMillis() / 1000;
 		divider = 5;
 		balancedTime = 0;
-  	}
+	}
 
 	@Override
 	public void execute() {
@@ -36,20 +36,17 @@ public class AutoBalance extends CommandBase {
 
 		if (Math.abs(NavX.getPitch()) <= Constants.Commands.AutoBalance.LEVEL_ANGLE) {
 			divider += Constants.Commands.AutoBalance.DIVIDE_FACTOR;
-			
+
 			balancedTime += deltaTime;
 		} else {
 			balancedTime = 0;
 		}
-
-		if (balancedTime >= Constants.Commands.AutoBalance.EXIT_TIME) 
-			this.end(false);
 	}
 
-  	@Override
-  	public void end(boolean interrupted) {
-		drivetrain.drive(0, 0, 0, false);
-  	}
+	@Override
+	public boolean isFinished() {
+		return balancedTime >= Constants.Commands.AutoBalance.EXIT_TIME;
+	}
 
 	public double powerCurve(double x) {
 		double correctedPower = Math.pow(NavX.getPitch() / divider, 3);

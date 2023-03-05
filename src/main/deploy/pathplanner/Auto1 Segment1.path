@@ -7,33 +7,29 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.7627129518774716,
-        "y": 2.2034499912848338
+        "x": 3.5124067370436913,
+        "y": 2.1770767282541756
       },
       "holonomicAngle": 0,
       "isReversal": false,
-      "velOverride": null,
+      "velOverride": 0.01,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [
-          "ArmCone2",
-          "Release",
-          "Wait5"
-        ],
+        "names": [],
         "executionBehavior": "sequential",
-        "waitBehavior": "after",
-        "waitTime": 0
+        "waitBehavior": "none",
+        "waitTime": 5.0
       }
     },
     {
       "anchorPoint": {
-        "x": 6.22023117135941,
-        "y": 2.193602977101103
+        "x": 6.388743209141095,
+        "y": 2.1698678649155867
       },
       "prevControl": {
-        "x": 5.422553283632387,
-        "y": 2.1690549037450886
+        "x": 4.781166684635529,
+        "y": 2.1770767282541756
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -42,21 +38,12 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [
-          "Balance"
-        ],
-        "executionBehavior": "parallel",
+        "names": [],
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
-        "waitTime": 0
+        "waitTime": 5.0
       }
     }
   ],
-  "markers": [
-    {
-      "position": 0.0,
-      "names": [
-        "Releases"
-      ]
-    }
-  ]
+  "markers": []
 }
