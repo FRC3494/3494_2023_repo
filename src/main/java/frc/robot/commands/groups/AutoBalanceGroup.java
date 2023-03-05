@@ -9,8 +9,8 @@ import frc.robot.commands.auto.AutoDrive;
 
 public class AutoBalanceGroup {
     public static Command get(Drivetrain drivetrain) {
-        return new AutoDrive(drivetrain, Constants.Commands.AutoBalance.DRIVE_POWER, 0, 0, true)
-				.until(() -> Math.abs(NavX.getPitch()) >= Constants.Commands.AutoBalance.TRIGGER_ANGLE)
-				.andThen(new AutoBalance(drivetrain));
+        return new AutoDrive(drivetrain, Constants.Commands.AutoBalance.FAST_POWER, 0, 0, true)
+                .until(() -> Math.abs(NavX.getRoll()) >= Constants.Commands.AutoBalance.TRIGGER_ANGLE)
+                .andThen(new AutoBalance(drivetrain));
     }
 }

@@ -96,7 +96,9 @@ public class RobotContainer {
 					new ParallelCommandGroup(
 							new AutoSetArm(container.arm, ArmPosition.Store),
 							new AutoSetClaw(container.claw, ClawState.Closed)),
-					pathFollow(container, "Auto1 Segment1"));
+					pathFollow(container, "Auto1 Segment1"),
+					new AutoBalance(container.drivetrain));
+
 		}),
 		Full("Full", (container) -> pathFollow(container, "Full")),
 		ParkTest("Park Test", (container) -> pathFollow(container, "ParkTest")),
@@ -172,7 +174,9 @@ public class RobotContainer {
 	public void configureButtonBindings() {
 
 		// OI.resetHeadingEvent().rising().ifHigh(drivetrain::zeroYaw);
-		OI.resetHeadingEvent().rising().ifHigh(OI::zeroControls);
+		OI.resetHeadingEvent().rising().ifHigh(() -> {
+			OI.zeroControls();
+		});
 
 		OI.autoBalanceEvent().rising().ifHigh(() -> {
 			if (alternateAutoBalance)
@@ -251,7 +255,11 @@ public class RobotContainer {
 		});
 
 		OI.armBase1Cube1().rising().ifHigh(() -> {
-			arm.setArmState(ArmPosition.Base1Cube1);
+			// arm.setArmState(ArmPosition.Base1Cube1);
+			arm.cancelCurrentMovement();
+		});
+		OI.abortArmMovement().rising().ifHigh(() -> {
+			arm.cancelCurrentMovement();
 		});
 	}
 }

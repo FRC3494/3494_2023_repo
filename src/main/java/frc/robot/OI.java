@@ -88,6 +88,7 @@ public final class OI {
     }
 
     private static Joystick leftButtonBoard = new Joystick(Constants.OI.SECONDARY_LEFT_CONTROLLER_PORT);
+    private static Joystick rightButtonBoard = new Joystick(Constants.OI.SECONDARY_RIGHT_CONTROLLER_PORT);
     // private static Joystick rightButtonBoard = new
     // Joystick(Constants.OI.SECONDARY_RIGHT_CONTROLLER_PORT);
 
@@ -149,5 +150,9 @@ public final class OI {
     public static BooleanEvent forearmFineAdjustNegativeEvent() {
         // return leftButtonBoard.button(20, eventLoop);
         return leftButtonBoard.axisLessThan(1, -0.1, eventLoop);
+    }
+
+    public static BooleanEvent abortArmMovement() {
+        return leftButtonBoard.button(1, eventLoop);
     }
 }

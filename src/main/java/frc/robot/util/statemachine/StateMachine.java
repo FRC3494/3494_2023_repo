@@ -12,26 +12,30 @@ public class StateMachine<T extends Enum<T>> {
     protected HashMap<T, List<StateBehaviour>> loopedBehaviours = new HashMap<>();
     protected HashMap<T, List<StateBehaviour>> cleanupBehaviours = new HashMap<>();
     protected HashMap<T, HashMap<T, StateCondition>> transitions = new HashMap<>();
-    protected HashMap<T, Tuple<T, TransitionGraph>> transitionGraphs = new HashMap<>();
+    protected HashMap<T, HashMap<T, TransitionGraph>> transitionGraphs = new HashMap<>();
 
     protected boolean inTransitionEdge = false;
     protected TransitionGraph currentTransitionEdge = null;
     protected T targetState;
-    
+
     /*
-     * Allows a subsystem to register a method to be called when the <pre>EventEmitter</pre> transitions to state.
+     * Allows a subsystem to register a method to be called when the
+     * <pre>EventEmitter</pre> transitions to state.
      *
-     * @param initialState The initial state for the <pre>EventEmitter</pre> to start in
+     * @param initialState The initial state for the <pre>EventEmitter</pre> to
+     * start in
      */
     public StateMachine(T initialState) {
         currentState = initialState;
-        
+
     }
 
     /*
-     * Allows a subsystem to register a method to be called when the <pre>EventEmitter</pre> transitions to state.
+     * Allows a subsystem to register a method to be called when the
+     * <pre>EventEmitter</pre> transitions to state.
      *
-     * @param  state The target state to wait for
+     * @param state The target state to wait for
+     * 
      * @param callee The method to call on transition
      */
     public void addBehaviour(T state, StateBehaviour callee) {
@@ -54,16 +58,23 @@ public class StateMachine<T extends Enum<T>> {
         cleanupBehaviours.get(state).add(cleanupBehaviour);
     }
 
-    public void addTransitionGraph(T from, T to, TransitionGraph transitionGraph){
-        transitionGraphs.put(to, new Tuple<>(from, transitionGraph));
+    public void addTransitionGraph(T from, T to, TransitionGraph transitionGraph) {
+        transitionGraphs.computeIfAbsent(to, k -> new HashMap<>());
+
+        transitionGraphs.get(to).put(from, transitionGraph);
     }
 
     /*
-     * Allows the code to add a condition to describe a transition between two states.
+     * Allows the code to add a condition to describe a transition between two
+     * states.
      *
      * @param activeState The state to wait for before checking <pre>condition</pre>
-     * @param targetState The state to transition to when <pre>condition</pre> goes true
-     * @param   condition The condition to check before transitioning to <pre>targetState</pre>
+     * 
+     * @param targetState The state to transition to when <pre>condition</pre> goes
+     * true
+     * 
+     * @param condition The condition to check before transitioning to
+     * <pre>targetState</pre>
      */
     public void setTransitionCondition(T activeState, T targetState, StateCondition condition) {
         transitions.computeIfAbsent(activeState, k -> new HashMap<>());
@@ -72,17 +83,19 @@ public class StateMachine<T extends Enum<T>> {
     }
 
     /*
-     * The function to periodically call in order to allow the <pre>EventEmitter</pre> to make transitions.
+     * The function to periodically call in order to allow the
+     * <pre>EventEmitter</pre> to make transitions.
      */
     public void update() {
         if (inTransitionEdge) {
-            if (!currentTransitionEdge.update()) return;
+            if (!currentTransitionEdge.update())
+                return;
+
+            completeTransition(targetState);
 
             inTransitionEdge = false;
             this.targetState = null;
             currentTransitionEdge = null;
-
-            completeTransition(targetState);
         }
 
         // Check transitions
@@ -116,23 +129,41 @@ public class StateMachine<T extends Enum<T>> {
             }
         }
 
-        if (transitionGraphs.get(targetState) != null) {
-            if (transitionGraphs.get(targetState).first == null || transitionGraphs.get(targetState).first == currentState) {
-                currentTransitionEdge = transitionGraphs.get(targetState).second;
+        if (transitionGraphs.getOrDefault(targetState, null) != null) {
+            if (transitionGraphs.get(targetState).getOrDefault(null, null) != null) {
+                currentTransitionEdge = transitionGraphs.get(targetState).get(null);
                 this.targetState = targetState;
                 inTransitionEdge = true;
 
                 currentTransitionEdge.prepare();
 
-                if (!currentTransitionEdge.update()) return;
+                if (!currentTransitionEdge.update())
+                    return;
+            } else if (transitionGraphs.get(targetState).getOrDefault(currentState, null) != null) {
+                currentTransitionEdge = transitionGraphs.get(targetState).get(currentState);
+                this.targetState = targetState;
+                inTransitionEdge = true;
 
-                inTransitionEdge = false;
-                this.targetState = null;
-                currentTransitionEdge = null;
+                currentTransitionEdge.prepare();
+
+                if (!currentTransitionEdge.update())
+                    return;
             }
         }
 
         completeTransition(targetState);
+
+        inTransitionEdge = false;
+        this.targetState = null;
+        currentTransitionEdge = null;
+    }
+
+    public void cancelActiveTransition() {
+        completeTransition(targetState);
+
+        inTransitionEdge = false;
+        this.targetState = null;
+        currentTransitionEdge = null;
     }
 
     void completeTransition(T targetState) {

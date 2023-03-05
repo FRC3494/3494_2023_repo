@@ -143,13 +143,14 @@ public final class Constants extends AutoConfigurable {
         }
 
         public static final class AutoBalance {
-            public static final double TRIGGER_ANGLE = 10;
+            public static final double TRIGGER_ANGLE = 15;
 
-            public static final double LEVEL_ANGLE = 2;
+            public static final double LEVEL_ANGLE = 5;
 
-            public static final double DRIVE_POWER = 1;
-
-            public static final double DIVIDE_FACTOR = 4;
+            public static final double FAST_POWER = 0.2;
+            public static final double SLOW_POWER = 0.1;
+            public static final double DIVIDE_FACTOR = 3;
+            public static final double DIVIDE_ANGLE = 8.5;
 
             public static final double EXIT_TIME = 3;
         }

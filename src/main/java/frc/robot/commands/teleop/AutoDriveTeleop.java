@@ -11,7 +11,8 @@ public class AutoDriveTeleop extends CommandBase {
 	double rotationVelocity;
 	boolean fieldRelative;
 
-	public AutoDriveTeleop(Drivetrain drivetrain, double xVelocity, double yVelocity, double rotationVelocity, boolean fieldRelative) {
+	public AutoDriveTeleop(Drivetrain drivetrain, double xVelocity, double yVelocity, double rotationVelocity,
+			boolean fieldRelative) {
 		this.drivetrain = drivetrain;
 
 		this.xVelocity = xVelocity;
@@ -24,7 +25,8 @@ public class AutoDriveTeleop extends CommandBase {
 
 	@Override
 	public void execute() {
-		drivetrain.drive(xVelocity + OI.teleopXVelocity(), yVelocity + OI.teleopYVelocity(), rotationVelocity + OI.teleopTurnVelocity(), fieldRelative);
+		drivetrain.drive(xVelocity + OI.teleopXVelocity(), yVelocity + OI.teleopYVelocity(),
+				rotationVelocity + OI.teleopTurnVelocity(), fieldRelative);
 	}
 
 	@Override
@@ -36,4 +38,5 @@ public class AutoDriveTeleop extends CommandBase {
 	public boolean isFinished() {
 		return false;
 	}
+
 }

@@ -19,8 +19,6 @@ public class Robot extends TimedRobot {
 		CommandScheduler.getInstance().run();
 
 		robotContainer.updateShuffleboardObjects();
-		
-		OI.update();
 	}
 
 	@Override
@@ -53,6 +51,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
+		OI.update();
 	}
 
 	@Override
@@ -62,5 +61,6 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void testPeriodic() {
+		OI.update();
 	}
 }
