@@ -169,6 +169,8 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	@SuppressWarnings("ParameterName")
 	public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+		if (locked) return;
+
 		var swerveModuleStates = Constants.Subsystems.Drivetrain.SWERVE_KINEMATICS.toSwerveModuleStates(
 				fieldRelative
 						? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getGyroscopeRotation())
@@ -185,6 +187,21 @@ public class Drivetrain extends SubsystemBase {
 		}
 
 		setModuleStates(swerveModuleStates);
+	}
+
+	boolean locked = false;
+
+	public void lock() {
+		frontLeft.set(0, Math.toRadians(45));
+		frontRight.set(0, -Math.toRadians(45));
+		backLeft.set(0, -Math.toRadians(45));
+		backRight.set(0, Math.toRadians(45));
+
+		locked = true;
+	}
+
+	public void unlock() {
+		locked = false;
 	}
 
 	/**

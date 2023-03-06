@@ -83,8 +83,12 @@ public final class OI {
         return primaryController.a(eventLoop);
     }
 
-    public static BooleanEvent printOdometryEvent() {
+    public static BooleanEvent driveTrainLock() {
         return primaryController.b(eventLoop);
+    }
+
+    public static BooleanEvent printOdometryEvent() {
+        return rightButtonBoard.button(12, eventLoop);
     }
 
     private static Joystick leftButtonBoard = new Joystick(Constants.OI.SECONDARY_LEFT_CONTROLLER_PORT);
@@ -121,7 +125,7 @@ public final class OI {
     }
 
     public static BooleanEvent armHybrid() {
-        return rightButtonBoard.button(1, eventLoop);
+        return rightButtonBoard.button(8, eventLoop);
     }
 
     public static BooleanEvent armHopperGrab() {
@@ -179,5 +183,10 @@ public final class OI {
     public static BooleanEvent hopperRetract() {
         // return leftButtonBoard.button(20, eventLoop);
         return leftButtonBoard.button(3, eventLoop);
+    }
+
+    public static BooleanEvent zeroArm() {
+        // return leftButtonBoard.button(20, eventLoop);
+        return rightButtonBoard.button(10, eventLoop);
     }
 }

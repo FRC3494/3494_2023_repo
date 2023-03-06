@@ -117,6 +117,12 @@ public class Arm extends SubsystemBase {
         setForearmState(ForearmState.Store);
     }
 
+    public void declareInStore() {
+        forearmMotor.getEncoder().setPosition(
+                (-Constants.Subsystems.Arm.FOREARM_POSITION.get(ForearmState.Store) / 360.0)
+                        / Constants.Subsystems.Arm.FOREARM_MOTOR_REDUCTION);
+    }
+
     // region shoulder hardware interfacing
 
     double getShoulderAngle() { // Striaght up is zero, positive is towards the front

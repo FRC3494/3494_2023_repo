@@ -217,8 +217,19 @@ public class RobotContainer {
 			drivetrain.resetOdometry(AutoLineUpTeleopGroup.get(drivetrain, robotPosition));
 		});
 
+		OI.driveTrainLock().rising().ifHigh(() -> {
+			drivetrain.lock();
+		});
+		OI.driveTrainLock().falling().ifHigh(() -> {
+			drivetrain.unlock();
+		});
+
 		OI.printOdometryEvent().rising().ifHigh(() -> {
 			System.out.println("Current Odo " + drivetrain.getPose().getX() + ":" + drivetrain.getPose().getY());
+		});
+
+		OI.zeroArm().rising().ifHigh(() -> {
+			arm.declareInStore();
 		});
 
 		OI.clawOpenEvent().rising().ifHigh(() -> {
