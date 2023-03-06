@@ -92,6 +92,10 @@ public final class OI {
     // private static Joystick rightButtonBoard = new
     // Joystick(Constants.OI.SECONDARY_RIGHT_CONTROLLER_PORT);
 
+    public static BooleanEvent armCancelToggle() {
+        return leftButtonBoard.button(7, eventLoop);
+    }
+
     public static BooleanEvent armBase1Cube1() {
         return leftButtonBoard.button(1, eventLoop);
     }
@@ -117,7 +121,7 @@ public final class OI {
     }
 
     public static BooleanEvent armHybrid() {
-        return leftButtonBoard.button(7, eventLoop);
+        return rightButtonBoard.button(1, eventLoop);
     }
 
     public static BooleanEvent armHopperGrab() {
@@ -152,7 +156,28 @@ public final class OI {
         return leftButtonBoard.axisLessThan(1, -0.1, eventLoop);
     }
 
-    public static BooleanEvent abortArmMovement() {
+    public static BooleanEvent shoulderBase1() {
+        // return leftButtonBoard.button(21, eventLoop);
         return leftButtonBoard.button(1, eventLoop);
+    }
+
+    public static BooleanEvent shoulderBase2() {
+        // return leftButtonBoard.button(20, eventLoop);
+        return leftButtonBoard.button(2, eventLoop);
+    }
+
+    public static BooleanEvent shoulderBase4() {
+        // return leftButtonBoard.button(20, eventLoop);
+        return leftButtonBoard.button(3, eventLoop);
+    }
+
+    public static BooleanEvent hopperExtend() {
+        // return leftButtonBoard.button(20, eventLoop);
+        return leftButtonBoard.button(2, eventLoop);
+    }
+
+    public static BooleanEvent hopperRetract() {
+        // return leftButtonBoard.button(20, eventLoop);
+        return leftButtonBoard.button(3, eventLoop);
     }
 }

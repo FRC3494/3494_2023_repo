@@ -27,7 +27,6 @@ public class StateMachine<T extends Enum<T>> {
      */
     public StateMachine(T initialState) {
         currentState = initialState;
-
     }
 
     /*
@@ -62,6 +61,10 @@ public class StateMachine<T extends Enum<T>> {
         transitionGraphs.computeIfAbsent(to, k -> new HashMap<>());
 
         transitionGraphs.get(to).put(from, transitionGraph);
+    }
+
+    public void forceState(T state) {
+        currentState = state;
     }
 
     /*

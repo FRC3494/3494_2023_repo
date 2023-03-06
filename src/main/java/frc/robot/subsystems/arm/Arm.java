@@ -100,7 +100,7 @@ public class Arm extends SubsystemBase {
         return isDoneMoving;
     }
 
-    public void cancelCurrentMovement() {
+    public void startCancelMode() {
         armStateMachine.cancelActiveTransition();
 
         setForearmTargetAngle(getForearmAngle());
@@ -108,6 +108,13 @@ public class Arm extends SubsystemBase {
         allowForearmDirectDrive = true;
 
         System.out.println("!!! cancelled !!!");
+    }
+
+    public void endCancelMode() {
+        armStateMachine.forceState(ArmPosition.Store);
+
+        setShoulderState(ShoulderState.Base2);
+        setForearmState(ForearmState.Store);
     }
 
     // region shoulder hardware interfacing
@@ -137,7 +144,7 @@ public class Arm extends SubsystemBase {
 
     long lastShoulderActuationTime = System.currentTimeMillis();
 
-    void setShoulderState(ShoulderState newState) {
+    public void setShoulderState(ShoulderState newState) {
         switch (newState) {
             case Base1:
                 setTopPiston(Value.kReverse);
@@ -252,7 +259,7 @@ public class Arm extends SubsystemBase {
 
     long lastHopperActuationTime = System.currentTimeMillis();
 
-    void setHopperState(HopperState newState) {
+    public void setHopperState(HopperState newState) {
         hopperPiston.set((newState == HopperState.Extended) ? Value.kForward : Value.kReverse);
 
         lastHopperActuationTime = System.currentTimeMillis();

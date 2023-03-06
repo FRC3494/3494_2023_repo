@@ -28,6 +28,8 @@ import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmPosition;
+import frc.robot.subsystems.arm.HopperState;
+import frc.robot.subsystems.arm.ShoulderState;
 import frc.robot.subsystems.claw.Claw;
 import frc.robot.subsystems.claw.ClawState;
 
@@ -36,15 +38,19 @@ public class RobotContainer {
 	public final Pneumatics pneumatics;
 	public final Arm arm;
 	public final Claw claw;
+	private ShuffleboardTab mainTab;
 	private ShuffleboardTab autoTab;
 	private ShuffleboardTab fieldTab;
-
+	private ShuffleboardTab armCancelTab;
+	
 	private SendableChooser<String> autoChooser;
+	private boolean armCancelLit = false;
 
 	private Field2d robotPosition;
 
 	private Command autoBalanceDrivetrainCommand;
 	private boolean alternateAutoBalance = true;
+	private boolean armInCancelMode = true;
 
 	public RobotContainer() {
 		NavX.getNavX();
@@ -148,8 +154,10 @@ public class RobotContainer {
 
 		autoChooser.setDefaultOption("Choose an Auto!", null);
 
+		mainTab = Shuffleboard.getTab("Main");
 		autoTab = Shuffleboard.getTab("Autonomous");
 		fieldTab = Shuffleboard.getTab("Field");
+		armCancelTab = Shuffleboard.getTab("Arm Cancel Indicator");
 
 		autoTab.add(autoChooser).withSize(2, 1);
 
@@ -165,10 +173,28 @@ public class RobotContainer {
 		fieldTab.addDouble("NavX Pitch", () -> NavX.getPitch()).withPosition(8, 0);
 		fieldTab.addDouble("NavX Roll", () -> NavX.getRoll()).withPosition(8, 1);
 		fieldTab.addDouble("NavX Yaw", () -> NavX.getYaw()).withPosition(8, 2);
+
+		armCancelTab.addBoolean("Arm Cancel Indicator", () -> armCancelLit).withPosition(0, 0).withSize(9, 4);
 	}
 
+	double previousTime = System.currentTimeMillis() / 1000;
+	double armCancelLitAccumulator = 0;
+
 	public void updateShuffleboardObjects() {
+		double currentTime = System.currentTimeMillis() / 1000;
+		double deltaTime = currentTime - previousTime;
+
 		robotPosition.setRobotPose(drivetrain.getPose());
+
+		if (armInCancelMode) {
+			armCancelLitAccumulator += deltaTime;
+
+			if (armCancelLitAccumulator >= 500) {
+				armCancelLit = !armCancelLit;
+
+				armCancelLitAccumulator = 0;
+			}
+		} else armCancelLit = false;
 	}
 
 	public void configureButtonBindings() {
@@ -218,48 +244,104 @@ public class RobotContainer {
 					arm.disableForearmDirectDrive();
 				});
 
+		OI.shoulderBase1().rising().ifHigh(() -> {
+			if (!armInCancelMode) return;
+
+			arm.setShoulderState(ShoulderState.Base1);
+		});
+		OI.shoulderBase2().rising().ifHigh(() -> {
+			if (!armInCancelMode) return;
+
+			arm.setShoulderState(ShoulderState.Base2);
+		});
+		OI.shoulderBase4().rising().ifHigh(() -> {
+			if (!armInCancelMode) return;
+
+			arm.setShoulderState(ShoulderState.Base4);
+		});
+
+		OI.hopperExtend().rising().ifHigh(() -> {
+			if (!armInCancelMode) return;
+
+			arm.setHopperState(HopperState.Extended);
+		});
+		OI.hopperRetract().rising().ifHigh(() -> {
+			if (!armInCancelMode) return;
+
+			arm.setHopperState(HopperState.Retracted);
+		});
+
+		OI.armCancelToggle().rising().ifHigh(() -> {
+			if (!armInCancelMode) {
+				Shuffleboard.selectTab(armCancelTab.getTitle());
+				arm.startCancelMode();
+			} else {
+				arm.endCancelMode();
+				Shuffleboard.selectTab(mainTab.getTitle());
+				armCancelLit = false;
+			}
+
+			armInCancelMode = !armInCancelMode;
+		});
+
 		OI.armHopperGrab().rising().ifHigh(() -> {
+			if (armInCancelMode) return;
+
 			arm.setArmState(ArmPosition.LowerHopperGrab);
 		});
 
 		OI.armGroundIntake().rising().ifHigh(() -> {
+			if (armInCancelMode) return;
+			
 			arm.setArmState(ArmPosition.GroundIntake);
 		});
 
 		OI.armDoubleSubstation().rising().ifHigh(() -> {
+			if (armInCancelMode) return;
+			
 			arm.setArmState(ArmPosition.DoubleSubstation);
 		});
 
 		OI.armHybrid().rising().ifHigh(() -> {
+			if (armInCancelMode) return;
+			
 			arm.setArmState(ArmPosition.Hybrid);
 		});
 
 		OI.armStore().rising().ifHigh(() -> {
+			if (armInCancelMode) return;
+			
 			arm.setArmState(ArmPosition.Store);
 		});
 
 		OI.armBase4Cone2().rising().ifHigh(() -> {
+			if (armInCancelMode) return;
+			
 			arm.setArmState(ArmPosition.Base4Cone2);
 		});
 
 		OI.armBase4Cube2().rising().ifHigh(() -> {
+			if (armInCancelMode) return;
+			
 			arm.setArmState(ArmPosition.Base4Cube2);
 		});
 
 		OI.armBase4Cube1().rising().ifHigh(() -> {
+			if (armInCancelMode) return;
+			
 			arm.setArmState(ArmPosition.Base4Cube1);
 		});
 
 		OI.armBase2Cone1().rising().ifHigh(() -> {
+			if (armInCancelMode) return;
+			
 			arm.setArmState(ArmPosition.Base2Cone1);
 		});
 
 		OI.armBase1Cube1().rising().ifHigh(() -> {
-			// arm.setArmState(ArmPosition.Base1Cube1);
-			arm.cancelCurrentMovement();
-		});
-		OI.abortArmMovement().rising().ifHigh(() -> {
-			arm.cancelCurrentMovement();
+			if (armInCancelMode) return;
+			
+			arm.setArmState(ArmPosition.Base1Cube1);
 		});
 	}
 }

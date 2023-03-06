@@ -32,6 +32,7 @@ public class AutoBalance extends CommandBase {
 	public void execute() {
 		double currentTime = System.currentTimeMillis() / 1000;
 		double deltaTime = currentTime - previousTime;
+		
 		if (Math.abs(NavX.getRoll()) > 20) {
 			hitPeak = true;
 		} else if (Math.abs(NavX.getRoll()) < Constants.Commands.AutoBalance.TRIGGER_ANGLE && hitPeak) {
