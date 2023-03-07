@@ -8,12 +8,14 @@ import frc.robot.subsystems.NavX;
 public class AutoBalance extends CommandBase {
 	public Drivetrain drivetrain;
 
-	double divider = 5;
+	double accumulator = 0;
 
 	double balancedTime = 0;
 
 	double previousTime = 0;
 	boolean hitPeak = false;
+	
+	double lastAngle = 0;
 
 	public AutoBalance(Drivetrain drivetrain) {
 		this.drivetrain = drivetrain;
@@ -24,57 +26,38 @@ public class AutoBalance extends CommandBase {
 	@Override
 	public void initialize() {
 		previousTime = System.currentTimeMillis() / 1000;
-		divider = 5;
+		accumulator = 0;
 		balancedTime = 0;
+		hitPeak = false;
 	}
 
 	@Override
 	public void execute() {
 		double currentTime = System.currentTimeMillis() / 1000;
 		double deltaTime = currentTime - previousTime;
-		
-		if (Math.abs(NavX.getRoll()) > 20) {
-			hitPeak = true;
-		} else if (Math.abs(NavX.getRoll()) < Constants.Commands.AutoBalance.TRIGGER_ANGLE && hitPeak) {
-			setDrivetrain(-Constants.Commands.AutoBalance.SLOW_POWER, 0, 0, false);
-		} else if (Math.abs(NavX.getRoll()) < 5 && hitPeak) {
+
+		double currentAngle = NavX.getPitch();
+		//double angleDerivative = lastAngle - currentAngle;
+		lastAngle = currentAngle;
+
+		//double angleFactor = Math.min(1 / Math.max(Math.abs(angleDerivative), 0.000001), 10.0) / 4.5;
+
+		if (Math.abs(currentAngle) < Constants.Commands.AutoBalance.LEVEL_ANGLE) {
 			setDrivetrain(0, 0, 0, false);
 
-		} else {
-			setDrivetrain(Constants.Commands.AutoBalance.FAST_POWER * staticPowerCurve(-NavX.getRoll() / 3), 0, 0,
-					false);
-		}
+			balancedTime += deltaTime;
+		} else  {
+			double curvedPower = Constants.Commands.AutoBalance.SLOW_POWER * Math.pow(currentAngle / 12, 5);
 
-		/*
-		 * if (Math.abs(NavX.getRoll()) <= Constants.Commands.AutoBalance.DIVIDE_ANGLE)
-		 * {
-		 * divider += Constants.Commands.AutoBalance.DIVIDE_FACTOR;
-		 * // setDrivetrain(0, 0, 0.01, false);
-		 * balancedTime += deltaTime;
-		 * }
-		 * 
-		 * else {
-		 * balancedTime = 0;
-		 * }
-		 */
+			setDrivetrain(0, Math.min(Math.max(curvedPower, -Constants.Commands.AutoBalance.FAST_POWER), Constants.Commands.AutoBalance.FAST_POWER), 0, false);
+			
+			balancedTime = 0;
+		}
 	}
 
 	@Override
 	public boolean isFinished() {
-		return false;
-		// return balancedTime >= Constants.Commands.AutoBalance.EXIT_TIME;
-	}
-
-	public double powerCurve(double x) {
-		double correctedPower = Math.pow(NavX.getRoll() / divider, 3);
-
-		return Math.min(Math.max(correctedPower, -1), 1);
-	}
-
-	public double staticPowerCurve(double x) {
-		double correctedPower = Math.pow(NavX.getRoll() / 5, 3);
-
-		return Math.min(Math.max(correctedPower, -1), 1);
+		return balancedTime >= Constants.Commands.AutoBalance.EXIT_TIME;
 	}
 
 	public void setDrivetrain(double x, double y, double w, boolean fieldRelative) {

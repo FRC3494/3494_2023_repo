@@ -20,9 +20,11 @@ import frc.robot.commands.auto.AutoBalance;
 import frc.robot.commands.auto.AutoSetArm;
 import frc.robot.commands.auto.AutoSetClaw;
 import frc.robot.commands.auto.FollowPath;
+import frc.robot.commands.groups.AutoBalanceGroup;
 import frc.robot.commands.groups.AutoBalanceTeleopGroup;
 import frc.robot.commands.groups.AutoLineUpTeleopGroup;
 import frc.robot.commands.teleop.TeleopDrive;
+import frc.robot.subsystems.Camera;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.Pneumatics;
@@ -38,6 +40,7 @@ public class RobotContainer {
 	public final Pneumatics pneumatics;
 	public final Arm arm;
 	public final Claw claw;
+	public final Camera camera;
 	private ShuffleboardTab mainTab;
 	private ShuffleboardTab autoTab;
 	private ShuffleboardTab fieldTab;
@@ -50,7 +53,7 @@ public class RobotContainer {
 
 	private Command autoBalanceDrivetrainCommand;
 	private boolean alternateAutoBalance = true;
-	private boolean armInCancelMode = true;
+	private boolean armInCancelMode = false;
 
 	public RobotContainer() {
 		NavX.getNavX();
@@ -58,10 +61,12 @@ public class RobotContainer {
 		pneumatics = new Pneumatics();
 		arm = new Arm();
 		claw = new Claw();
+		camera = new Camera();
 
 		// autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
 
 		autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
+
 
 		// Configure the button bindings
 		configureButtonBindings();
@@ -103,7 +108,7 @@ public class RobotContainer {
 							new AutoSetArm(container.arm, ArmPosition.Store),
 							new AutoSetClaw(container.claw, ClawState.Closed)),
 					pathFollow(container, "Auto1 Segment1"),
-					new AutoBalance(container.drivetrain));
+					AutoBalanceGroup.get(container.drivetrain));
 
 		}),
 		Full("Full", (container) -> pathFollow(container, "Full")),
@@ -288,7 +293,7 @@ public class RobotContainer {
 				arm.startCancelMode();
 			} else {
 				arm.endCancelMode();
-				Shuffleboard.selectTab(mainTab.getTitle());
+				//Shuffleboard.selectTab(mainTab.getTitle());
 				armCancelLit = false;
 			}
 
