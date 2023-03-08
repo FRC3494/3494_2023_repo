@@ -22,6 +22,8 @@ public class Arm extends SubsystemBase {
     private DoubleSolenoid topPiston;
     private DoubleSolenoid bottomPiston;
 
+    AnalogPotentiometer shoulderPotentiometer;
+
     private DoubleSolenoid hopperPiston;
 
     private CANSparkMax forearmMotor;
@@ -66,6 +68,8 @@ public class Arm extends SubsystemBase {
         // AnalogPotentiometer(Constants.Subsystems.Arm.FOREARM_ENCODER_CHANNEL, 360);
         forearmIMU = new ADXL345_I2C(Port.kOnboard, Range.k16G);
 
+        shoulderPotentiometer = new AnalogPotentiometer(Constants.Subsystems.Arm.SHOULDER_POTENTIOMETER_CHANNEL, 1);
+
         armStateMachine = new StateMachine<>(ArmPosition.Store);
         setShoulderState(ShoulderState.Base2);
         setForearmState(ForearmState.Store); // BE CAREFUL HERE, THESE CALLS SYNC UP EVERYTHING!!!
@@ -100,12 +104,12 @@ public class Arm extends SubsystemBase {
         return isDoneMoving;
     }
 
+    boolean inCancelMode = false;
+
     public void startCancelMode() {
         armStateMachine.cancelActiveTransition();
 
         setForearmTargetAngle(getForearmAngle());
-
-        allowForearmDirectDrive = true;
 
         System.out.println("!!! cancelled !!!");
     }
@@ -121,6 +125,8 @@ public class Arm extends SubsystemBase {
         forearmMotor.getEncoder().setPosition(
                 (-Constants.Subsystems.Arm.FOREARM_POSITION.get(ForearmState.Store) / 360.0)
                         / Constants.Subsystems.Arm.FOREARM_MOTOR_REDUCTION);
+
+        armStateMachine.transitionTo(ArmPosition.Store);
     }
 
     // region shoulder hardware interfacing
@@ -178,7 +184,8 @@ public class Arm extends SubsystemBase {
     }
 
     public boolean isAtShoulderState(ShoulderState state) {
-        return (System.currentTimeMillis() - lastShoulderActuationTime) >= 1500; // TODO: check sensors
+        return Math.abs(shoulderPotentiometer.get() - Constants.Subsystems.Arm.SHOULDER_POSITIONS.get(state)) <= Constants.Subsystems.Arm.SHOULDER_TARGET_TOLERANCE;
+        //return (System.currentTimeMillis() - lastShoulderActuationTime) >= 1500; // TODO: check sensors
     }
 
     // endregion
@@ -203,8 +210,6 @@ public class Arm extends SubsystemBase {
     }
 
     void setForearmState(ForearmState newState) {
-        allowForearmDirectDrive = false;
-
         setForearmTargetAngle(Constants.Subsystems.Arm.FOREARM_POSITION.get(newState));
 
         currentForearmState = newState;
@@ -229,11 +234,10 @@ public class Arm extends SubsystemBase {
         return there;
     }
 
-    boolean allowForearmDirectDrive = true;
     boolean forearmDirectDriveEnabled = false;
 
     public void enableForearmDirectDrive() {
-        if (!allowForearmDirectDrive)
+        if (!isDoneMoving)
             return;
 
         forearmDirectDriveEnabled = true;
@@ -242,17 +246,27 @@ public class Arm extends SubsystemBase {
     public void disableForearmDirectDrive() {
         forearmDirectDriveEnabled = false;
 
-        if (!allowForearmDirectDrive)
+        if (!isDoneMoving)
             return;
 
         setForearmTargetAngle(getForearmAngle());
     }
 
     public void directDriveForearm(double power) {
-        if (!allowForearmDirectDrive || !forearmDirectDriveEnabled)
+        if (inCancelMode) {
+            forearmMotor.set(power);
+
+            return;
+        }
+
+        if (!isDoneMoving || !forearmDirectDriveEnabled)
             return;
 
         forearmMotor.set(power);
+    }
+
+    public boolean isInCancelMode() {
+        return inCancelMode;
     }
 
     // endregion
@@ -355,7 +369,6 @@ public class Arm extends SubsystemBase {
     TransitionGraphNode done() {
         return new TransitionGraphNode(
                 () -> {
-                    allowForearmDirectDrive = true;
                     isDoneMoving = true;
                     System.out.println("--------------------");
                 },
