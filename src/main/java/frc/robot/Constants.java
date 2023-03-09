@@ -26,7 +26,7 @@ public final class Constants extends AutoConfigurable {
             public static int FOREARM_ENCODER_CHANNEL = 5;
             public static double FOREARM_ENCODER_OFFSET = 331.12251217887376;
 
-            public static double FOREARM_TARGET_POSITION_TOLERANCE = 10; // degrees
+            public static double FOREARM_TARGET_POSITION_TOLERANCE = 2; // degrees
 
             public static int SHOULDER_POTENTIOMETER_CHANNEL = 4;
 
@@ -44,11 +44,11 @@ public final class Constants extends AutoConfigurable {
                     put(ForearmState.Base4Cube2, -82.0); // real -80
                     put(ForearmState.Base4Cone2, -99.1); // real -99.0
                     // Base4Cone1 -76.1 // real -74.8
-                    put(ForearmState.Base4Cube1, -57.7); // real -56.8
+                    put(ForearmState.Base4Cube1, -65.0); // real -56.8
                     put(ForearmState.LowerHopperGrab, -39.0); // -33.09
                     put(ForearmState.UpperHopperGrab, -49.0); // -33.09
                     put(ForearmState.Intermediate, 66.7); // real 47.9
-                    put(ForearmState.Store, -20.0); // real -20.0
+                    put(ForearmState.Store, -12.0); // real -20.0
                     put(ForearmState.GroundIntake, 15.0); // real 0.0
                     put(ForearmState.DoubleSubstation, -99.1); // real -99.0
                     put(ForearmState.Base1Cube1, 101.3); // real 67.4 // change to base2!!!

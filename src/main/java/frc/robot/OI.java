@@ -181,12 +181,12 @@ public final class OI {
 
     public static BooleanEvent hopperExtend() {
         // return leftButtonBoard.button(20, eventLoop);
-        return leftButtonBoard.button(2, eventLoop);
+        return rightButtonBoard.button(1, eventLoop);
     }
 
     public static BooleanEvent hopperRetract() {
         // return leftButtonBoard.button(20, eventLoop);
-        return leftButtonBoard.button(3, eventLoop);
+        return rightButtonBoard.button(2, eventLoop);
     }
 
     public static BooleanEvent zeroArm() {

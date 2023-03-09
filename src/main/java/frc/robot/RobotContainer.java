@@ -44,10 +44,8 @@ public class RobotContainer {
 	public final Claw claw;
 	public final Leds leds;
 	public final Camera camera;
-	//private ShuffleboardTab mainTab;
-	private ShuffleboardTab autoTab;
+	private ShuffleboardTab mainTab;
 	private ShuffleboardTab fieldTab;
-	private ShuffleboardTab armCancelTab;
 	
 	private SendableChooser<String> autoChooser;
 
@@ -161,12 +159,10 @@ public class RobotContainer {
 
 		autoChooser.setDefaultOption("Choose an Auto!", null);
 
-		//mainTab = Shuffleboard.getTab("Main");
-		autoTab = Shuffleboard.getTab("Autonomous");
+		mainTab = Shuffleboard.getTab("Main");
 		fieldTab = Shuffleboard.getTab("Field");
-		armCancelTab = Shuffleboard.getTab("Arm Cancel Indicator");
 
-		autoTab.add(autoChooser).withSize(2, 1);
+		mainTab.add(autoChooser).withSize(2, 1).withPosition(0, 0);
 
 		robotPosition = new Field2d();
 
@@ -181,7 +177,9 @@ public class RobotContainer {
 		fieldTab.addDouble("NavX Roll", () -> NavX.getRoll()).withPosition(8, 1);
 		fieldTab.addDouble("NavX Yaw", () -> NavX.getYaw()).withPosition(8, 2);
 
-		armCancelTab.addBoolean("Arm Cancel Indicator", () -> arm.isInCancelMode()).withPosition(0, 0).withSize(9, 4);
+		mainTab.addBoolean("Arm Cancel Indicator", () -> arm.isInCancelMode()).withPosition(0, 1).withSize(2, 1);
+
+        mainTab.add(camera.getCamera()).withPosition(2, 0).withSize(4, 4);
 	}
 
 	double previousTime = System.currentTimeMillis() / 1000;
@@ -245,13 +243,19 @@ public class RobotContainer {
 			arm.directDriveForearm(Constants.OI.FOREARM_FINE_ADJUST_SPEED);
 		});
 		OI.forearmFineAdjustPositiveEvent().rising().ifHigh(() -> arm.enableForearmDirectDrive());
-		OI.forearmFineAdjustPositiveEvent().falling().ifHigh(() -> arm.disableForearmDirectDrive());
+		OI.forearmFineAdjustPositiveEvent().falling().ifHigh(() -> {
+			arm.directDriveForearm(0);
+            arm.disableForearmDirectDrive();
+        });
 
 		OI.forearmFineAdjustNegativeEvent().ifHigh(() -> {
 			arm.directDriveForearm(-Constants.OI.FOREARM_FINE_ADJUST_SPEED);
 		});
 		OI.forearmFineAdjustNegativeEvent().rising().ifHigh(() -> arm.enableForearmDirectDrive());
-		OI.forearmFineAdjustNegativeEvent().falling().ifHigh(() -> arm.disableForearmDirectDrive());
+		OI.forearmFineAdjustNegativeEvent().falling().ifHigh(() -> {
+			arm.directDriveForearm(0);
+            arm.disableForearmDirectDrive();
+        });
 
 		OI.shoulderBase1().rising().ifHigh(() -> {
 			if (!arm.isInCancelMode()) return;
@@ -270,23 +274,25 @@ public class RobotContainer {
 		});
 
 		OI.hopperExtend().rising().ifHigh(() -> {
-			if (!arm.isInCancelMode()) return;
-
-			arm.setHopperState(HopperState.Extended);
+            arm.setHopperState(HopperState.Extended);
 		});
-		OI.hopperRetract().rising().ifHigh(() -> {
-			if (!arm.isInCancelMode()) return;
 
-			arm.setHopperState(HopperState.Retracted);
+		OI.hopperExtend().falling().ifHigh(() -> {
+			if (arm.isInCancelMode()) return;
+
+            arm.setHopperState(HopperState.Retracted);
+		});
+
+		OI.hopperRetract().rising().ifHigh(() -> {
+			if (arm.isInCancelMode())
+			    arm.setHopperState(HopperState.Retracted);
 		});
 
 		OI.armCancelToggle().rising().ifHigh(() -> {
 			if (!arm.isInCancelMode()) {
-				Shuffleboard.selectTab(armCancelTab.getTitle());
 				arm.startCancelMode();
 			} else {
 				arm.endCancelMode();
-				//Shuffleboard.selectTab(mainTab.getTitle());
 			}
 		});
 
