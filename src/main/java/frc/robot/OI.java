@@ -50,7 +50,7 @@ public final class OI {
         double angle = Math.atan2(forward, left) + Math.toRadians(offset);
         double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), Constants.OI.MAX_DRIVE_SPEED);
 
-        return modifyAxis(-velocity * Math.cos(angle)) * Constants.OI.MAX_DRIVE_SPEED;
+        return modifyAxis(-velocity * Math.cos(angle)) * Constants.OI.MAX_DRIVE_SPEED * driveMultiplier();
     }
 
     public static double teleopYVelocity() {
@@ -60,11 +60,15 @@ public final class OI {
         double angle = Math.atan2(forward, left) + Math.toRadians(offset);
         double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), Constants.OI.MAX_DRIVE_SPEED);
 
-        return modifyAxis(velocity * Math.sin(angle)) * Constants.OI.MAX_DRIVE_SPEED;
+        return modifyAxis(velocity * Math.sin(angle)) * Constants.OI.MAX_DRIVE_SPEED * driveMultiplier();
     }
 
     public static double teleopTurnVelocity() {
-        return modifyAxis(primaryController.getRightX()) * Constants.OI.MAX_TURN_SPEED;
+        return modifyAxis(primaryController.getRightX()) * Constants.OI.MAX_TURN_SPEED * driveMultiplier();
+    }
+
+    public static double driveMultiplier() {
+        return (primaryController.getRightTriggerAxis() >= 0.1) ? 0.1 : ((primaryController.getLeftTriggerAxis() >= 0.1) ? 2 : 1);
     }
 
     public static double armDirectDrivePower() {
@@ -177,16 +181,26 @@ public final class OI {
 
     public static BooleanEvent hopperExtend() {
         // return leftButtonBoard.button(20, eventLoop);
-        return leftButtonBoard.button(2, eventLoop);
+        return rightButtonBoard.button(1, eventLoop);
     }
 
     public static BooleanEvent hopperRetract() {
         // return leftButtonBoard.button(20, eventLoop);
-        return leftButtonBoard.button(3, eventLoop);
+        return rightButtonBoard.button(2, eventLoop);
     }
 
     public static BooleanEvent zeroArm() {
         // return leftButtonBoard.button(20, eventLoop);
         return rightButtonBoard.button(10, eventLoop);
+    }
+
+    public static BooleanEvent ledsIndicateCone() {
+        // return leftButtonBoard.button(20, eventLoop);
+        return rightButtonBoard.button(6, eventLoop);
+    }
+
+    public static BooleanEvent ledsIndicateCube() {
+        // return leftButtonBoard.button(20, eventLoop);
+        return rightButtonBoard.button(7, eventLoop);
     }
 }

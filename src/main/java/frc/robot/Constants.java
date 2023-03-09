@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.arm.ForearmState;
+import frc.robot.subsystems.arm.ShoulderState;
 
 public final class Constants extends AutoConfigurable {
     public static final class Subsystems {
@@ -22,10 +23,14 @@ public final class Constants extends AutoConfigurable {
             public static int FOREARM_MOTOR_CHANNEL = 9;
             public static double FOREARM_MOTOR_REDUCTION = (1.0 / 60.0) * (10.0 / 22.0);
 
-            public static int FOREARM_ENCODER_CHANNEL = 2;
+            public static int FOREARM_ENCODER_CHANNEL = 5;
             public static double FOREARM_ENCODER_OFFSET = 331.12251217887376;
 
-            public static double FOREARM_TARGET_POSITION_TOLERANCE = 10; // degrees
+            public static double FOREARM_TARGET_POSITION_TOLERANCE = 2; // degrees
+
+            public static int SHOULDER_POTENTIOMETER_CHANNEL = 4;
+
+            public static double SHOULDER_TARGET_TOLERANCE = 0.012;
 
             public static class PIDF { // TODO: TUNE
                 public static double P = 0.1;
@@ -39,16 +44,24 @@ public final class Constants extends AutoConfigurable {
                     put(ForearmState.Base4Cube2, -82.0); // real -80
                     put(ForearmState.Base4Cone2, -99.1); // real -99.0
                     // Base4Cone1 -76.1 // real -74.8
-                    put(ForearmState.Base4Cube1, -57.7); // real -56.8
+                    put(ForearmState.Base4Cube1, -65.0); // real -56.8
                     put(ForearmState.LowerHopperGrab, -39.0); // -33.09
                     put(ForearmState.UpperHopperGrab, -49.0); // -33.09
                     put(ForearmState.Intermediate, 66.7); // real 47.9
-                    put(ForearmState.Store, -20.0); // real -20.0
+                    put(ForearmState.Store, -12.0); // real -20.0
                     put(ForearmState.GroundIntake, 15.0); // real 0.0
                     put(ForearmState.DoubleSubstation, -99.1); // real -99.0
                     put(ForearmState.Base1Cube1, 101.3); // real 67.4 // change to base2!!!
                     put(ForearmState.Base2Cone1, 108.7); // real 90
                     put(ForearmState.Base1Hybrid, 26.5); // real 13.0
+                }
+            };
+
+            public static HashMap<ShoulderState, Double> SHOULDER_POSITIONS = new HashMap<>() {
+                {
+                    put(ShoulderState.Base1, 0.191);
+                    put(ShoulderState.Base2, 0.267);
+                    put(ShoulderState.Base4, 0.390);
                 }
             };
         }
@@ -119,6 +132,12 @@ public final class Constants extends AutoConfigurable {
 
             public static double MIN_PRESSURE = 110;
             public static double MAX_PRESSURE = 120;
+        }
+    
+        public static final class Leds {
+            public static int LED_PORT = 0;
+
+            public static int STRIP_LENGTH = 12;
         }
     }
 

@@ -6,9 +6,9 @@ import frc.robot.OI;
 public class TeleopDriveInterruptor extends CommandBase {
 	@Override
 	public boolean isFinished() {
-		if (OI.teleopXVelocity() != 0) return true;
-		if (OI.teleopYVelocity() != 0) return true;
-		if (OI.teleopTurnVelocity() != 0) return true;
+		if (Math.abs(OI.teleopXVelocity()) >= 0.1 ||
+		    Math.abs(OI.teleopYVelocity()) >= 0.1 ||
+		    Math.abs(OI.teleopTurnVelocity()) >= 0.1) return true;
 			
 		return false;
 	}
