@@ -50,21 +50,26 @@ public final class OI {
     public static double teleopXVelocity() {
         double forward = primaryController.getLeftY();
         double left = primaryController.getLeftX();
-
+        boolean leftDPad = (Math.abs(primaryController.getPOV()-90) < 10);
+        boolean rightDPad = (Math.abs(primaryController.getPOV()-270) < 10);
+        
+        
         double angle = Math.atan2(forward, left) + Math.toRadians(offset);
         double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), Constants.OI.MAX_DRIVE_SPEED);
-
-        return modifyAxis(-velocity * Math.cos(angle)) * Constants.OI.MAX_DRIVE_SPEED * driveMultiplier();
+        double dPadPower = ((leftDPad)? 1.0: 0.0)*Constants.OI.DPAD_SPEED + Constants.OI.DPAD_SPEED*((rightDPad)? 1.0: 0.0);
+        return Math.max(modifyAxis(-velocity * Math.cos(angle)) * Constants.OI.MAX_DRIVE_SPEED * driveMultiplier(), dPadPower);
     }
 
     public static double teleopYVelocity() {
         double forward = primaryController.getLeftY();
         double left = primaryController.getLeftX();
+        boolean upDPad = (Math.abs(primaryController.getPOV()-0) < 10);
+        boolean downDPad = (Math.abs(primaryController.getPOV()-180) < 10);
 
         double angle = Math.atan2(forward, left) + Math.toRadians(offset);
         double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), Constants.OI.MAX_DRIVE_SPEED);
-
-        return modifyAxis(velocity * Math.sin(angle)) * Constants.OI.MAX_DRIVE_SPEED * driveMultiplier();
+        double dPadPower = ((upDPad)? 1.0: 0.0)*Constants.OI.DPAD_SPEED + Constants.OI.DPAD_SPEED*((downDPad)? 1.0: 0.0);
+        return Math.max(modifyAxis(velocity * Math.sin(angle)) * Constants.OI.MAX_DRIVE_SPEED * driveMultiplier(), dPadPower);
     }
 
     public static double teleopTurnVelocity() {

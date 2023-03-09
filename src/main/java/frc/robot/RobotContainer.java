@@ -111,6 +111,7 @@ public class RobotContainer {
 					AutoBalanceGroup.get(container.drivetrain));
 
 		}),
+		JustBalance("JustBalance", (container) ->AutoBalanceGroup.get(container.drivetrain)),
 		Full("Full", (container) -> pathFollow(container, "Full")),
 		ParkTest("Park Test", (container) -> pathFollow(container, "ParkTest")),
 		StarOfDeath("Star of Death", (container) -> pathFollow(container, "Star Of Death")),

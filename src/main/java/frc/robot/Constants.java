@@ -201,6 +201,7 @@ public final class Constants extends AutoConfigurable {
 
         public static final double MAX_DRIVE_SPEED = 1; // m/s
         public static final double MAX_TURN_SPEED = .5; // rad/s
+        public static final double DPAD_SPEED = 0.4;
 
         public static final double FOREARM_FINE_ADJUST_SPEED = 0.3;
     }
