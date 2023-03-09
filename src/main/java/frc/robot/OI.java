@@ -17,6 +17,10 @@ public final class OI {
         offset = NavX.getYaw() - 90;
     }
 
+    public static double getDriveOffset() {
+        return offset;
+    }
+
     private static double deadband(double value, double deadband) {
         if (Math.abs(value) > deadband) {
             if (value > 0.0) {
