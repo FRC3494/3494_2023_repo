@@ -42,7 +42,7 @@ public final class Constants extends AutoConfigurable {
             public static HashMap<ForearmState, Double> FOREARM_POSITION = new HashMap<>() {
                 { // TODO: UPDATE THESE TO ACTUAL ENCODER POSITIONS
                     put(ForearmState.Base4Cube2, -82.0); // real -80
-                    put(ForearmState.Base4Cone2, -99.1); // real -99.0
+                    put(ForearmState.Base4Cone2, -105.1); // real -99.0
                     // Base4Cone1 -76.1 // real -74.8
                     put(ForearmState.Base4Cube1, -65.0); // real -56.8
                     put(ForearmState.LowerHopperGrab, -39.0); // -33.09
@@ -201,7 +201,7 @@ public final class Constants extends AutoConfigurable {
 
         public static final double MAX_DRIVE_SPEED = 1; // m/s
         public static final double MAX_TURN_SPEED = .5; // rad/s
-        public static final double DPAD_SPEED = 0.4;
+        public static final double DPAD_SPEED = 0.1;
 
         public static final double FOREARM_FINE_ADJUST_SPEED = 0.3;
     }

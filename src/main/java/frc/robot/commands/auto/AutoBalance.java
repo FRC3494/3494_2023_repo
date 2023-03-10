@@ -35,6 +35,7 @@ public class AutoBalance extends CommandBase {
 	public void execute() {
 		double currentTime = System.currentTimeMillis() / 1000;
 		double deltaTime = currentTime - previousTime;
+		previousTime = currentTime;
 
 		double currentAngle = NavX.getPitch();
 		//double angleDerivative = lastAngle - currentAngle;

@@ -111,6 +111,14 @@ public class RobotContainer {
 					AutoBalanceGroup.get(container.drivetrain));
 
 		}),
+		PlaceThenPark("Place Then Park", (container) ->{
+			new AutoSetArm(container.arm, ArmPosition.Base4Cone2),
+					new AutoSetClaw(container.claw, ClawState.Open),
+					new WaitCommand(0.5),
+					new ParallelCommandGroup(
+							new AutoSetArm(container.arm, ArmPosition.Store),
+							new AutoSetClaw(container.claw, ClawState.Closed)),
+		})
 		JustBalance("JustBalance", (container) ->AutoBalanceGroup.get(container.drivetrain)),
 		Full("Full", (container) -> pathFollow(container, "Full")),
 		ParkTest("Park Test", (container) -> pathFollow(container, "ParkTest")),
