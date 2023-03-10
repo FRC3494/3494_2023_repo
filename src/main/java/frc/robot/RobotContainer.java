@@ -113,17 +113,22 @@ public class RobotContainer {
 		}),
 		PlaceThenPark("Place Then Park", (container) ->{
 			new AutoSetArm(container.arm, ArmPosition.Base4Cone2),
-					new AutoSetClaw(container.claw, ClawState.Open),
-					new WaitCommand(0.5),
-					new ParallelCommandGroup(
-							new AutoSetArm(container.arm, ArmPosition.Store),
-							new AutoSetClaw(container.claw, ClawState.Closed)),
-		})
-		JustBalance("JustBalance", (container) ->AutoBalanceGroup.get(container.drivetrain)),
-		Full("Full", (container) -> pathFollow(container, "Full")),
-		ParkTest("Park Test", (container) -> pathFollow(container, "ParkTest")),
-		StarOfDeath("Star of Death", (container) -> pathFollow(container, "Star Of Death")),
-		UrMom("ur mom lol", (container) -> pathFollow(container, "ur mom"));
+			new AutoSetClaw(container.claw, ClawState.Open),
+			new WaitCommand(0.5),
+			new ParallelCommandGroup(
+				new AutoSetArm(container.arm, ArmPosition.Store),
+				new AutoSetClaw(container.claw, ClawState.Closed)),
+			pathFollow(container, "LeaveCom");
+		}),
+		PushExitBalance("Push Cube, Exit, Balance", (container) -> {
+			pathFollow(container, "Level1ExitPark"),
+			AutoBalanceGroup.get(container.drivetrain);
+		}),
+		JustBalance("JustBalance", (container) ->AutoBalanceGroup.get(container.drivetrain));
+		//Full("Full", (container) -> pathFollow(container, "Full")),
+		//ParkTest("Park Test", (container) -> pathFollow(container, "ParkTest")),
+		//StarOfDeath("Star of Death", (container) -> pathFollow(container, "Star Of Death")),
+		//UrMom("ur mom lol", (container) -> pathFollow(container, "ur mom"));
 
 		String displayName;
 		Function<RobotContainer, Command> commandFunction;
