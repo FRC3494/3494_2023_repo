@@ -183,6 +183,7 @@ public class RobotContainer {
         mainTab.add(camera.getCamera()).withPosition(2, 0).withSize(4, 4);
 
         mainTab.addDouble("Controller Offset", () -> OI.getDriveOffset()).withPosition(0, 2).withSize(2, 1);
+		leds.setPattern(LedPattern.IDLE);
 	}
 
 	double previousTime = System.currentTimeMillis() / 1000;

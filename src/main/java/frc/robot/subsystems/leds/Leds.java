@@ -22,7 +22,7 @@ public class Leds extends SubsystemBase {
     public void setPattern(LedPattern pattern) {
         switch (pattern) {
             case IDLE:
-                for (int i = 0; i < Constants.Subsystems.Leds.STRIP_LENGTH; i++) buffer.setLED(0, Color.kTeal);
+                for (int i = 0; i < Constants.Subsystems.Leds.STRIP_LENGTH; i++) buffer.setLED(i, Color.kTeal);
             case CUBE:
                 for (int i = 0; i < Constants.Subsystems.Leds.STRIP_LENGTH; i++) buffer.setLED(0, Color.kPurple);
             case CONE:
