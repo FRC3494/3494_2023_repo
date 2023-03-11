@@ -16,12 +16,11 @@ public class NavX {
     }
 
     public static double getPitch() {
-        
-        return ahrs.getPitch();
+        return ahrs.getRoll();
     }
 
     public static double getRoll() {
-        return ahrs.getRoll();
+        return ahrs.getPitch();
     }
 
     public static void putShuffleBoardData() {

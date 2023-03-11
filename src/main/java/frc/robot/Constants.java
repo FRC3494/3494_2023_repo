@@ -130,8 +130,8 @@ public final class Constants extends AutoConfigurable {
         public static final class Pneumatics {
             public static int BASE_PCM = 21;
 
-            public static double MIN_PRESSURE = 110;
-            public static double MAX_PRESSURE = 120;
+            public static double MIN_PRESSURE = 100;
+            public static double MAX_PRESSURE = 110;
         }
     
         public static final class Leds {

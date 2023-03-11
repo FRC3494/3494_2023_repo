@@ -111,18 +111,21 @@ public class RobotContainer {
 					AutoBalanceGroup.get(container.drivetrain));
 
 		}),
-		PlaceThenPark("Place Then Park", (container) ->{
+		PlaceThenPark("Place Then Park", (container) -> {
+			return new SequentialCommandGroup(
 			new AutoSetArm(container.arm, ArmPosition.Base4Cone2),
 			new AutoSetClaw(container.claw, ClawState.Open),
 			new WaitCommand(0.5),
 			new ParallelCommandGroup(
 				new AutoSetArm(container.arm, ArmPosition.Store),
 				new AutoSetClaw(container.claw, ClawState.Closed)),
-			pathFollow(container, "LeaveCom");
+			pathFollow(container, "LeaveCom"));
 		}),
 		PushExitBalance("Push Cube, Exit, Balance", (container) -> {
+			
+			return new SequentialCommandGroup(
 			pathFollow(container, "Level1ExitPark"),
-			AutoBalanceGroup.get(container.drivetrain);
+			AutoBalanceGroup.get(container.drivetrain));
 		}),
 		JustBalance("JustBalance", (container) ->AutoBalanceGroup.get(container.drivetrain));
 		//Full("Full", (container) -> pathFollow(container, "Full")),

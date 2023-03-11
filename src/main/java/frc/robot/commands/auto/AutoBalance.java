@@ -37,7 +37,7 @@ public class AutoBalance extends CommandBase {
 		double deltaTime = currentTime - previousTime;
 		previousTime = currentTime;
 
-		double currentAngle = NavX.getPitch();
+		double currentAngle = NavX.getRoll();
 		//double angleDerivative = lastAngle - currentAngle;
 		lastAngle = currentAngle;
 
