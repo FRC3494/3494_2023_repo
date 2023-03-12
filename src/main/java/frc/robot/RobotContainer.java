@@ -165,6 +165,7 @@ public class RobotContainer {
                             new AutoSetClaw(container.claw, ClawState.Closed)),
                             new SequentialCommandGroup(
                                 pathFollow(container, "LeaveCom"),
+                                new WaitCommand(0.3),
                                 AutoBalanceGroupYAxis.get(container.drivetrain))
                             ));
         }),
@@ -183,11 +184,11 @@ public class RobotContainer {
                     new ParallelCommandGroup(
                             new AutoSetArm(container.arm, ArmPosition.Base4Cube2),
                             pathFollow(container, "LeaveComPickUpReturn")
-                    ),
-                    new WaitCommand(0.2),
+                    )
+                    /*new WaitCommand(0.2),
                     new AutoSetClaw(container.claw, ClawState.Open),
                     new WaitCommand(0.5),
-                    new AutoSetArm(container.arm, ArmPosition.Store)
+                    new AutoSetArm(container.arm, ArmPosition.Store)*/
             );
         }),
         Turn90("Turn 90", (container) -> pathFollow(container, "Turn90"));
