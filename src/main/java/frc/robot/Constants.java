@@ -48,7 +48,7 @@ public final class Constants extends AutoConfigurable {
                     put(ForearmState.LowerHopperGrab, -39.0); // -33.09
                     put(ForearmState.UpperHopperGrab, -49.0); // -33.09
                     put(ForearmState.Intermediate, 66.7); // real 47.9
-                    put(ForearmState.Store, -12.0); // real -20.0
+                    put(ForearmState.Store, -8.0); // real -20.0
                     put(ForearmState.GroundIntake, 15.0); // real 0.0
                     put(ForearmState.DoubleSubstation, -99.1); // real -99.0
                     put(ForearmState.Base1Cube1, 101.3); // real 67.4 // change to base2!!!
@@ -146,13 +146,19 @@ public final class Constants extends AutoConfigurable {
             // public static final PIDController X_CONTROLLER = new PIDController(1, 0, 0);
             // public static final PIDController Y_CONTROLLER = new PIDController(1, 0, 0);
 
-            // public static final PIDController THETA_CONTROLLER = new PIDController(0.22,
-            // 0, 0.05);
+            // public static final PIDController THETA_CONTROLLER = new PIDController(0.22, 0, 0.05);
 
             public static final PIDController X_CONTROLLER = new PIDController(2.5, 1.5, 0);
             public static final PIDController Y_CONTROLLER = new PIDController(2.5, 1, 0);
 
-            public static final PIDController THETA_CONTROLLER = new PIDController(0.22, 0, 0.05);
+            public static final PIDController THETA_CONTROLLER = new PIDController(0.0, 0.0, 0.05);
+
+
+
+            //public static final PIDController X_CONTROLLER = new PIDController(10, 0, 0);
+            //public static final PIDController Y_CONTROLLER = new PIDController(10, 0, 0);
+//
+            //public static final PIDController THETA_CONTROLLER = new PIDController(10, 0, 0);
 
             /*
              * public static final ProfiledPIDController THETA_CONTROLLER = new
@@ -164,12 +170,12 @@ public final class Constants extends AutoConfigurable {
         public static final class AutoBalance {
             public static final double TRIGGER_ANGLE = 23;
 
-            public static final double PEAK_ANGLE = 23;
+            public static final double PEAK_ANGLE = 19;//23
 
             public static final double LEVEL_ANGLE = 5;
 
             public static final double FAST_POWER = 0.1;
-            public static final double SLOW_POWER = 0.05;
+            public static final double SLOW_POWER = 0.0585;//0.05
             public static final double DIVIDE_FACTOR = 3;
             public static final double DIVIDE_ANGLE = 8.5;
 
@@ -184,7 +190,7 @@ public final class Constants extends AutoConfigurable {
 
     public static final class RobotContainer {
         public static final class PathPlanner {
-            public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(2, 1.5);
+            public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(1.5, 1.5);
 
             public static HashMap<String, Command> PATH_EVENTS = new HashMap<>() {
                 {

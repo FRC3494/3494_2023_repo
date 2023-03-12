@@ -67,7 +67,7 @@ public class AutoLineUp extends CommandBase {
 		}
 		toTagPath = new ArrayList<PathPoint>(Arrays.asList(new PathPoint(new Translation2d(0,0), new Rotation2d(0)), new PathPoint(new Translation2d(tagX, tagZ), new Rotation2d(0))));
 		path = PathPlanner.generatePath(new PathConstraints(Constants.Subsystems.Drivetrain.MAX_VELOCITY_METERS_PER_SECOND, 2), toTagPath);
-		new FollowPath(drivetrain, path, field2d).schedule();
+		new FollowPathPP(drivetrain, path, field2d).schedule();
 	}
 
 	@Override

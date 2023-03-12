@@ -12,7 +12,7 @@ public class NavX {
     }
 
     public static double getYaw() {
-        return ahrs.getFusedHeading();
+        return -ahrs.getFusedHeading();
     }
 
     public static double getPitch() {

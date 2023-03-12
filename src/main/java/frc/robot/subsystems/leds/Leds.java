@@ -10,24 +10,37 @@ public class Leds extends SubsystemBase {
     AddressableLED leds;
     AddressableLEDBuffer buffer;
 
+    LedPattern currentPattern = LedPattern.IDLE;
+
     public Leds() {
         leds = new AddressableLED(Constants.Subsystems.Leds.LED_PORT);
         leds.setLength(Constants.Subsystems.Leds.STRIP_LENGTH);
 
         buffer = new AddressableLEDBuffer(Constants.Subsystems.Leds.STRIP_LENGTH);
 
-        setPattern(LedPattern.IDLE);
+        leds.start();
     }
 
     public void setPattern(LedPattern pattern) {
-        switch (pattern) {
-            case IDLE:
-                for (int i = 0; i < Constants.Subsystems.Leds.STRIP_LENGTH; i++) buffer.setLED(i, Color.kTeal);
-            case CUBE:
-                for (int i = 0; i < Constants.Subsystems.Leds.STRIP_LENGTH; i++) buffer.setLED(0, Color.kPurple);
-            case CONE:
-                for (int i = 0; i < Constants.Subsystems.Leds.STRIP_LENGTH; i++) buffer.setLED(0, Color.kYellow);
+        currentPattern = pattern;
+    }
 
+    public LedPattern getPattern(LedPattern pattern) {
+        return currentPattern;
+    }
+
+    @Override
+    public void periodic() {
+        switch (currentPattern) {
+            case IDLE:
+                for (int i = 0; i < buffer.getLength(); i++) buffer.setLED(i, Color.kTeal);
+                break;
+            case CUBE:
+                for (int i = 0; i < buffer.getLength(); i++) buffer.setLED(i, Color.kPurple);
+                break;
+            case CONE:
+                for (int i = 0; i < buffer.getLength(); i++) buffer.setLED(i, Color.kYellow);
+                break;
         }
 
         leds.setData(buffer);

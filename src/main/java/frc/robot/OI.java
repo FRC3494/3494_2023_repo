@@ -14,11 +14,19 @@ public final class OI {
     private static double offset = 0;
 
     public static void zeroControls() {
-        offset = NavX.getYaw() - 90;
+        offset = -NavX.getYaw() - 90;
     }
 
     public static double getDriveOffset() {
         return offset;
+    }
+
+    public static void setRedOffset() {
+        offset = -100;
+    }
+
+    public static void setBlueOffset() {
+        offset = -270;
     }
 
     private static double deadband(double value, double deadband) {
@@ -53,10 +61,10 @@ public final class OI {
         double dPadPower = ((primaryController.getPOV() == 90) ? Constants.OI.DPAD_SPEED : 0)
                         + ((primaryController.getPOV() == 270) ? -Constants.OI.DPAD_SPEED : 0);
         
-        double angle = Math.atan2(forward, left) + Math.toRadians(offset);
+        double angle = (Math.atan2(forward, left) + Math.toRadians(offset)) % (2 * Math.PI);
         double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), Constants.OI.MAX_DRIVE_SPEED) + dPadPower;
 
-        return modifyAxis(-velocity * Math.cos(angle)) * Constants.OI.MAX_DRIVE_SPEED * driveMultiplier();
+        return modifyAxis(-velocity) * Math.cos(angle) * Constants.OI.MAX_DRIVE_SPEED * driveMultiplier();
     }
 
     public static double teleopYVelocity() {
@@ -65,10 +73,10 @@ public final class OI {
         double dPadPower = ((primaryController.getPOV() == 0) ? Constants.OI.DPAD_SPEED : 0)
                         + ((primaryController.getPOV() == 180) ? -Constants.OI.DPAD_SPEED : 0);
 
-        double angle = Math.atan2(forward, left) + Math.toRadians(offset);
+        double angle = (Math.atan2(forward, left) + Math.toRadians(offset)) % (2 * Math.PI);
         double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), Constants.OI.MAX_DRIVE_SPEED) + dPadPower;
         
-        return modifyAxis(velocity * Math.sin(angle)) * Constants.OI.MAX_DRIVE_SPEED * driveMultiplier();
+        return modifyAxis(velocity) * Math.sin(angle) * Constants.OI.MAX_DRIVE_SPEED * driveMultiplier();
     }
 
     public static double teleopTurnVelocity() {
@@ -154,12 +162,12 @@ public final class OI {
 
     public static BooleanEvent clawOpenEvent() {
         // return leftButtonBoard.button(18, eventLoop);
-        return leftButtonBoard.axisGreaterThan(0, 0.1, eventLoop);
+        return leftButtonBoard.axisGreaterThan(0, -0.1, eventLoop);
     }
 
     public static BooleanEvent clawCloseEvent() {
         // return leftButtonBoard.button(19, eventLoop);
-        return leftButtonBoard.axisLessThan(0, -0.1, eventLoop);
+        return leftButtonBoard.axisLessThan(0, 0.1, eventLoop);
     }
 
     public static BooleanEvent forearmFineAdjustPositiveEvent() {
@@ -204,11 +212,11 @@ public final class OI {
 
     public static BooleanEvent ledsIndicateCone() {
         // return leftButtonBoard.button(20, eventLoop);
-        return rightButtonBoard.button(6, eventLoop);
+        return rightButtonBoard.button(7, eventLoop);
     }
 
     public static BooleanEvent ledsIndicateCube() {
         // return leftButtonBoard.button(20, eventLoop);
-        return rightButtonBoard.button(7, eventLoop);
+        return rightButtonBoard.button(6, eventLoop);
     }
 }

@@ -56,7 +56,7 @@ public class Arm extends SubsystemBase {
         forearmMotor = new CANSparkMax(
                 Constants.Subsystems.Arm.FOREARM_MOTOR_CHANNEL, MotorType.kBrushless);
 
-        forearmMotor.getPIDController().setOutputRange(-0.5, 0.5);
+        forearmMotor.getPIDController().setOutputRange(-0.5, 0.75);
         forearmMotor.getPIDController().setP(Constants.Subsystems.Arm.PIDF.P);
         forearmMotor.getPIDController().setI(Constants.Subsystems.Arm.PIDF.I);
         forearmMotor.getPIDController().setD(Constants.Subsystems.Arm.PIDF.D);
