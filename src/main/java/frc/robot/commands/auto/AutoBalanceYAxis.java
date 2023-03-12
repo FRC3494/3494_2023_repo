@@ -48,7 +48,7 @@ public class AutoBalanceYAxis extends CommandBase {
 
 			balancedTime += deltaTime;
 		} else  {
-			double curvedPower = Constants.Commands.AutoBalance.SLOW_POWER * Math.pow(currentAngle / 14, 5);
+			double curvedPower = Constants.Commands.AutoBalance.SLOW_POWER * Math.pow(currentAngle / 13, 5);
 
 			setDrivetrain(0, Math.min(Math.max(curvedPower, -Constants.Commands.AutoBalance.FAST_POWER), Constants.Commands.AutoBalance.FAST_POWER), 0, false);
 			

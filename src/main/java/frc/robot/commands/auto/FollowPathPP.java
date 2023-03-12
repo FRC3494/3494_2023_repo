@@ -1,9 +1,10 @@
 package frc.robot.commands.auto;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
-import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
@@ -12,7 +13,7 @@ import frc.robot.subsystems.Drivetrain;
 
 public class FollowPathPP extends PPSwerveControllerCommand {
 	Drivetrain drivetrain;
-	Trajectory trajectory;
+	PathPlannerTrajectory trajectory;
 
 	Timer timer = new Timer();
 
@@ -42,7 +43,7 @@ public class FollowPathPP extends PPSwerveControllerCommand {
 
 	@Override
 	public void initialize() {
-		drivetrain.resetOdometry(trajectory.getInitialPose());
+		drivetrain.resetOdometry(trajectory.getInitialHolonomicPose());
 
 		field2d.setRobotPose(drivetrain.getPose());
 
@@ -57,8 +58,11 @@ public class FollowPathPP extends PPSwerveControllerCommand {
 		super.execute();
 
 		double curTime = timer.get();
+
+        PathPlannerState targetState = (PathPlannerState) trajectory.sample(curTime);
+
 		field2d.setRobotPose(drivetrain.getPose());
-		fieldObject2d.setPose(trajectory.sample(curTime).poseMeters);
+		fieldObject2d.setPose(new Pose2d(targetState.poseMeters.getTranslation(), targetState.holonomicRotation));
 	}
 
 	@Override

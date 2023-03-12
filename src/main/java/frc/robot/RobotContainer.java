@@ -2,6 +2,7 @@ package frc.robot;
 
 import java.util.function.Function;
 
+import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
@@ -100,6 +101,15 @@ public class RobotContainer {
                 Constants.RobotContainer.PathPlanner.PATH_EVENTS);
     }
 
+    public static Command pathFollow(RobotContainer container, String pathName, double targetSpeed) {
+        PathPlannerTrajectory loadedPath = PathPlanner.loadPath(pathName, new PathConstraints(targetSpeed,
+            Constants.RobotContainer.PathPlanner.PATH_CONSTRAINTS.maxAcceleration));
+
+        return new FollowPathWithEvents(new FollowPathPP(container.drivetrain, loadedPath, container.robotPosition),
+                loadedPath.getMarkers(),
+                Constants.RobotContainer.PathPlanner.PATH_EVENTS);
+    }
+
     public enum Autos {
         Auto1("Auto1", (container) -> {
             return new SequentialCommandGroup(
@@ -157,6 +167,28 @@ public class RobotContainer {
                                 pathFollow(container, "LeaveCom"),
                                 AutoBalanceGroupYAxis.get(container.drivetrain))
                             ));
+        }),
+        PlacePickupPlace("Place then Pickup Cube then Place", (container) -> {
+            return new SequentialCommandGroup(
+                    new AutoSetArm(container.arm, ArmPosition.Base4Cone2),
+                    new AutoSetClaw(container.claw, ClawState.Open),
+                    new WaitCommand(0.5),
+                    new ParallelCommandGroup(
+                            new AutoSetArm(container.arm, ArmPosition.GroundIntake),
+                            pathFollow(container, "LeaveComPickUp", 1)
+                    ),
+                    new WaitCommand(0.2),
+                    new AutoSetClaw(container.claw, ClawState.Closed),
+                    new WaitCommand(0.5),
+                    new ParallelCommandGroup(
+                            new AutoSetArm(container.arm, ArmPosition.Base4Cube2),
+                            pathFollow(container, "LeaveComPickUpReturn")
+                    ),
+                    new WaitCommand(0.2),
+                    new AutoSetClaw(container.claw, ClawState.Open),
+                    new WaitCommand(0.5),
+                    new AutoSetArm(container.arm, ArmPosition.Store)
+            );
         }),
         Turn90("Turn 90", (container) -> pathFollow(container, "Turn90"));
         // Full("Full", (container) -> pathFollow(container, "Full")),
