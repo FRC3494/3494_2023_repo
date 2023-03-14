@@ -1,4 +1,4 @@
-package frc.robot.subsystems.arm;
+package frc.robot.subsystems.shoulder;
 
 public enum ShoulderState {
     Base1,

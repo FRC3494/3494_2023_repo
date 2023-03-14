@@ -32,16 +32,20 @@ import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmPosition;
-import frc.robot.subsystems.arm.HopperState;
-import frc.robot.subsystems.arm.ShoulderState;
 import frc.robot.subsystems.claw.Claw;
 import frc.robot.subsystems.claw.ClawState;
+import frc.robot.subsystems.forearm.Forearm;
+import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.leds.LedPattern;
 import frc.robot.subsystems.leds.Leds;
+import frc.robot.subsystems.shoulder.Shoulder;
 
 public class RobotContainer {
     public final Drivetrain drivetrain;
     public final Pneumatics pneumatics;
+    public final Shoulder shoulder;
+    public final Forearm forearm;
+    public final Hopper hopper;
     public final Arm arm;
     public final Claw claw;
     public final Leds leds;
@@ -60,11 +64,21 @@ public class RobotContainer {
         PathPlannerServer.startServer(3494);
 
         NavX.getNavX();
+
         drivetrain = new Drivetrain();
+
         pneumatics = new Pneumatics();
-        arm = new Arm();
+
+        shoulder = new Shoulder();
+        forearm = new Forearm();
+        hopper = new Hopper();
+
+        arm = new Arm(shoulder, forearm, hopper);
+
         claw = new Claw();
+
         camera = new Camera();
+
         leds = new Leds();
 
         // autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
@@ -259,8 +273,6 @@ public class RobotContainer {
         fieldTab.addDouble("NavX Roll", () -> NavX.getRoll()).withPosition(8, 1);
         fieldTab.addDouble("NavX Yaw", () -> NavX.getYaw()).withPosition(8, 2);
 
-        mainTab.addBoolean("Arm Cancel Indicator", () -> arm.isInCancelMode()).withPosition(0, 1).withSize(2, 1);
-
         mainTab.add(camera.getCamera()).withPosition(2, 0).withSize(4, 4);
 
         mainTab.addDouble("Controller Offset", () -> OI.getDriveOffset()).withPosition(0, 2).withSize(2, 1);
@@ -281,7 +293,7 @@ public class RobotContainer {
     }
 
     public void configureButtonBindings() {
-
+        /*
         // OI.resetHeadingEvent().rising().ifHigh(drivetrain::zeroYaw);
         OI.resetHeadingEvent().rising().ifHigh(() -> {
             OI.zeroControls();
@@ -457,5 +469,6 @@ public class RobotContainer {
 
         OI.ledsIndicateCone().rising().ifHigh(() -> leds.setPattern(LedPattern.CONE));
         OI.ledsIndicateCube().rising().ifHigh(() -> leds.setPattern(LedPattern.CUBE));
+        */
     }
 }
