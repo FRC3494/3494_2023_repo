@@ -3,16 +3,35 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/Shuffleboard/Autonomous/SendableChooser[0]": "String Chooser",
-      "/Shuffleboard/Field/Field": "Field2d"
+      "/Shuffleboard/Field/Field": "Field2d",
+      "/Shuffleboard/Main/SendableChooser[0]": "String Chooser"
     }
   },
   "NetworkTables": {
     "transitory": {
       "Shuffleboard": {
         ".metadata": {
+          "Main": {
+            "Arm Cancel Indicator": {
+              "open": true
+            },
+            "Controller Offset": {
+              "open": true
+            },
+            "SendableChooser[0]": {
+              "open": true
+            },
+            "open": true
+          },
           "open": true
         },
         "Field": {
+          "open": true
+        },
+        "Main": {
+          "SendableChooser[0]": {
+            "open": true
+          },
           "open": true
         },
         "open": true

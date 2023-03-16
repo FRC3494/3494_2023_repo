@@ -5,7 +5,6 @@ import java.util.function.Function;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.commands.FollowPathWithEvents;
 import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -21,7 +20,7 @@ import frc.robot.commands.RunPneumatics;
 import frc.robot.commands.auto.AutoBalance;
 import frc.robot.commands.auto.AutoSetArm;
 import frc.robot.commands.auto.AutoSetClaw;
-import frc.robot.commands.auto.FollowPathPP;
+import frc.robot.commands.auto.FollowPath;
 import frc.robot.commands.groups.AutoBalanceGroup;
 import frc.robot.commands.groups.AutoBalanceGroupYAxis;
 import frc.robot.commands.groups.AutoBalanceTeleopGroup;
@@ -95,19 +94,20 @@ public class RobotContainer {
     public static Command pathFollow(RobotContainer container, String pathName) {
         PathPlannerTrajectory loadedPath = PathPlanner.loadPath(pathName,
                 Constants.RobotContainer.PathPlanner.PATH_CONSTRAINTS);
-
-        return new FollowPathWithEvents(new FollowPathPP(container.drivetrain, loadedPath, container.robotPosition),
+        System.out.println("Running An Auto");
+        return new FollowPath(container.drivetrain, loadedPath, container.robotPosition);
+       /* return new FollowPathWithEvents(new FollowPath(container.drivetrain, loadedPath, container.robotPosition),
                 loadedPath.getMarkers(),
-                Constants.RobotContainer.PathPlanner.PATH_EVENTS);
+                Constants.RobotContainer.PathPlanner.PATH_EVENTS);*/
     }
 
     public static Command pathFollow(RobotContainer container, String pathName, double targetSpeed) {
         PathPlannerTrajectory loadedPath = PathPlanner.loadPath(pathName, new PathConstraints(targetSpeed,
             Constants.RobotContainer.PathPlanner.PATH_CONSTRAINTS.maxAcceleration));
-
-        return new FollowPathWithEvents(new FollowPathPP(container.drivetrain, loadedPath, container.robotPosition),
+        return new FollowPath(container.drivetrain, loadedPath, container.robotPosition);
+        /*return new FollowPathWithEvents(new FollowPath(container.drivetrain, loadedPath, container.robotPosition),
                 loadedPath.getMarkers(),
-                Constants.RobotContainer.PathPlanner.PATH_EVENTS);
+                Constants.RobotContainer.PathPlanner.PATH_EVENTS);*/
     }
 
     public enum Autos {
@@ -191,12 +191,13 @@ public class RobotContainer {
                     new AutoSetArm(container.arm, ArmPosition.Store)*/
             );
         }),
-        Turn90("Turn 90", (container) -> pathFollow(container, "Turn90"));
+        Turn90("Turn 90", (container) -> pathFollow(container, "Turn90")),
+        Forward2("Forward", (container) -> pathFollow(container, "ForwardX")),
         // Full("Full", (container) -> pathFollow(container, "Full")),
         // ParkTest("Park Test", (container) -> pathFollow(container, "ParkTest")),
         // StarOfDeath("Star of Death", (container) -> pathFollow(container, "Star Of
         // Death")),
-        // UrMom("ur mom lol", (container) -> pathFollow(container, "ur mom"));
+        UrMom("ur mom lol", (container) -> pathFollow(container, "ur mom"));
 
         String displayName;
         Function<RobotContainer, Command> commandFunction;

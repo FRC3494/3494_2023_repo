@@ -87,6 +87,8 @@ public class Drivetrain extends SubsystemBase {
 	public Drivetrain() {
 	}
 
+	ChassisSpeeds fuckthis;
+
 	@Override
 	public void periodic() {
 		
@@ -102,7 +104,9 @@ public class Drivetrain extends SubsystemBase {
 		}*/
 			
 	
-			
+		//System.out.println("TARGET: " + fuckthis + " | ACTUAL: v" + Math.sqrt( Math.pow(NavX.getNavX().getVelocityX(), 2) + Math.pow(NavX.getNavX().getVelocityY(), 2) + Math.pow(NavX.getNavX().getVelocityZ(), 2) ));
+	
+		System.out.println(Constants.Subsystems.Drivetrain.MAX_VELOCITY_METERS_PER_SECOND);
 	}
 
 	double nextStandardDeviation(double nextX, double nextY) {
@@ -187,6 +191,14 @@ public class Drivetrain extends SubsystemBase {
 		}
 
 		setModuleStates(swerveModuleStates);
+	}
+
+	public void setdriveState(ChassisSpeeds states){
+		SwerveModuleState[] swerveModuleStates = Constants.Subsystems.Drivetrain.SWERVE_KINEMATICS.toSwerveModuleStates(states);
+		SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Subsystems.Drivetrain.MAX_VELOCITY_METERS_PER_SECOND);
+		setModuleStates(swerveModuleStates);
+
+		fuckthis = states;
 	}
 
 	boolean locked = false;

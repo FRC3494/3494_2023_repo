@@ -11,6 +11,8 @@ public class AutoSetClaw extends CommandBase {
     public AutoSetClaw(Claw claw, ClawState clawState) {
         this.claw = claw;
         this.clawPosition = clawState;
+
+		addRequirements(claw);
     }
 
     @Override

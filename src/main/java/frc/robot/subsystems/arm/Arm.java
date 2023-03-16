@@ -31,7 +31,7 @@ public class Arm extends SubsystemBase {
 
     StateMachine<ArmPosition> armStateMachine;
     ShoulderState currentShoulderState;
-    ForearmState currentForearmState;
+    ForearmState currentForearmState;   
 
     ADXL345_I2C forearmIMU;
 

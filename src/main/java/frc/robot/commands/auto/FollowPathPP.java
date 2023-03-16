@@ -26,7 +26,7 @@ public class FollowPathPP extends PPSwerveControllerCommand {
 				drivetrain.getKinematics(),
 				Constants.Commands.FollowPath.X_CONTROLLER,
 				Constants.Commands.FollowPath.Y_CONTROLLER,
-				Constants.Commands.FollowPath.THETA_CONTROLLER,
+				Constants.Commands.FollowPath.PP_THETA_CONTROLLER,
 				drivetrain::setModuleStates,
 				false,
 				drivetrain);
@@ -36,7 +36,7 @@ public class FollowPathPP extends PPSwerveControllerCommand {
 		this.field2d = field2d;
 		this.fieldObject2d = field2d.getObject("Target Position");
 		// drivetrain.resetOdometry(trajectory.getInitialPose());
-		Constants.Commands.FollowPath.THETA_CONTROLLER.enableContinuousInput(-Math.PI, Math.PI);
+		Constants.Commands.FollowPath.PP_THETA_CONTROLLER.enableContinuousInput(-Math.PI, Math.PI);
 
 		// drivetrain.resetOdometry(trajectory.getInitialPose());
 	}
