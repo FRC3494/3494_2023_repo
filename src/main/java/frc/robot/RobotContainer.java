@@ -24,6 +24,7 @@ import frc.robot.commands.auto.FollowPath;
 import frc.robot.commands.groups.AutoBalanceGroup;
 import frc.robot.commands.groups.AutoBalanceGroupYAxis;
 import frc.robot.commands.groups.AutoBalanceTeleopGroup;
+import frc.robot.commands.groups.AutoLineUpTeleopGroup;
 import frc.robot.commands.teleop.TeleopDrive;
 import frc.robot.subsystems.Camera;
 import frc.robot.subsystems.Drivetrain;
@@ -54,6 +55,7 @@ public class RobotContainer {
 
     private Command autoBalanceDrivetrainCommand;
     private boolean alternateAutoBalance = true;
+    private boolean lineUptracker = true;
 
     public RobotContainer() {
         PathPlannerServer.startServer(3494);
@@ -69,7 +71,7 @@ public class RobotContainer {
         // autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
 
         autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
-
+        
         // Configure the button bindings
         configureButtonBindings();
 
@@ -169,14 +171,14 @@ public class RobotContainer {
                                 AutoBalanceGroupYAxis.get(container.drivetrain))
                             ));
         }),
-        PlacePickupPlace("Place then Pickup Cube then Place", (container) -> {
+        PlacePickupBalance("Place then Pickup Cube then Balance", (container) -> {
             return new SequentialCommandGroup(
                     new AutoSetArm(container.arm, ArmPosition.Base4Cone2),
                     new AutoSetClaw(container.claw, ClawState.Open),
                     new WaitCommand(0.5),
                     new ParallelCommandGroup(
                             new AutoSetArm(container.arm, ArmPosition.GroundIntake),
-                            pathFollow(container, "LeaveComPickUp", 1)
+                            pathFollow(container, "LeaveComPickUp")
                     ),
                     new WaitCommand(0.2),
                     new AutoSetClaw(container.claw, ClawState.Closed),
@@ -187,6 +189,25 @@ public class RobotContainer {
                     ),
                     new AutoSetClaw(container.claw, ClawState.Open),
                     pathFollow(container, "Backup")
+                    /*new WaitCommand(0.2),
+                    new AutoSetClaw(container.claw, ClawState.Open),
+                    new WaitCommand(0.5),
+                    new AutoSetArm(container.arm, ArmPosition.Store)*/
+            );
+        }),
+        PlacePickupPlace("Place then Pickup Cube then Place", (container) -> {
+            return new SequentialCommandGroup(
+                    new AutoSetArm(container.arm, ArmPosition.Base4Cone2),
+                    new AutoSetClaw(container.claw, ClawState.Open),
+                    new WaitCommand(0.5),
+                    new ParallelCommandGroup(
+                            new AutoSetArm(container.arm, ArmPosition.GroundIntake),
+                            pathFollow(container, "LeaveComPickUp")
+                    ),
+                    new WaitCommand(0.2),
+                    new AutoSetClaw(container.claw, ClawState.Closed),
+                    new WaitCommand(0.5),
+                    pathFollow(container, "FromPickup")
                     /*new WaitCommand(0.2),
                     new AutoSetClaw(container.claw, ClawState.Open),
                     new WaitCommand(0.5),
@@ -313,6 +334,14 @@ public class RobotContainer {
 
         OI.printOdometryEvent().rising().ifHigh(() -> {
             System.out.println("Current Odo " + drivetrain.getPose().getX() + ":" + drivetrain.getPose().getY());
+        });
+        OI.autoLineUpEvent().rising().ifHigh(() ->{
+            if (lineUptracker)
+            AutoLineUpTeleopGroup.get(drivetrain, robotPosition).schedule();
+            else
+            AutoLineUpTeleopGroup.get(drivetrain, robotPosition).cancel();
+
+            lineUptracker = !lineUptracker;
         });
 
         OI.zeroArm().rising().ifHigh(() -> {

@@ -123,7 +123,7 @@ public final class Constants extends AutoConfigurable {
 
             public static final double MAX_VOLTAGE = 12.0;
 
-            public static final double MAX_STANDARD_DEVIATION_LIMELIGHT = 1;
+            public static final double MAX_STANDARD_DEVIATION_LIMELIGHT = 0.01;
         }
 
         public static final class Claw {
@@ -197,7 +197,7 @@ public final class Constants extends AutoConfigurable {
 
     public static final class RobotContainer {
         public static final class PathPlanner {
-            public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(2, 1.75);
+            public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(4, 4);
 
             public static HashMap<String, Command> PATH_EVENTS = new HashMap<>() {
                 {
