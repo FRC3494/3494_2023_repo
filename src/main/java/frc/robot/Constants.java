@@ -3,7 +3,6 @@ package frc.robot;
 import java.util.HashMap;
 
 import com.pathplanner.lib.PathConstraints;
-import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -198,7 +197,7 @@ public final class Constants extends AutoConfigurable {
 
     public static final class RobotContainer {
         public static final class PathPlanner {
-            public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(1.5, 1.5);
+            public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(2, 1.75);
 
             public static HashMap<String, Command> PATH_EVENTS = new HashMap<>() {
                 {
@@ -213,7 +212,7 @@ public final class Constants extends AutoConfigurable {
         public static final int SECONDARY_LEFT_CONTROLLER_PORT = 1;
         public static final int SECONDARY_RIGHT_CONTROLLER_PORT = 2;
 
-        public static final double MAX_DRIVE_SPEED = 1; // m/s
+        public static final double MAX_DRIVE_SPEED = 3; // m/s
         public static final double MAX_TURN_SPEED = .8; // rad/s
         public static final double DPAD_SPEED = 0.1;
 

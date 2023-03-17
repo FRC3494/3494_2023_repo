@@ -184,7 +184,9 @@ public class RobotContainer {
                     new ParallelCommandGroup(
                             new AutoSetArm(container.arm, ArmPosition.Base4Cube2),
                             pathFollow(container, "LeaveComPickUpReturn")
-                    )
+                    ),
+                    new AutoSetClaw(container.claw, ClawState.Open),
+                    pathFollow(container, "Backup")
                     /*new WaitCommand(0.2),
                     new AutoSetClaw(container.claw, ClawState.Open),
                     new WaitCommand(0.5),

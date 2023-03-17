@@ -84,7 +84,7 @@ public class FollowPath extends CommandBase {
 		System.out.println("Speed:"+thetaSpeed);*/
 	
         //drivetrain.drive(0.2, 0, 0,false);
-		drivetrain.setdriveState(targetSpeeds);
+		drivetrain.drive(targetSpeeds);
 		
         PathPlannerServer.sendPathFollowingData(targetPose, currentPose);
 	}
