@@ -12,9 +12,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 import com.google.gson.*;
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
 
 public class AutoLineUp extends CommandBase {
@@ -38,7 +35,7 @@ public class AutoLineUp extends CommandBase {
 
 	List<PathPoint> toTagPath;
 	Field2d field2d;
-	private PathPlannerTrajectory path;
+	//private PathPlannerTrajectory path;
     
 	public AutoLineUp(Drivetrain drivetrain, Field2d field2d) {
 		this.drivetrain = drivetrain;
@@ -66,8 +63,8 @@ public class AutoLineUp extends CommandBase {
 			aprilTagYaw = 0;
 		}
 		toTagPath = new ArrayList<PathPoint>(Arrays.asList(new PathPoint(new Translation2d(0,0), new Rotation2d(0)), new PathPoint(new Translation2d(tagX, tagZ), new Rotation2d(0))));
-		path = PathPlanner.generatePath(new PathConstraints(Constants.Subsystems.Drivetrain.MAX_VELOCITY_METERS_PER_SECOND, 2), toTagPath);
-		new FollowPath(drivetrain, path, field2d).schedule();
+		//path = PathPlanner.generatePath(new PathConstraints(Constants.Subsystems.Drivetrain.MAX_VELOCITY_METERS_PER_SECOND, 2), toTagPath);
+		//new FollowPath(drivetrain, path, field2d, false).schedule();
 	}
 
 	@Override

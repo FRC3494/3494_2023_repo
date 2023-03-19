@@ -58,8 +58,8 @@ public final class OI {
     public static double teleopXVelocity() {
         double forward = primaryController.getLeftY();
         double left = primaryController.getLeftX();
-        double dPadPower = ((primaryController.getPOV() == 90) ? Constants.OI.DPAD_SPEED : 0)
-                        + ((primaryController.getPOV() == 270) ? -Constants.OI.DPAD_SPEED : 0);
+        double dPadPower = ((primaryController.getPOV() == 180) ? Constants.OI.DPAD_SPEED : 0)
+                        + ((primaryController.getPOV() == 0) ? -Constants.OI.DPAD_SPEED : 0);
         
         double angle = (Math.atan2(forward, left) + Math.toRadians(offset)) % (2 * Math.PI);
         double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), Constants.OI.MAX_DRIVE_SPEED) + dPadPower;
@@ -70,8 +70,8 @@ public final class OI {
     public static double teleopYVelocity() {
         double forward = primaryController.getLeftY();
         double left = primaryController.getLeftX();
-        double dPadPower = ((primaryController.getPOV() == 0) ? Constants.OI.DPAD_SPEED : 0)
-                        + ((primaryController.getPOV() == 180) ? -Constants.OI.DPAD_SPEED : 0);
+        double dPadPower = ((primaryController.getPOV() == 90) ? Constants.OI.DPAD_SPEED : 0)
+                        + ((primaryController.getPOV() == 270) ? -Constants.OI.DPAD_SPEED : 0);
 
         double angle = (Math.atan2(forward, left) + Math.toRadians(offset)) % (2 * Math.PI);
         double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), Constants.OI.MAX_DRIVE_SPEED) + dPadPower;
@@ -108,7 +108,7 @@ public final class OI {
     }
 
     public static BooleanEvent printOdometryEvent() {
-        return rightButtonBoard.button(12, eventLoop);
+        return rightButtonBoard.button(9, eventLoop);
     }
 
     private static Joystick leftButtonBoard = new Joystick(Constants.OI.SECONDARY_LEFT_CONTROLLER_PORT);

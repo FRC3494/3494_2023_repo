@@ -55,7 +55,7 @@ public class RobotContainer {
 
     private Command autoBalanceDrivetrainCommand;
     private boolean alternateAutoBalance = true;
-    private boolean lineUptracker = true;
+    //private boolean lineUptracker = true;
 
     public RobotContainer() {
         PathPlannerServer.startServer(3494);
@@ -67,10 +67,6 @@ public class RobotContainer {
         claw = new Claw();
         camera = new Camera();
         leds = new Leds();
-
-        // autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
-
-        autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
         
         // Configure the button bindings
         configureButtonBindings();
@@ -91,13 +87,16 @@ public class RobotContainer {
         Constants.RobotContainer.PathPlanner.PATH_EVENTS.put("ClawClosed",
                 new AutoSetClaw(claw, ClawState.Closed));
         Constants.RobotContainer.PathPlanner.PATH_EVENTS.put("Wait5", new WaitCommand(5));
+
+        
+        autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
     }
 
     public static Command pathFollow(RobotContainer container, String pathName) {
         PathPlannerTrajectory loadedPath = PathPlanner.loadPath(pathName,
                 Constants.RobotContainer.PathPlanner.PATH_CONSTRAINTS);
         System.out.println("Running An Auto");
-        return new FollowPath(container.drivetrain, loadedPath, container.robotPosition);
+        return new FollowPath(container.drivetrain, loadedPath, container.robotPosition, true);
        /* return new FollowPathWithEvents(new FollowPath(container.drivetrain, loadedPath, container.robotPosition),
                 loadedPath.getMarkers(),
                 Constants.RobotContainer.PathPlanner.PATH_EVENTS);*/
@@ -106,7 +105,7 @@ public class RobotContainer {
     public static Command pathFollow(RobotContainer container, String pathName, double targetSpeed) {
         PathPlannerTrajectory loadedPath = PathPlanner.loadPath(pathName, new PathConstraints(targetSpeed,
             Constants.RobotContainer.PathPlanner.PATH_CONSTRAINTS.maxAcceleration));
-        return new FollowPath(container.drivetrain, loadedPath, container.robotPosition);
+        return new FollowPath(container.drivetrain, loadedPath, container.robotPosition, true);
         /*return new FollowPathWithEvents(new FollowPath(container.drivetrain, loadedPath, container.robotPosition),
                 loadedPath.getMarkers(),
                 Constants.RobotContainer.PathPlanner.PATH_EVENTS);*/
@@ -320,10 +319,7 @@ public class RobotContainer {
             alternateAutoBalance = !alternateAutoBalance;
         });
 
-        OI.autoLineUpEvent().rising().ifHigh(() -> {
-            // drivetrain.resetOdometry(AutoLineUpTeleopGroup.get(drivetrain,
-            // robotPosition));
-        });
+
 
         OI.driveTrainLock().rising().ifHigh(() -> {
             drivetrain.lock();
@@ -333,15 +329,10 @@ public class RobotContainer {
         });
 
         OI.printOdometryEvent().rising().ifHigh(() -> {
-            System.out.println("Current Odo " + drivetrain.getPose().getX() + ":" + drivetrain.getPose().getY());
+            System.out.println("Current Odo x" + drivetrain.getPose().getX() + ", y" + drivetrain.getPose().getY());
         });
         OI.autoLineUpEvent().rising().ifHigh(() ->{
-            if (lineUptracker)
             AutoLineUpTeleopGroup.get(drivetrain, robotPosition).schedule();
-            else
-            AutoLineUpTeleopGroup.get(drivetrain, robotPosition).cancel();
-
-            lineUptracker = !lineUptracker;
         });
 
         OI.zeroArm().rising().ifHigh(() -> {
