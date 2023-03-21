@@ -5,9 +5,10 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.arm.ArmState;
 import frc.robot.util.statemachine.IStateControllable;
 
-public class Hopper extends SubsystemBase implements IStateControllable<HopperState> {
+public class Hopper extends SubsystemBase implements IStateControllable<ArmState> {
     private DoubleSolenoid hopperPiston;
 
     public Hopper() {
@@ -24,16 +25,16 @@ public class Hopper extends SubsystemBase implements IStateControllable<HopperSt
 
     long lastHopperActuationTime = System.currentTimeMillis();
 
-    public void setState(HopperState newState) {
-        hopperPiston.set((newState == HopperState.Extended) ? Value.kForward
+    public void setState(ArmState newState) {
+        hopperPiston.set((newState.hopperState == HopperState.Extended) ? Value.kForward
                 : Value.kReverse);
 
         lastHopperActuationTime = System.currentTimeMillis();
 
-        System.out.println("Hopper: " + newState.toString());
+        System.out.println("Hopper: " + newState.hopperState.toString());
     }
 
-    public boolean isAt(HopperState state) {
+    public boolean isAt(ArmState state) {
         return (System.currentTimeMillis() - lastHopperActuationTime) >= 500; // we don't actually have a sensor
         // for
         // this, might as well have a way

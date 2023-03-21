@@ -6,9 +6,10 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.arm.ArmState;
 import frc.robot.util.statemachine.IStateControllable;
 
-public class Shoulder extends SubsystemBase implements IStateControllable<ShoulderState> {
+public class Shoulder extends SubsystemBase implements IStateControllable<ArmState> {
     DoubleSolenoid topPiston;
 
     DoubleSolenoid bottomPiston;
@@ -43,8 +44,8 @@ public class Shoulder extends SubsystemBase implements IStateControllable<Should
 
     long lastShoulderActuationTime = System.currentTimeMillis();
 
-    public void setState(ShoulderState newState) {
-        switch (newState) {
+    public void setState(ArmState newState) {
+        switch (newState.shoulderState) {
             case Base1:
                 setTopPiston(Value.kReverse);
                 setBottomPiston(Value.kReverse);
@@ -63,17 +64,17 @@ public class Shoulder extends SubsystemBase implements IStateControllable<Should
                 break;
         }
 
-        currentShoulderState = newState;
+        currentShoulderState = newState.shoulderState;
 
         lastShoulderActuationTime = System.currentTimeMillis();
 
         System.out.println("Shoulder: " + newState.toString());
     }
 
-    public boolean isAt(ShoulderState state) {
+    public boolean isAt(ArmState state) {
         return Math.abs(shoulderPotentiometer.get() -
                 Constants.Subsystems.Shoulder.POSITIONS
-                        .get(state)) <= Constants.Subsystems.Shoulder.SHOULDER_TARGET_TOLERANCE;
+                        .get(state.shoulderState)) <= Constants.Subsystems.Shoulder.SHOULDER_TARGET_TOLERANCE;
         // return (System.currentTimeMillis() - lastShoulderActuationTime) >= 1500;
         // TODO: check sensors
     }

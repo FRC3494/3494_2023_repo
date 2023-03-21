@@ -10,9 +10,10 @@ import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer.Range;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.arm.ArmState;
 import frc.robot.util.statemachine.IStateControllable;
 
-public class Forearm extends SubsystemBase implements IStateControllable<ForearmState> {
+public class Forearm extends SubsystemBase implements IStateControllable<ArmState> {
     private CANSparkMax forearmMotor;
 
     AnalogPotentiometer forearmPotentiometer;
@@ -68,14 +69,14 @@ public class Forearm extends SubsystemBase implements IStateControllable<Forearm
                         Constants.Subsystems.Forearm.FOREARM_MOTOR_REDUCTION);
     }
 
-    public void setState(ForearmState newState) {
+    public void setState(ArmState newState) {
         setForearmTargetAngle(
-                Constants.Subsystems.Forearm.POSITIONS.get(newState));
+                Constants.Subsystems.Forearm.POSITIONS.get(newState.forearmState));
 
-        currentForearmState = newState;
+        currentForearmState = newState.forearmState;
 
         System.out.println("Forearm: " + newState.toString() + " Angle: " +
-                Constants.Subsystems.Forearm.POSITIONS.get(newState));
+                Constants.Subsystems.Forearm.POSITIONS.get(newState.forearmState));
     }
 
     void setForearmTargetAngle(double angle) {
@@ -85,10 +86,15 @@ public class Forearm extends SubsystemBase implements IStateControllable<Forearm
                 ControlType.kPosition);
     }
 
+    public boolean isAt(ArmState state) {
+        return isAt(state.forearmState);
+    }
+
     public boolean isAt(ForearmState state) {
         boolean there = Math.abs(getForearmAngle() -
                 Constants.Subsystems.Forearm.POSITIONS.get(
-                        currentForearmState)) <= Constants.Subsystems.Forearm.FOREARM_TARGET_POSITION_TOLERANCE;
+                        state)) <= Constants.Subsystems.Forearm.FOREARM_TARGET_POSITION_TOLERANCE;
+
         return there;
     }
 

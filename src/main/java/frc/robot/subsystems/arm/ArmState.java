@@ -1,5 +1,8 @@
 package frc.robot.subsystems.arm;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import frc.robot.subsystems.forearm.ForearmState;
 import frc.robot.subsystems.hopper.HopperState;
 import frc.robot.subsystems.shoulder.ShoulderState;
@@ -24,11 +27,25 @@ public class ArmState implements StateMachineState {
                 hopperState == ((ArmState) otherState).hopperState;
     }
 
-    public StateMachineState changesFrom(StateMachineState previousState) {
-        return new ArmState(
-            (shoulderState == ((ArmState) previousState).shoulderState) ? null : shoulderState,
-            (forearmState == ((ArmState) previousState).forearmState) ? null : forearmState,
-            (hopperState == ((ArmState) previousState).hopperState) ? null : hopperState
-        );
+    public Enum<?>[] getEnumArray() {
+        return new Enum<?>[] {
+            shoulderState,
+            forearmState,
+            hopperState
+        };
+    }
+
+    public static List<ArmState> every() {
+        List<ArmState> everyState = new ArrayList<>();
+
+        for (ShoulderState selectedShoulderState : ShoulderState.values()) {
+            for (ForearmState selectedForearmState : ForearmState.values()) {
+                for (HopperState selectedHopperState : HopperState.values()) {
+                    everyState.add(new ArmState(selectedShoulderState, selectedForearmState, selectedHopperState));
+                }
+            }
+        }
+
+        return everyState;
     }
 }
