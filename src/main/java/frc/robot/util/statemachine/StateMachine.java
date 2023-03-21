@@ -1,6 +1,7 @@
 package frc.robot.util.statemachine;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -87,15 +88,54 @@ public abstract class StateMachine<T extends StateMachineState> {
             if (controllable.crashDetected()) undo();
         }
 
-        HashMap<T, Integer> distances = new HashMap<>();
+        int smallestDistance = Integer.MAX_VALUE;
+        T smallestTarget = null;
 
-        // find the distances!
+        for (T node : nodes) {
+            if (!currentNode.equals(node) && adjacencyMatrix.get(currentNode).get(node)) {
+                nodeHistory.clear();
+                nodeHistory.add(currentNode);
+                nodeHistory.add(node);
+                int result = recursiveFind(node);
+    
+                if (result >= 0 && result < smallestDistance) {
+                    smallestDistance = result;
+                    smallestTarget = node;
+                }
+            }
+        }
 
-        if (distances.containsKey(targetNode)) {
-            nextState(targetNode);
-            
+        if (smallestTarget != null) {
+            nextState(smallestTarget);
+
             return;
         }
+    }
+
+    List<T> nodeHistory = new ArrayList<>();
+
+    @SuppressWarnings("unchecked") // java is a hell language
+    int recursiveFind(T previous) {
+        for (T node : nodes) {
+            if (!previous.equals(node) && !nodeHistory.contains(node) && adjacencyMatrix.get(previous).get(node)) {
+                if (node.equals(targetNode)) 
+                    return 2;
+                else {
+                    nodeHistory.add(node);
+
+                    List<T> copiedNodeHistory = (List<T>) Arrays.asList(nodeHistory.toArray());
+
+                    int result = recursiveFind(node);
+
+                    if (result >= 0) 
+                        return result + 1;
+                    else 
+                        nodeHistory = copiedNodeHistory;
+                }
+            }
+        }
+
+        return -1;
     }
 
     public void undo() {
