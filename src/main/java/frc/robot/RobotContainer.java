@@ -32,13 +32,17 @@ import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmPosition;
+import frc.robot.subsystems.arm.ArmState;
 import frc.robot.subsystems.claw.Claw;
 import frc.robot.subsystems.claw.ClawState;
 import frc.robot.subsystems.forearm.Forearm;
+import frc.robot.subsystems.forearm.ForearmState;
 import frc.robot.subsystems.hopper.Hopper;
+import frc.robot.subsystems.hopper.HopperState;
 import frc.robot.subsystems.leds.LedPattern;
 import frc.robot.subsystems.leds.Leds;
 import frc.robot.subsystems.shoulder.Shoulder;
+import frc.robot.subsystems.shoulder.ShoulderState;
 
 public class RobotContainer {
     public final Drivetrain drivetrain;
@@ -292,7 +296,24 @@ public class RobotContainer {
         leds.setPattern(LedPattern.IDLE);
     }
 
+    public void testInit() {
+        arm.setTarget(new ArmState(ShoulderState.Base4, ForearmState.Base1Cube1, HopperState.Retracted));
+    }
+
     public void configureButtonBindings() {
+        OI.armStore().rising().ifHigh(() -> {
+            arm.setTarget(Constants.Subsystems.Arm.KEY_POSITIONS.get(ArmPosition.Store));
+        });
+        OI.armDoubleSubstation().rising().ifHigh(() -> {
+            arm.setTarget(Constants.Subsystems.Arm.KEY_POSITIONS.get(ArmPosition.DoubleSubstation));
+        });
+        OI.armGroundIntake().rising().ifHigh(() -> {
+            arm.setTarget(Constants.Subsystems.Arm.KEY_POSITIONS.get(ArmPosition.GroundIntake));
+        });
+        OI.armBase1Cube1().rising().ifHigh(() -> {
+            arm.setTarget(Constants.Subsystems.Arm.KEY_POSITIONS.get(ArmPosition.Base1Cube1));
+        });
+
         /*
         // OI.resetHeadingEvent().rising().ifHigh(drivetrain::zeroYaw);
         OI.resetHeadingEvent().rising().ifHigh(() -> {

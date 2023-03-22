@@ -18,6 +18,8 @@ import frc.robot.subsystems.shoulder.ShoulderState;
 public final class Constants extends AutoConfigurable {
     public static final class Subsystems {
         public static final class Arm {
+            public static ArmState INITIAL_STATE = new ArmState(ShoulderState.Base2, ForearmState.Store, HopperState.Retracted);
+
             public static HashMap<ArmPosition, ArmState> KEY_POSITIONS = new HashMap<>() {
                 {
                     put(ArmPosition.LowerHopperGrab, new ArmState(ShoulderState.Base1, ForearmState.LowerHopperGrab, HopperState.Retracted));
@@ -47,6 +49,7 @@ public final class Constants extends AutoConfigurable {
                 {
                     put(ShoulderState.Base1, 0.191);
                     put(ShoulderState.Base2, 0.267);
+                    put(ShoulderState.Base3, 0.328);
                     put(ShoulderState.Base4, 0.390);
                 }
             };

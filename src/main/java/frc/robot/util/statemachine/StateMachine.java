@@ -1,11 +1,12 @@
 package frc.robot.util.statemachine;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class StateMachine<T extends StateMachineState> {
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+public abstract class StateMachine<T extends StateMachineState> extends SubsystemBase {
     List<T> nodes;
     List<StateConnection<T>> connections;
 
@@ -58,6 +59,8 @@ public abstract class StateMachine<T extends StateMachineState> {
     @SuppressWarnings("unchecked") // java is a hell language
     public void registerControllables(IStateControllable<T> ...controllables) {
         this.controllables = controllables;
+
+        nextState(currentNode);
     }
 
     void nextState(T state) {
@@ -81,11 +84,20 @@ public abstract class StateMachine<T extends StateMachineState> {
         targetNode = normalizedState;
     }
 
-    public void update() {
+    @Override
+    public void periodic() {
         if (currentNode == targetNode) return;
 
+        boolean arrived = true;
+
         for (IStateControllable<T> controllable : controllables) { 
-            if (controllable.crashDetected()) undo();
+            if (!controllable.isAt(currentNode)) arrived = false;
+
+            if (controllable.crashDetected()) {
+                undo();
+                arrived = true;
+                break;
+            }
         }
 
         int smallestDistance = Integer.MAX_VALUE;
@@ -93,6 +105,13 @@ public abstract class StateMachine<T extends StateMachineState> {
 
         for (T node : nodes) {
             if (!currentNode.equals(node) && adjacencyMatrix.get(currentNode).get(node)) {
+                if (node.equals(targetNode)) {
+                    smallestDistance = 0;
+                    smallestTarget = node;
+
+                    break;
+                }
+
                 nodeHistory.clear();
                 nodeHistory.add(currentNode);
                 nodeHistory.add(node);
@@ -105,7 +124,7 @@ public abstract class StateMachine<T extends StateMachineState> {
             }
         }
 
-        if (smallestTarget != null) {
+        if (smallestTarget != null && arrived) {
             nextState(smallestTarget);
 
             return;
@@ -123,7 +142,7 @@ public abstract class StateMachine<T extends StateMachineState> {
                 else {
                     nodeHistory.add(node);
 
-                    List<T> copiedNodeHistory = (List<T>) Arrays.asList(nodeHistory.toArray());
+                    List<T> copiedNodeHistory = (ArrayList<T>) ((ArrayList<T>) nodeHistory).clone();
 
                     int result = recursiveFind(node);
 

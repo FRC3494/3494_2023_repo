@@ -1,11 +1,9 @@
 package frc.robot.subsystems.arm;
 
+import frc.robot.Constants;
 import frc.robot.subsystems.forearm.Forearm;
-import frc.robot.subsystems.forearm.ForearmState;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.hopper.HopperState;
 import frc.robot.subsystems.shoulder.Shoulder;
-import frc.robot.subsystems.shoulder.ShoulderState;
 import frc.robot.util.statemachine.StateMachine;
 
 public class Arm extends StateMachine<ArmState> {
@@ -13,8 +11,9 @@ public class Arm extends StateMachine<ArmState> {
     public Arm(Shoulder shoulder, Forearm forearm, Hopper hopper) {
         super(
             ArmState.every(),
-            null,
-            new ArmState(ShoulderState.Base2, ForearmState.Store, HopperState.Retracted));
+            ArmConnections.connections,
+            Constants.Subsystems.Arm.INITIAL_STATE);
+            //new ArmState(ShoulderState.Base2, ForearmState.Store, HopperState.Retracted));
 
         registerControllables(shoulder, forearm, hopper);
     }

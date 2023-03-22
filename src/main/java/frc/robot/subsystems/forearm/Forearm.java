@@ -49,7 +49,8 @@ public class Forearm extends SubsystemBase implements IStateControllable<ArmStat
 
     @Override
     public void periodic() {
-        isDoneMoving = isAt(currentForearmState);
+        if (currentForearmState != null)
+            isDoneMoving = isAt(currentForearmState);
     }
 
     double getAbsoluteEncoderForearmAngle() { // should only be used for correcting
