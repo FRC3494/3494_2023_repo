@@ -26,7 +26,7 @@ public class Forearm extends SubsystemBase implements IStateControllable<ArmStat
 
     public Forearm() {
         forearmMotor = new CANSparkMax(
-                Constants.Subsystems.Forearm.FOREARM_MOTOR_CHANNEL, MotorType.kBrushless);
+                Constants.Subsystems.Forearm.MOTOR_CHANNEL, MotorType.kBrushless);
 
         forearmMotor.getPIDController().setOutputRange(-0.5, 0.75);
         forearmMotor.getPIDController().setP(Constants.Subsystems.Forearm.PIDF.P);
@@ -61,13 +61,13 @@ public class Forearm extends SubsystemBase implements IStateControllable<ArmStat
 
     double getForearmAngle() {
         return -forearmMotor.getEncoder().getPosition() *
-                Constants.Subsystems.Forearm.FOREARM_MOTOR_REDUCTION * 360.0;
+                Constants.Subsystems.Forearm.MOTOR_REDUCTION * 360.0;
     }
 
     void correctForearmNeo() {
         forearmMotor.getEncoder().setPosition(
                 (-getAbsoluteEncoderForearmAngle() / 360.0) /
-                        Constants.Subsystems.Forearm.FOREARM_MOTOR_REDUCTION);
+                        Constants.Subsystems.Forearm.MOTOR_REDUCTION);
     }
 
     public void setState(ArmState newState) {
@@ -81,7 +81,7 @@ public class Forearm extends SubsystemBase implements IStateControllable<ArmStat
     }
 
     void setForearmTargetAngle(double angle) {
-        double rotationsNeeded = -angle / 360.0 / Constants.Subsystems.Forearm.FOREARM_MOTOR_REDUCTION;
+        double rotationsNeeded = -angle / 360.0 / Constants.Subsystems.Forearm.MOTOR_REDUCTION;
 
         forearmMotor.getPIDController().setReference(rotationsNeeded,
                 ControlType.kPosition);
@@ -94,7 +94,7 @@ public class Forearm extends SubsystemBase implements IStateControllable<ArmStat
     public boolean isAt(ForearmState state) {
         boolean there = Math.abs(getForearmAngle() -
                 Constants.Subsystems.Forearm.POSITIONS.get(
-                        state)) <= Constants.Subsystems.Forearm.FOREARM_TARGET_POSITION_TOLERANCE;
+                        state)) <= Constants.Subsystems.Forearm.TARGET_POSITION_TOLERANCE;
 
         return there;
     }

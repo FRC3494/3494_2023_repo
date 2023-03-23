@@ -12,28 +12,29 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.arm.ArmPosition;
 import frc.robot.subsystems.arm.ArmState;
+import frc.robot.subsystems.claw.ClawState;
 import frc.robot.subsystems.forearm.ForearmState;
-import frc.robot.subsystems.hopper.HopperState;
 import frc.robot.subsystems.shoulder.ShoulderState;
+import frc.robot.subsystems.wrist.WristState;
 
 public final class Constants extends AutoConfigurable {
     public static final class Subsystems {
         public static final class Arm {
-            public static ArmState INITIAL_STATE = new ArmState(ShoulderState.Base2, ForearmState.Store, HopperState.Retracted);
+            public static ArmState INITIAL_STATE = new ArmState(ShoulderState.Base2, ForearmState.Store, WristState.Store);
 
             public static HashMap<ArmPosition, ArmState> KEY_POSITIONS = new HashMap<>() {
                 {
-                    put(ArmPosition.LowerHopperGrab, new ArmState(ShoulderState.Base1, ForearmState.LowerHopperGrab, HopperState.Retracted));
-                    put(ArmPosition.UpperHopperGrab, new ArmState(ShoulderState.Base1, ForearmState.UpperHopperGrab, HopperState.Retracted));
-                    put(ArmPosition.GroundIntake, new ArmState(ShoulderState.Base1, ForearmState.GroundIntake, HopperState.Retracted));
-                    put(ArmPosition.DoubleSubstation, new ArmState(ShoulderState.Base4, ForearmState.DoubleSubstation, HopperState.Extended));
-                    put(ArmPosition.Hybrid, new ArmState(ShoulderState.Base1, ForearmState.Base1Hybrid, HopperState.Retracted));
-                    put(ArmPosition.Store, new ArmState(ShoulderState.Base2, ForearmState.Store, HopperState.Retracted));
-                    put(ArmPosition.Base4Cone2, new ArmState(ShoulderState.Base4, ForearmState.Base4Cone2, HopperState.Extended));
-                    put(ArmPosition.Base4Cube2, new ArmState(ShoulderState.Base4, ForearmState.Base4Cube2, HopperState.Extended));
-                    put(ArmPosition.Base4Cube1, new ArmState(ShoulderState.Base4, ForearmState.Base4Cube1, HopperState.Extended));
-                    put(ArmPosition.Base2Cone1, new ArmState(ShoulderState.Base2, ForearmState.Base2Cone1, HopperState.Retracted));
-                    put(ArmPosition.Base1Cube1, new ArmState(ShoulderState.Base1, ForearmState.Base1Cube1, HopperState.Retracted));
+                    put(ArmPosition.LowerHopperGrab, new ArmState(ShoulderState.Base1, ForearmState.LowerHopperGrab, WristState.Store));
+                    put(ArmPosition.UpperHopperGrab, new ArmState(ShoulderState.Base1, ForearmState.UpperHopperGrab, WristState.Store));
+                    put(ArmPosition.GroundIntake, new ArmState(ShoulderState.Base1, ForearmState.GroundIntake, WristState.Store));
+                    put(ArmPosition.DoubleSubstation, new ArmState(ShoulderState.Base4, ForearmState.DoubleSubstation, WristState.Store));
+                    put(ArmPosition.Hybrid, new ArmState(ShoulderState.Base1, ForearmState.Base1Hybrid, WristState.Store));
+                    put(ArmPosition.Store, new ArmState(ShoulderState.Base2, ForearmState.Store, WristState.Store));
+                    put(ArmPosition.Base4Cone2, new ArmState(ShoulderState.Base4, ForearmState.Base4Cone2, WristState.Store));
+                    put(ArmPosition.Base4Cube2, new ArmState(ShoulderState.Base4, ForearmState.Base4Cube2, WristState.Store));
+                    put(ArmPosition.Base4Cube1, new ArmState(ShoulderState.Base4, ForearmState.Base4Cube1, WristState.Store));
+                    put(ArmPosition.Base2Cone1, new ArmState(ShoulderState.Base2, ForearmState.Base2Cone1, WristState.Store));
+                    put(ArmPosition.Base1Cube1, new ArmState(ShoulderState.Base1, ForearmState.Base1Cube1, WristState.Store));
                 }
             };
         }
@@ -56,13 +57,13 @@ public final class Constants extends AutoConfigurable {
             };
         }
         public static final class Forearm {
-            public static int FOREARM_MOTOR_CHANNEL = 9;
-            public static double FOREARM_MOTOR_REDUCTION = (1.0 / 60.0) * (10.0 / 22.0);
+            public static int MOTOR_CHANNEL = 9;
+            public static double MOTOR_REDUCTION = (1.0 / 60.0) * (10.0 / 22.0);
 
-            public static int FOREARM_ENCODER_CHANNEL = 5;
-            public static double FOREARM_ENCODER_OFFSET = 331.12251217887376;
+            public static int ENCODER_CHANNEL = 5;
+            public static double ENCODER_OFFSET = 331.12251217887376;
 
-            public static double FOREARM_TARGET_POSITION_TOLERANCE = 2; // degrees
+            public static double TARGET_POSITION_TOLERANCE = 2; // degrees
 
             public static class PIDF {
                 public static double P = 0.1;
@@ -72,7 +73,7 @@ public final class Constants extends AutoConfigurable {
             }
 
             public static HashMap<ForearmState, Double> POSITIONS = new HashMap<>() {
-                { // TODO: UPDATE THESE TO ACTUAL ENCODER POSITIONS
+                {
                     put(ForearmState.Base4Cube2, -82.0); // real -80
                     put(ForearmState.Base4Cone2, -105.1); // real -99.0
                     // Base4Cone1 -76.1 // real -74.8
@@ -89,8 +90,55 @@ public final class Constants extends AutoConfigurable {
                 }
             };
         }
-        public static final class Hopper {
-            public static int HOPPER_SOLENOID_CHANNEL = 6;
+        public static final class Wrist { //TODO: SET CORRECT VALUES
+            public static int MOTOR_CHANNEL = 99;
+            public static double MOTOR_REDUCTION = (1.0 / 60.0) * (10.0 / 22.0);
+
+            public static int ENCODER_CHANNEL = 99;
+            public static double ENCODER_OFFSET = 331.12251217887376;
+
+            public static double TARGET_POSITION_TOLERANCE = 2; // degrees
+
+            public static class PIDF {
+                public static double P = 0.1;
+                public static double I = 0;
+                public static double D = 0;
+                public static double F = 0;
+            }
+
+            public static HashMap<WristState, Double> POSITIONS = new HashMap<>() {
+                {
+                    put(WristState.Base4Cube2, -82.0); // real -80
+                    put(WristState.Base4Cone2, -105.1); // real -99.0
+                    // Base4Cone1 -76.1 // real -74.8
+                    put(WristState.Base4Cube1, -65.0); // real -56.8
+                    put(WristState.LowerHopperGrab, -39.0); // -33.09
+                    put(WristState.UpperHopperGrab, -49.0); // -33.09
+                    put(WristState.Intermediate, 66.7); // real 47.9
+                    put(WristState.Store, -8.0); // real -20.0
+                    put(WristState.GroundIntake, 15.0); // real 0.0
+                    put(WristState.DoubleSubstation, -99.1); // real -99.0
+                    put(WristState.Base1Cube1, 101.3); // real 67.4 // change to base2!!!
+                    put(WristState.Base2Cone1, 108.7); // real 90
+                    put(WristState.Base1Hybrid, 26.5); // real 13.0
+                }
+            };
+        }
+
+        public static final class Claw { //TODO: SET CORRECT VALUES
+            public static int CLAW_MOTOR_CHANNEL = 99; 
+
+            public static HashMap<ClawState, Double> SPEEDS = new HashMap<>() {
+                {
+                    put(ClawState.Idle, 0.05);
+                    put(ClawState.IntakeCone, 0.5);
+                    put(ClawState.IntakeCube, 0.25);
+                    put(ClawState.OuttakeCone, -0.5);
+                    put(ClawState.OuttakeCube, -0.25);
+                }
+            };
+
+            public static double intakeCurrentCutoff = 10.0;
         }
 
         public static final class Drivetrain {
@@ -152,9 +200,6 @@ public final class Constants extends AutoConfigurable {
             public static final double MAX_STANDARD_DEVIATION_LIMELIGHT = 0.01;
         }
 
-        public static final class Claw {
-            public static int CLAW_SOLENOID_CHANNEL = 4;
-        }
 
         public static final class Pneumatics {
             public static int BASE_PCM = 21;

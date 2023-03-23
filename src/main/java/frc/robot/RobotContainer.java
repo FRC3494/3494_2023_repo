@@ -24,7 +24,6 @@ import frc.robot.commands.auto.FollowPath;
 import frc.robot.commands.groups.AutoBalanceGroup;
 import frc.robot.commands.groups.AutoBalanceGroupYAxis;
 import frc.robot.commands.groups.AutoBalanceTeleopGroup;
-import frc.robot.commands.groups.AutoLineUpTeleopGroup;
 import frc.robot.commands.teleop.TeleopDrive;
 import frc.robot.subsystems.Camera;
 import frc.robot.subsystems.Drivetrain;
@@ -32,24 +31,20 @@ import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmPosition;
-import frc.robot.subsystems.arm.ArmState;
 import frc.robot.subsystems.claw.Claw;
 import frc.robot.subsystems.claw.ClawState;
 import frc.robot.subsystems.forearm.Forearm;
-import frc.robot.subsystems.forearm.ForearmState;
-import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.hopper.HopperState;
 import frc.robot.subsystems.leds.LedPattern;
 import frc.robot.subsystems.leds.Leds;
 import frc.robot.subsystems.shoulder.Shoulder;
-import frc.robot.subsystems.shoulder.ShoulderState;
+import frc.robot.subsystems.wrist.Wrist;
 
 public class RobotContainer {
     public final Drivetrain drivetrain;
     public final Pneumatics pneumatics;
     public final Shoulder shoulder;
     public final Forearm forearm;
-    public final Hopper hopper;
+    public final Wrist wrist;
     public final Arm arm;
     public final Claw claw;
     public final Leds leds;
@@ -76,9 +71,9 @@ public class RobotContainer {
 
         shoulder = new Shoulder();
         forearm = new Forearm();
-        hopper = new Hopper();
+        wrist = new Wrist();
 
-        arm = new Arm(shoulder, forearm, hopper);
+        arm = new Arm(shoulder, forearm, wrist);
 
         claw = new Claw();
 
@@ -105,9 +100,9 @@ public class RobotContainer {
         Constants.RobotContainer.PathPlanner.PATH_EVENTS.put("Balance", new AutoBalance(drivetrain));
         Constants.RobotContainer.PathPlanner.PATH_EVENTS.put("ArmCone2", new AutoSetArm(arm, ArmPosition.Base4Cone2));
         Constants.RobotContainer.PathPlanner.PATH_EVENTS.put("ArmStore", new AutoSetArm(arm, ArmPosition.Store));
-        Constants.RobotContainer.PathPlanner.PATH_EVENTS.put("ClawOpen", new AutoSetClaw(claw, ClawState.Open));
+        Constants.RobotContainer.PathPlanner.PATH_EVENTS.put("ClawOpen", new AutoSetClaw(claw, ClawState.IntakeCube));
         Constants.RobotContainer.PathPlanner.PATH_EVENTS.put("ClawClosed",
-                new AutoSetClaw(claw, ClawState.Closed));
+                new AutoSetClaw(claw, ClawState.OuttakeCube));
         Constants.RobotContainer.PathPlanner.PATH_EVENTS.put("Wait5", new WaitCommand(5));
     }
 
@@ -134,11 +129,9 @@ public class RobotContainer {
         Auto1("Auto1", (container) -> {
             return new SequentialCommandGroup(
                     new AutoSetArm(container.arm, ArmPosition.Base4Cone2),
-                    new AutoSetClaw(container.claw, ClawState.Open),
+                    new AutoSetClaw(container.claw, ClawState.IntakeCube),
                     new WaitCommand(0.5),
-                    new ParallelCommandGroup(
-                            new AutoSetArm(container.arm, ArmPosition.Store),
-                            new AutoSetClaw(container.claw, ClawState.Closed)),
+                    new AutoSetArm(container.arm, ArmPosition.Store),
                     pathFollow(container, "Auto1 Segment1"),
                     AutoBalanceGroup.get(container.drivetrain));
 
@@ -146,18 +139,16 @@ public class RobotContainer {
         PlaceThenPark("Place Then Park", (container) -> {
             return new SequentialCommandGroup(
                     new AutoSetArm(container.arm, ArmPosition.Base4Cone2),
-                    new AutoSetClaw(container.claw, ClawState.Open),
+                    new AutoSetClaw(container.claw, ClawState.IntakeCube),
                     new WaitCommand(0.5),
-                    new ParallelCommandGroup(
-                            new AutoSetArm(container.arm, ArmPosition.Store),
-                            new AutoSetClaw(container.claw, ClawState.Closed)),
+                    new AutoSetArm(container.arm, ArmPosition.Store),
                     pathFollow(container, "LeaveCom"));
         }),
         PushExitBalance("Push Cube, Exit, Balance", (container) -> {
             return new SequentialCommandGroup(
                     new AutoSetArm(container.arm, ArmPosition.LowerHopperGrab),
                     new WaitCommand(0.5),
-                    new AutoSetClaw(container.claw, ClawState.Closed),
+                    new AutoSetClaw(container.claw, ClawState.OuttakeCube),
                     pathFollow(container, "Level1ExitPark"),
                     AutoBalanceGroup.get(container.drivetrain));
         }),
@@ -165,24 +156,25 @@ public class RobotContainer {
             return new SequentialCommandGroup(
                     new AutoSetArm(container.arm, ArmPosition.LowerHopperGrab),
                     new WaitCommand(0.5),
-                    new AutoSetClaw(container.claw, ClawState.Closed),
+                    new AutoSetClaw(container.claw, ClawState.OuttakeCube),
                     AutoBalanceGroup.get(container.drivetrain));
         }),
         JustBalanceYAxis("Just Balance Y Axis", (container) -> {
             return new SequentialCommandGroup(
                     new AutoSetArm(container.arm, ArmPosition.LowerHopperGrab),
                     new WaitCommand(0.5),
-                    new AutoSetClaw(container.claw, ClawState.Closed),
+                    new AutoSetClaw(container.claw, ClawState.OuttakeCube),
                     AutoBalanceGroupYAxis.get(container.drivetrain));
         }),
         PlaceThenBalance("Place then Balance Y Axis", (container) -> {
             return new SequentialCommandGroup(
                     new AutoSetArm(container.arm, ArmPosition.Base4Cone2),
-                    new AutoSetClaw(container.claw, ClawState.Open),
+                    new AutoSetClaw(container.claw, ClawState.OuttakeCone),
                     new WaitCommand(0.5),
                     new ParallelCommandGroup(
-                            new ParallelCommandGroup(new AutoSetArm(container.arm, ArmPosition.Store),
-                            new AutoSetClaw(container.claw, ClawState.Closed)),
+                            new ParallelCommandGroup(
+                                new AutoSetArm(container.arm, ArmPosition.Store),
+                                new AutoSetClaw(container.claw, ClawState.Idle)),
                             new SequentialCommandGroup(
                                 pathFollow(container, "LeaveCom"),
                                 new WaitCommand(0.3),
@@ -192,20 +184,20 @@ public class RobotContainer {
         PlacePickupBalance("Place then Pickup Cube then Balance", (container) -> {
             return new SequentialCommandGroup(
                     new AutoSetArm(container.arm, ArmPosition.Base4Cone2),
-                    new AutoSetClaw(container.claw, ClawState.Open),
+                    new AutoSetClaw(container.claw, ClawState.OuttakeCone),
                     new WaitCommand(0.5),
                     new ParallelCommandGroup(
                             new AutoSetArm(container.arm, ArmPosition.GroundIntake),
                             pathFollow(container, "LeaveComPickUp")
                     ),
                     new WaitCommand(0.2),
-                    new AutoSetClaw(container.claw, ClawState.Closed),
+                    new AutoSetClaw(container.claw, ClawState.IntakeCone),
                     new WaitCommand(0.5),
                     new ParallelCommandGroup(
                             new AutoSetArm(container.arm, ArmPosition.Base4Cube2),
                             pathFollow(container, "LeaveComPickUpReturn")
                     ),
-                    new AutoSetClaw(container.claw, ClawState.Open),
+                    new AutoSetClaw(container.claw, ClawState.OuttakeCone),
                     pathFollow(container, "Backup")
                     /*new WaitCommand(0.2),
                     new AutoSetClaw(container.claw, ClawState.Open),
@@ -216,14 +208,14 @@ public class RobotContainer {
         PlacePickupPlace("Place then Pickup Cube then Place", (container) -> {
             return new SequentialCommandGroup(
                     new AutoSetArm(container.arm, ArmPosition.Base4Cone2),
-                    new AutoSetClaw(container.claw, ClawState.Open),
+                    new AutoSetClaw(container.claw, ClawState.OuttakeCone),
                     new WaitCommand(0.5),
                     new ParallelCommandGroup(
                             new AutoSetArm(container.arm, ArmPosition.GroundIntake),
                             pathFollow(container, "LeaveComPickUp")
                     ),
                     new WaitCommand(0.2),
-                    new AutoSetClaw(container.claw, ClawState.Closed),
+                    new AutoSetClaw(container.claw, ClawState.IntakeCone),
                     new WaitCommand(0.5),
                     pathFollow(container, "FromPickup")
                     /*new WaitCommand(0.2),
@@ -318,10 +310,6 @@ public class RobotContainer {
 
     public void disabledInit() {
         leds.setPattern(LedPattern.IDLE);
-    }
-
-    public void testInit() {
-        arm.setTarget(new ArmState(ShoulderState.Base4, ForearmState.Base1Cube1, HopperState.Retracted));
     }
 
     public void configureButtonBindings() {
