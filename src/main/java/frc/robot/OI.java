@@ -5,8 +5,13 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import frc.robot.subsystems.NavX;
+import frc.robot.subsystems.Drivetrain.DriveLocation;
 
 public final class OI {
+    static boolean pickupMenu = false;
+    static boolean leftGridMenu = false;
+    static boolean middleGridMenu = false;
+    static boolean rightGridMenu = false;
     private static EventLoop eventLoop = new EventLoop();
 
     private static XboxController primaryController = new XboxController(Constants.OI.PRIMARY_CONTROLLER_PORT);
@@ -99,9 +104,86 @@ public final class OI {
         return primaryController.y(eventLoop);
     }
 
-    public static BooleanEvent autoLineUpEvent() {
+   /* public static BooleanEvent autoLineUpEvent() {
         return primaryController.a(eventLoop);
+    }*/
+    public static BooleanEvent selectDrivePickupMenu() {
+        return primaryController.a(eventLoop).and(() -> !pickupMenu);
     }
+    public static BooleanEvent resetMenuPickup() {
+        return primaryController.a(eventLoop).and(() -> pickupMenu);
+    }
+    public static BooleanEvent selectDriveSingleSub() {
+        return primaryController.rightTrigger(eventLoop).and(() -> pickupMenu);
+    }
+    public static BooleanEvent selectDriveDoubleSubLeft() {
+        return primaryController.rightBumper(eventLoop).and(() -> pickupMenu);
+    }
+    public static BooleanEvent selectDriveDoubleSubRight() {
+        return primaryController.leftBumper(eventLoop).and(() -> pickupMenu);
+    }
+
+    public static BooleanEvent selectDriveLeftGridMenu() {
+        return primaryController.leftTrigger(eventLoop).and(() -> !leftGridMenu);
+    }
+    public static BooleanEvent resetMenuLeftGrid() {
+        return primaryController.a(eventLoop).and(() -> leftGridMenu);
+    }
+    public static BooleanEvent selectDriveLeftConeLeftGrid() {
+        return primaryController.leftTrigger(eventLoop).and(() -> leftGridMenu);
+    }
+    public static BooleanEvent selectDriveMiddleCubeLeftGrid() {
+        return primaryController.leftBumper(eventLoop).and(() -> leftGridMenu);
+    }
+    public static BooleanEvent selectDriveRightConeLeftGrid() {
+        return primaryController.rightBumper(eventLoop).and(() -> leftGridMenu);
+    }
+
+
+
+
+    public static BooleanEvent selectDriveMiddleGridMenu() {
+        return primaryController.leftBumper(eventLoop).and(() -> !middleGridMenu);
+    }
+    public static BooleanEvent resetMenuMiddleGrid() {
+        return primaryController.a(eventLoop).and(() -> middleGridMenu);
+    }
+    public static BooleanEvent selectDriveLeftConeMiddleGrid() {
+        return primaryController.leftTrigger(eventLoop).and(() -> middleGridMenu);
+    }
+    public static BooleanEvent selectDriveMiddleCubeMiddleGrid() {
+        return primaryController.leftBumper(eventLoop).and(() -> middleGridMenu);
+    }
+    public static BooleanEvent selectDriveRightConeMiddleGrid() {
+        return primaryController.rightBumper(eventLoop).and(() -> middleGridMenu);
+    }
+
+    
+    public static BooleanEvent selectDriveRightGridMenu() {
+        return primaryController.rightBumper(eventLoop).and(() -> !rightGridMenu);
+    }
+    public static BooleanEvent resetMenuRightGrid() {
+        return primaryController.a(eventLoop).and(() -> rightGridMenu);
+    }
+    public static BooleanEvent selectDriveLeftConeRightGrid() {
+        return primaryController.leftTrigger(eventLoop).and(() -> rightGridMenu);
+    }
+    public static BooleanEvent selectDriveMiddleCubeRightGrid() {
+        return primaryController.leftBumper(eventLoop).and(() -> rightGridMenu);
+    }
+    public static BooleanEvent selectDriveRightConeRightGrid() {
+        return primaryController.rightBumper(eventLoop).and(() -> rightGridMenu);
+    }
+
+    
+
+
+
+
+
+
+
+
 
     public static BooleanEvent driveTrainLock() {
         return primaryController.b(eventLoop);
@@ -115,6 +197,7 @@ public final class OI {
     private static Joystick rightButtonBoard = new Joystick(Constants.OI.SECONDARY_RIGHT_CONTROLLER_PORT);
     // private static Joystick rightButtonBoard = new
     // Joystick(Constants.OI.SECONDARY_RIGHT_CONTROLLER_PORT);
+
 
     public static BooleanEvent armCancelToggle() {
         return leftButtonBoard.button(7, eventLoop);

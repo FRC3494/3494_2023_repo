@@ -27,9 +27,10 @@ import frc.robot.commands.groups.AutoBalanceTeleopGroup;
 import frc.robot.commands.groups.AutoLineUpTeleopGroup;
 import frc.robot.commands.teleop.TeleopDrive;
 import frc.robot.subsystems.Camera;
-import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.Pneumatics;
+import frc.robot.subsystems.Drivetrain.DriveLocation;
+import frc.robot.subsystems.Drivetrain.Drivetrain;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmPosition;
 import frc.robot.subsystems.arm.HopperState;
@@ -331,8 +332,70 @@ public class RobotContainer {
         OI.printOdometryEvent().rising().ifHigh(() -> {
             System.out.println("Current Odo x" + drivetrain.getPose().getX() + ", y" + drivetrain.getPose().getY());
         });
-        OI.autoLineUpEvent().rising().ifHigh(() ->{
+        /*OI.autoLineUpEvent().rising().ifHigh(() ->{
             AutoLineUpTeleopGroup.get(drivetrain, robotPosition).schedule();
+        });*/
+        OI.resetMenuLeftGrid().rising().ifHigh(() ->{OI.leftGridMenu = false;});
+        OI.resetMenuRightGrid().rising().ifHigh(() ->{OI.rightGridMenu = false;});
+        OI.resetMenuMiddleGrid().rising().ifHigh(() ->{OI.middleGridMenu = false;});
+        OI.resetMenuPickup().rising().ifHigh(() ->{OI.pickupMenu = false;});
+
+        OI.selectDriveLeftGridMenu().rising().ifHigh(()->{OI.leftGridMenu = true;});
+        OI.selectDriveRightGridMenu().rising().ifHigh(()->{OI.rightGridMenu = true;});
+        OI.selectDriveMiddleGridMenu().rising().ifHigh(()->{OI.middleGridMenu = true;});
+        OI.selectDrivePickupMenu().rising().ifHigh(()->{OI.pickupMenu = true;});
+
+        OI.selectDriveLeftConeLeftGrid().rising().ifHigh(()->{
+            OI.leftGridMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.LeftConeLeftGrid).schedule();
+        });
+        OI.selectDriveMiddleCubeLeftGrid().rising().ifHigh(()->{
+            OI.leftGridMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.MiddleCubeLeftGrid).schedule();
+        });
+        OI.selectDriveRightConeLeftGrid().rising().ifHigh(()->{
+            OI.leftGridMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.RightConeLeftGrid).schedule();
+        });
+
+        OI.selectDriveLeftConeMiddleGrid().rising().ifHigh(()->{
+            OI.middleGridMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.LeftConeMiddleGrid).schedule();
+        });
+        OI.selectDriveMiddleCubeMiddleGrid().rising().ifHigh(()->{
+            OI.middleGridMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.MiddleCubeMiddleGrid).schedule();
+        });
+        OI.selectDriveRightConeMiddleGrid().rising().ifHigh(()->{
+            OI.middleGridMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.RightConeMiddleGrid).schedule();
+        });
+
+        OI.selectDriveLeftConeRightGrid().rising().ifHigh(()->{
+            OI.rightGridMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.LeftConeRightGrid).schedule();
+        });
+        OI.selectDriveMiddleCubeRightGrid().rising().ifHigh(()->{
+            OI.rightGridMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.MiddleCubeRightGrid).schedule();
+        });
+        OI.selectDriveRightConeRightGrid().rising().ifHigh(()->{
+            OI.rightGridMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.RightConeRightGrid).schedule();
+        });
+
+        OI.selectDriveSingleSub().rising().ifHigh(()->{
+            OI.pickupMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.SingleSubstation).schedule();
+        });
+        OI.selectDriveDoubleSubLeft().rising().ifHigh(()->{
+            OI.pickupMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.DoubleSubstationLeft).schedule();
+        });
+        OI.selectDriveDoubleSubRight().rising().ifHigh(()->{
+            OI.pickupMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.DoubleSubstationRight).schedule();
+
         });
 
         OI.zeroArm().rising().ifHigh(() -> {
