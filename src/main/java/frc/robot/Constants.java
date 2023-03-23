@@ -10,17 +10,52 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.arm.ForearmState;
-import frc.robot.subsystems.arm.ShoulderState;
+import frc.robot.subsystems.arm.ArmPosition;
+import frc.robot.subsystems.arm.ArmState;
+import frc.robot.subsystems.forearm.ForearmState;
+import frc.robot.subsystems.hopper.HopperState;
+import frc.robot.subsystems.shoulder.ShoulderState;
 
 public final class Constants extends AutoConfigurable {
     public static final class Subsystems {
         public static final class Arm {
+            public static ArmState INITIAL_STATE = new ArmState(ShoulderState.Base2, ForearmState.Store, HopperState.Retracted);
+
+            public static HashMap<ArmPosition, ArmState> KEY_POSITIONS = new HashMap<>() {
+                {
+                    put(ArmPosition.LowerHopperGrab, new ArmState(ShoulderState.Base1, ForearmState.LowerHopperGrab, HopperState.Retracted));
+                    put(ArmPosition.UpperHopperGrab, new ArmState(ShoulderState.Base1, ForearmState.UpperHopperGrab, HopperState.Retracted));
+                    put(ArmPosition.GroundIntake, new ArmState(ShoulderState.Base1, ForearmState.GroundIntake, HopperState.Retracted));
+                    put(ArmPosition.DoubleSubstation, new ArmState(ShoulderState.Base4, ForearmState.DoubleSubstation, HopperState.Extended));
+                    put(ArmPosition.Hybrid, new ArmState(ShoulderState.Base1, ForearmState.Base1Hybrid, HopperState.Retracted));
+                    put(ArmPosition.Store, new ArmState(ShoulderState.Base2, ForearmState.Store, HopperState.Retracted));
+                    put(ArmPosition.Base4Cone2, new ArmState(ShoulderState.Base4, ForearmState.Base4Cone2, HopperState.Extended));
+                    put(ArmPosition.Base4Cube2, new ArmState(ShoulderState.Base4, ForearmState.Base4Cube2, HopperState.Extended));
+                    put(ArmPosition.Base4Cube1, new ArmState(ShoulderState.Base4, ForearmState.Base4Cube1, HopperState.Extended));
+                    put(ArmPosition.Base2Cone1, new ArmState(ShoulderState.Base2, ForearmState.Base2Cone1, HopperState.Retracted));
+                    put(ArmPosition.Base1Cube1, new ArmState(ShoulderState.Base1, ForearmState.Base1Cube1, HopperState.Retracted));
+                }
+            };
+        }
+
+        public static final class Shoulder {
             public static int TOP_PISTON_SOLENOID_CHANNEL = 2;
             public static int BOTTOM_PISTON_SOLENOID_CHANNEL = 0;
 
-            public static int HOPPER_SOLENOID_CHANNEL = 6;
+            public static int SHOULDER_POTENTIOMETER_CHANNEL = 4;
 
+            public static double SHOULDER_TARGET_TOLERANCE = 0.012;
+
+            public static HashMap<ShoulderState, Double> POSITIONS = new HashMap<>() {
+                {
+                    put(ShoulderState.Base1, 0.191);
+                    put(ShoulderState.Base2, 0.267);
+                    put(ShoulderState.Base3, 0.328);
+                    put(ShoulderState.Base4, 0.390);
+                }
+            };
+        }
+        public static final class Forearm {
             public static int FOREARM_MOTOR_CHANNEL = 9;
             public static double FOREARM_MOTOR_REDUCTION = (1.0 / 60.0) * (10.0 / 22.0);
 
@@ -29,18 +64,14 @@ public final class Constants extends AutoConfigurable {
 
             public static double FOREARM_TARGET_POSITION_TOLERANCE = 2; // degrees
 
-            public static int SHOULDER_POTENTIOMETER_CHANNEL = 4;
-
-            public static double SHOULDER_TARGET_TOLERANCE = 0.012;
-
-            public static class PIDF { // TODO: TUNE
+            public static class PIDF {
                 public static double P = 0.1;
                 public static double I = 0;
                 public static double D = 0;
                 public static double F = 0;
             }
 
-            public static HashMap<ForearmState, Double> FOREARM_POSITION = new HashMap<>() {
+            public static HashMap<ForearmState, Double> POSITIONS = new HashMap<>() {
                 { // TODO: UPDATE THESE TO ACTUAL ENCODER POSITIONS
                     put(ForearmState.Base4Cube2, -82.0); // real -80
                     put(ForearmState.Base4Cone2, -105.1); // real -99.0
@@ -57,14 +88,9 @@ public final class Constants extends AutoConfigurable {
                     put(ForearmState.Base1Hybrid, 26.5); // real 13.0
                 }
             };
-
-            public static HashMap<ShoulderState, Double> SHOULDER_POSITIONS = new HashMap<>() {
-                {
-                    put(ShoulderState.Base1, 0.191);
-                    put(ShoulderState.Base2, 0.267);
-                    put(ShoulderState.Base4, 0.390);
-                }
-            };
+        }
+        public static final class Hopper {
+            public static int HOPPER_SOLENOID_CHANNEL = 6;
         }
 
         public static final class Drivetrain {

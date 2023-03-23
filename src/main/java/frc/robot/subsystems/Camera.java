@@ -13,18 +13,18 @@ public class Camera extends SubsystemBase {
     public Camera() {
         camera = CameraServer.startAutomaticCapture();
 
-        reconnectTimer = new Timer();
-        reconnectTimer.start();
+        /*reconnectTimer = new Timer();
+        reconnectTimer.start();*/
     }
 
     @Override
     public void periodic() {
-        if (!camera.isConnected()
+        /*if (!camera.isConnected()
             && reconnectTimer.advanceIfElapsed(1)) {
             camera.close();
 
             camera = CameraServer.startAutomaticCapture();
-        }
+        }*/
     }
 
     public UsbCamera getCamera() {

@@ -17,11 +17,13 @@ public class AutoSetArm extends CommandBase {
 
     @Override
     public void initialize() {
-        arm.setArmState(armPosition);
+        //arm.setArmState(armPosition);
+        //arm.setTarget(armPosition);
     }
 
     @Override
     public boolean isFinished() {
-        return arm.isDoneMoving();
+        return true;
+        //return arm.isDoneMoving();
     }
 }
