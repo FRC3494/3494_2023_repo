@@ -3,11 +3,12 @@ package frc.robot;
 import java.util.HashMap;
 
 import com.pathplanner.lib.PathConstraints;
-import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.arm.ArmPosition;
 import frc.robot.subsystems.arm.ArmState;
@@ -140,13 +141,15 @@ public final class Constants extends AutoConfigurable {
                     // Back right
                     new Translation2d(-TRACKLENGTH_METERS / 2.0, -TRACKWIDTH_METERS / 2.0));
 
-            public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
+            /*public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
                     SdsModuleConfigurations.MK4I_L1.getDriveReduction() *
-                    SdsModuleConfigurations.MK4I_L1.getWheelDiameter() * Math.PI * 0.1;
+                    SdsModuleConfigurations.MK4I_L1.getWheelDiameter() * Math.PI;*/
+
+            public static final double MAX_VELOCITY_METERS_PER_SECOND = 3.6576f;
 
             public static final double MAX_VOLTAGE = 12.0;
 
-            public static final double MAX_STANDARD_DEVIATION_LIMELIGHT = 1;
+            public static final double MAX_STANDARD_DEVIATION_LIMELIGHT = 0.01;
         }
 
         public static final class Claw {
@@ -169,15 +172,19 @@ public final class Constants extends AutoConfigurable {
 
     public static final class Commands {
         public static final class FollowPath {
-            // public static final PIDController X_CONTROLLER = new PIDController(1, 0, 0);
-            // public static final PIDController Y_CONTROLLER = new PIDController(1, 0, 0);
+            public static final PIDController X_CONTROLLER = new PIDController(1, 0, 0);//.1 "4, 0.1, 0"
+            public static final PIDController Y_CONTROLLER = new PIDController(1, 0, 0);//.1
+            public static final ProfiledPIDController THETA_CONTROLLER = new ProfiledPIDController(
+                5.0, 0, 0,//2.4,0,0
+                new TrapezoidProfile.Constraints(3,
+                        3));//max vel, max acc
+        
+            public static final PIDController PP_THETA_CONTROLLER = new PIDController(0.3, 0.0, 0.0);
 
-            // public static final PIDController THETA_CONTROLLER = new PIDController(0.22, 0, 0.05);
-
-            public static final PIDController X_CONTROLLER = new PIDController(2.5, 1.5, 0);
-            public static final PIDController Y_CONTROLLER = new PIDController(2.5, 1, 0);
-
-            public static final PIDController THETA_CONTROLLER = new PIDController(0.0, 0.0, 0.05);
+            //public static final PIDController X_CONTROLLER = new PIDController(2.5, 1.5, 0);
+            //public static final PIDController Y_CONTROLLER = new PIDController(2.5, 1, 0);
+            //public static final PIDController THETA_CONTROLLER = new PIDController(2.5, 1.2, 0.5);
+            //public static final PIDController THETA_CONTROLLER = new PIDController(0.0, 0.0, 0.05);
 
 
 
@@ -216,7 +223,7 @@ public final class Constants extends AutoConfigurable {
 
     public static final class RobotContainer {
         public static final class PathPlanner {
-            public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(1.5, 1.5);
+            public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(4, 4);
 
             public static HashMap<String, Command> PATH_EVENTS = new HashMap<>() {
                 {
@@ -231,10 +238,10 @@ public final class Constants extends AutoConfigurable {
         public static final int SECONDARY_LEFT_CONTROLLER_PORT = 1;
         public static final int SECONDARY_RIGHT_CONTROLLER_PORT = 2;
 
-        public static final double MAX_DRIVE_SPEED = 1; // m/s
-        public static final double MAX_TURN_SPEED = .5; // rad/s
+        public static final double MAX_DRIVE_SPEED = 3; // m/s
+        public static final double MAX_TURN_SPEED = .8; // rad/s
         public static final double DPAD_SPEED = 0.1;
 
-        public static final double FOREARM_FINE_ADJUST_SPEED = 0.3;
+        public static final double FOREARM_FINE_ADJUST_SPEED = 0.8;
     }
 }

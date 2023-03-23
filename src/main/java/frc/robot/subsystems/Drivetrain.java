@@ -10,15 +10,18 @@ import com.swervedrivespecialties.swervelib.SwerveModule;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.LimelightHelpers;
 
 public class Drivetrain extends SubsystemBase {
 	double aprilTagYaw;
@@ -94,18 +97,18 @@ public class Drivetrain extends SubsystemBase {
 
 		//update limelight position here
 		
-		//limelightBotPose = LimelightHelpers.getBotPose2d("limelight");
+		limelightBotPose = LimelightHelpers.getBotPose2d("limelight");
+		//System.out.println(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0));
+		//System.out.println("Stdev" + nextStandardDeviation(limelightBotPose.getX(), limelightBotPose.getY()));
+		if (nextStandardDeviation(limelightBotPose.getX(), limelightBotPose.getY()) <= Constants.Subsystems.Drivetrain.MAX_STANDARD_DEVIATION_LIMELIGHT && NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0)!=0 && limelightBotPose.getX() != 0 && limelightBotPose.getY() !=0){
+			//System.out.println("Sdev" +nextStandardDeviation(limelightBotPose.getX(), limelightBotPose.getY()));
 
-		/*if (nextStandardDeviation(limelightBotPose.getX(), limelightBotPose.getY()) <= Constants.Subsystems.Drivetrain.MAX_STANDARD_DEVIATION_LIMELIGHT){
-			System.out.println("Odometery Reset" +nextStandardDeviation(limelightBotPose.getX(), limelightBotPose.getY()));
-			resetOdometry(limelightBotPose);
-		}*/
-			
-	
-			
+			resetOdometry(new Pose2d(limelightBotPose.getX()+8.27, limelightBotPose.getY()+4.01, limelightBotPose.getRotation()));
+			//System.out.println("New Psoe:"+ odometry.getPoseMeters());
+		}
 	}
 
-	double nextStandardDeviation(double nextX, double nextY) {
+	double nextStandardDeviation(double nextX, double nextY){ 
 		standardDeviationX.add(0, nextX);
 		standardDeviationY.add(0, nextY);
 
@@ -186,6 +189,12 @@ public class Drivetrain extends SubsystemBase {
 			return;
 		}
 
+		setModuleStates(swerveModuleStates);
+	}
+
+	public void drive(ChassisSpeeds speeds){
+		SwerveModuleState[] swerveModuleStates = Constants.Subsystems.Drivetrain.SWERVE_KINEMATICS.toSwerveModuleStates(speeds);
+		SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Subsystems.Drivetrain.MAX_VELOCITY_METERS_PER_SECOND);
 		setModuleStates(swerveModuleStates);
 	}
 

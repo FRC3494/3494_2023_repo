@@ -11,6 +11,8 @@ public class AutoSetArm extends CommandBase {
     public AutoSetArm(Arm arm, ArmPosition armPosition) {
         this.arm = arm;
         this.armPosition = armPosition;
+        
+		addRequirements(arm);
     }
 
     @Override

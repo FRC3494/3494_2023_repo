@@ -5,7 +5,6 @@ import java.util.function.Function;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.commands.FollowPathWithEvents;
 import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -21,10 +20,11 @@ import frc.robot.commands.RunPneumatics;
 import frc.robot.commands.auto.AutoBalance;
 import frc.robot.commands.auto.AutoSetArm;
 import frc.robot.commands.auto.AutoSetClaw;
-import frc.robot.commands.auto.FollowPathPP;
+import frc.robot.commands.auto.FollowPath;
 import frc.robot.commands.groups.AutoBalanceGroup;
 import frc.robot.commands.groups.AutoBalanceGroupYAxis;
 import frc.robot.commands.groups.AutoBalanceTeleopGroup;
+import frc.robot.commands.groups.AutoLineUpTeleopGroup;
 import frc.robot.commands.teleop.TeleopDrive;
 import frc.robot.subsystems.Camera;
 import frc.robot.subsystems.Drivetrain;
@@ -63,6 +63,7 @@ public class RobotContainer {
 
     private Command autoBalanceDrivetrainCommand;
     private boolean alternateAutoBalance = true;
+    private boolean lineUptracker = true;
 
     public RobotContainer() {
         PathPlannerServer.startServer(3494);
@@ -88,7 +89,7 @@ public class RobotContainer {
         // autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
 
         autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
-
+        
         // Configure the button bindings
         configureButtonBindings();
 
@@ -113,19 +114,20 @@ public class RobotContainer {
     public static Command pathFollow(RobotContainer container, String pathName) {
         PathPlannerTrajectory loadedPath = PathPlanner.loadPath(pathName,
                 Constants.RobotContainer.PathPlanner.PATH_CONSTRAINTS);
-
-        return new FollowPathWithEvents(new FollowPathPP(container.drivetrain, loadedPath, container.robotPosition),
+        System.out.println("Running An Auto");
+        return new FollowPath(container.drivetrain, loadedPath, container.robotPosition);
+       /* return new FollowPathWithEvents(new FollowPath(container.drivetrain, loadedPath, container.robotPosition),
                 loadedPath.getMarkers(),
-                Constants.RobotContainer.PathPlanner.PATH_EVENTS);
+                Constants.RobotContainer.PathPlanner.PATH_EVENTS);*/
     }
 
     public static Command pathFollow(RobotContainer container, String pathName, double targetSpeed) {
         PathPlannerTrajectory loadedPath = PathPlanner.loadPath(pathName, new PathConstraints(targetSpeed,
             Constants.RobotContainer.PathPlanner.PATH_CONSTRAINTS.maxAcceleration));
-
-        return new FollowPathWithEvents(new FollowPathPP(container.drivetrain, loadedPath, container.robotPosition),
+        return new FollowPath(container.drivetrain, loadedPath, container.robotPosition);
+        /*return new FollowPathWithEvents(new FollowPath(container.drivetrain, loadedPath, container.robotPosition),
                 loadedPath.getMarkers(),
-                Constants.RobotContainer.PathPlanner.PATH_EVENTS);
+                Constants.RobotContainer.PathPlanner.PATH_EVENTS);*/
     }
 
     public enum Autos {
@@ -187,14 +189,14 @@ public class RobotContainer {
                                 AutoBalanceGroupYAxis.get(container.drivetrain))
                             ));
         }),
-        PlacePickupPlace("Place then Pickup Cube then Place", (container) -> {
+        PlacePickupBalance("Place then Pickup Cube then Balance", (container) -> {
             return new SequentialCommandGroup(
                     new AutoSetArm(container.arm, ArmPosition.Base4Cone2),
                     new AutoSetClaw(container.claw, ClawState.Open),
                     new WaitCommand(0.5),
                     new ParallelCommandGroup(
                             new AutoSetArm(container.arm, ArmPosition.GroundIntake),
-                            pathFollow(container, "LeaveComPickUp", 1)
+                            pathFollow(container, "LeaveComPickUp")
                     ),
                     new WaitCommand(0.2),
                     new AutoSetClaw(container.claw, ClawState.Closed),
@@ -202,19 +204,41 @@ public class RobotContainer {
                     new ParallelCommandGroup(
                             new AutoSetArm(container.arm, ArmPosition.Base4Cube2),
                             pathFollow(container, "LeaveComPickUpReturn")
-                    )
+                    ),
+                    new AutoSetClaw(container.claw, ClawState.Open),
+                    pathFollow(container, "Backup")
                     /*new WaitCommand(0.2),
                     new AutoSetClaw(container.claw, ClawState.Open),
                     new WaitCommand(0.5),
                     new AutoSetArm(container.arm, ArmPosition.Store)*/
             );
         }),
-        Turn90("Turn 90", (container) -> pathFollow(container, "Turn90"));
+        PlacePickupPlace("Place then Pickup Cube then Place", (container) -> {
+            return new SequentialCommandGroup(
+                    new AutoSetArm(container.arm, ArmPosition.Base4Cone2),
+                    new AutoSetClaw(container.claw, ClawState.Open),
+                    new WaitCommand(0.5),
+                    new ParallelCommandGroup(
+                            new AutoSetArm(container.arm, ArmPosition.GroundIntake),
+                            pathFollow(container, "LeaveComPickUp")
+                    ),
+                    new WaitCommand(0.2),
+                    new AutoSetClaw(container.claw, ClawState.Closed),
+                    new WaitCommand(0.5),
+                    pathFollow(container, "FromPickup")
+                    /*new WaitCommand(0.2),
+                    new AutoSetClaw(container.claw, ClawState.Open),
+                    new WaitCommand(0.5),
+                    new AutoSetArm(container.arm, ArmPosition.Store)*/
+            );
+        }),
+        Turn90("Turn 90", (container) -> pathFollow(container, "Turn90")),
+        Forward2("Forward", (container) -> pathFollow(container, "ForwardX")),
         // Full("Full", (container) -> pathFollow(container, "Full")),
         // ParkTest("Park Test", (container) -> pathFollow(container, "ParkTest")),
         // StarOfDeath("Star of Death", (container) -> pathFollow(container, "Star Of
         // Death")),
-        // UrMom("ur mom lol", (container) -> pathFollow(container, "ur mom"));
+        UrMom("ur mom lol", (container) -> pathFollow(container, "ur mom"));
 
         String displayName;
         Function<RobotContainer, Command> commandFunction;
@@ -343,6 +367,14 @@ public class RobotContainer {
 
         OI.printOdometryEvent().rising().ifHigh(() -> {
             System.out.println("Current Odo " + drivetrain.getPose().getX() + ":" + drivetrain.getPose().getY());
+        });
+        OI.autoLineUpEvent().rising().ifHigh(() ->{
+            if (lineUptracker)
+            AutoLineUpTeleopGroup.get(drivetrain, robotPosition).schedule();
+            else
+            AutoLineUpTeleopGroup.get(drivetrain, robotPosition).cancel();
+
+            lineUptracker = !lineUptracker;
         });
 
         OI.zeroArm().rising().ifHigh(() -> {
