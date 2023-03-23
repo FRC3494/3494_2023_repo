@@ -5,8 +5,8 @@ import frc.robot.Constants;
 import frc.robot.commands.auto.AutoBalance;
 import frc.robot.commands.auto.AutoDrive;
 import frc.robot.commands.teleop.TeleopDriveInterruptor;
-import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.NavX;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 
 public class AutoBalanceTeleopGroup {
     public static Command get(Drivetrain drivetrain) {

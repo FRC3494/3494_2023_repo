@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.auto.FollowPath;
 import frc.robot.commands.teleop.TeleopDriveInterruptor;
-import frc.robot.subsystems.Drivetrain.DriveLocation;
-import frc.robot.subsystems.Drivetrain.Drivetrain;
+import frc.robot.subsystems.drivetrain.DriveLocation;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 
 public class AutoLineUpTeleopGroup {
     public static Command get(Drivetrain drivetrain, Field2d field2d) {

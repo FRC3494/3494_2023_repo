@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.drivetrain.Drivetrain;
 
 public class FollowPath extends CommandBase {
 	Drivetrain drivetrain;
