@@ -238,9 +238,9 @@ public final class Constants extends AutoConfigurable {
         public static final int SECONDARY_LEFT_CONTROLLER_PORT = 1;
         public static final int SECONDARY_RIGHT_CONTROLLER_PORT = 2;
 
-        public static final double MAX_DRIVE_SPEED = 3; // m/s
-        public static final double MAX_TURN_SPEED = .8; // rad/s
-        public static final double DPAD_SPEED = 0.1;
+        public static final double MAX_DRIVE_SPEED = 5; // m/s
+        public static final double MAX_TURN_SPEED = 5; // rad/s
+        public static final double DPAD_SPEED = 0.55;
 
         public static final double FOREARM_FINE_ADJUST_SPEED = 0.8;
     }

@@ -25,11 +25,15 @@ public class FollowPath extends CommandBase {
 	Field2d field2d;
 	FieldObject2d fieldObject2d;
 
-	public FollowPath(Drivetrain drivetrain, PathPlannerTrajectory trajectory, Field2d field2d) {
+	boolean fullAutoMode;
+
+	public FollowPath(Drivetrain drivetrain, PathPlannerTrajectory trajectory, Field2d field2d, boolean fullAutoMode) {
 		this.drivetrain = drivetrain;
 		this.trajectory = trajectory;
 		this.field2d = field2d;
 		this.fieldObject2d = field2d.getObject("Target Position");
+
+		this.fullAutoMode = fullAutoMode;
 		// drivetrain.resetOdometry(trajectory.getInitialPose());
 
 
@@ -40,7 +44,7 @@ public class FollowPath extends CommandBase {
 
 	@Override
 	public void initialize() {
-		drivetrain.resetOdometry(trajectory.getInitialHolonomicPose());
+		if (fullAutoMode) drivetrain.resetOdometry(trajectory.getInitialHolonomicPose());
 
 		PIDController xController = Constants.Commands.FollowPath.X_CONTROLLER;
 		PIDController yController = Constants.Commands.FollowPath.Y_CONTROLLER;
@@ -67,7 +71,7 @@ public class FollowPath extends CommandBase {
 
 
         Pose2d currentPose = drivetrain.getPose();
-
+		drivetrain.periodic();
 		field2d.setRobotPose(currentPose);
 		fieldObject2d.setPose(targetPose);
 		
@@ -91,6 +95,8 @@ public class FollowPath extends CommandBase {
 
 	@Override
 	public boolean isFinished() {
+		if (!fullAutoMode) return false; 
+
 		return trajectory.getTotalTimeSeconds() <= timer.get();
 	}
 

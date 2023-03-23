@@ -1,23 +1,11 @@
 package frc.robot.commands.auto;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.util.LimelightHelpers;
-import frc.robot.util.LimelightHelpers.LimelightResults;
+import frc.robot.subsystems.Drivetrain.Drivetrain;
 
 import com.google.gson.*;
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
 
 public class AutoDriveTopt2 extends CommandBase {
@@ -41,7 +29,7 @@ public class AutoDriveTopt2 extends CommandBase {
 
 	List<PathPoint> toTagPath;
 	Field2d field2d;
-	private PathPlannerTrajectory path;
+	//private PathPlannerTrajectory path;
     
 	public AutoDriveTopt2(Drivetrain drivetrain, Field2d field2d) {
 		this.drivetrain = drivetrain;

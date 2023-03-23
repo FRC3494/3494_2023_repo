@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.Drivetrain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,6 @@ import com.swervedrivespecialties.swervelib.SwerveModule;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -21,6 +20,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.NavX;
 import frc.robot.util.LimelightHelpers;
 
 public class Drivetrain extends SubsystemBase {
@@ -92,7 +92,6 @@ public class Drivetrain extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		
 		odometry.update(getGyroscopeRotation(), getSwerveModulePositions());
 
 		//update limelight position here
@@ -261,6 +260,7 @@ public class Drivetrain extends SubsystemBase {
 
 		return Rotation2d.fromDegrees(360.0 - NavX.getYaw());
 	}
+
 
 	/*public PathPlannerTrajectory getPathToTag(){
 		limeLightData = (JsonObject) JsonParser.parseString(

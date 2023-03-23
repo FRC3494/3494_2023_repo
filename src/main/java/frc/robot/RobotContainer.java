@@ -27,9 +27,10 @@ import frc.robot.commands.groups.AutoBalanceTeleopGroup;
 import frc.robot.commands.groups.AutoLineUpTeleopGroup;
 import frc.robot.commands.teleop.TeleopDrive;
 import frc.robot.subsystems.Camera;
-import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.Pneumatics;
+import frc.robot.subsystems.Drivetrain.DriveLocation;
+import frc.robot.subsystems.Drivetrain.Drivetrain;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmPosition;
 import frc.robot.subsystems.arm.ArmState;
@@ -63,7 +64,7 @@ public class RobotContainer {
 
     private Command autoBalanceDrivetrainCommand;
     private boolean alternateAutoBalance = true;
-    private boolean lineUptracker = true;
+    //private boolean lineUptracker = true;
 
     public RobotContainer() {
         PathPlannerServer.startServer(3494);
@@ -85,10 +86,6 @@ public class RobotContainer {
         camera = new Camera();
 
         leds = new Leds();
-
-        // autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
-
-        autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
         
         // Configure the button bindings
         configureButtonBindings();
@@ -109,13 +106,16 @@ public class RobotContainer {
         Constants.RobotContainer.PathPlanner.PATH_EVENTS.put("ClawClosed",
                 new AutoSetClaw(claw, ClawState.Closed));
         Constants.RobotContainer.PathPlanner.PATH_EVENTS.put("Wait5", new WaitCommand(5));
+
+        
+        autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
     }
 
     public static Command pathFollow(RobotContainer container, String pathName) {
         PathPlannerTrajectory loadedPath = PathPlanner.loadPath(pathName,
                 Constants.RobotContainer.PathPlanner.PATH_CONSTRAINTS);
         System.out.println("Running An Auto");
-        return new FollowPath(container.drivetrain, loadedPath, container.robotPosition);
+        return new FollowPath(container.drivetrain, loadedPath, container.robotPosition, true);
        /* return new FollowPathWithEvents(new FollowPath(container.drivetrain, loadedPath, container.robotPosition),
                 loadedPath.getMarkers(),
                 Constants.RobotContainer.PathPlanner.PATH_EVENTS);*/
@@ -124,7 +124,7 @@ public class RobotContainer {
     public static Command pathFollow(RobotContainer container, String pathName, double targetSpeed) {
         PathPlannerTrajectory loadedPath = PathPlanner.loadPath(pathName, new PathConstraints(targetSpeed,
             Constants.RobotContainer.PathPlanner.PATH_CONSTRAINTS.maxAcceleration));
-        return new FollowPath(container.drivetrain, loadedPath, container.robotPosition);
+        return new FollowPath(container.drivetrain, loadedPath, container.robotPosition, true);
         /*return new FollowPathWithEvents(new FollowPath(container.drivetrain, loadedPath, container.robotPosition),
                 loadedPath.getMarkers(),
                 Constants.RobotContainer.PathPlanner.PATH_EVENTS);*/
@@ -353,10 +353,7 @@ public class RobotContainer {
             alternateAutoBalance = !alternateAutoBalance;
         });
 
-        OI.autoLineUpEvent().rising().ifHigh(() -> {
-            // drivetrain.resetOdometry(AutoLineUpTeleopGroup.get(drivetrain,
-            // robotPosition));
-        });
+
 
         OI.driveTrainLock().rising().ifHigh(() -> {
             drivetrain.lock();
@@ -366,15 +363,72 @@ public class RobotContainer {
         });
 
         OI.printOdometryEvent().rising().ifHigh(() -> {
-            System.out.println("Current Odo " + drivetrain.getPose().getX() + ":" + drivetrain.getPose().getY());
+            System.out.println("Current Odo x" + drivetrain.getPose().getX() + ", y" + drivetrain.getPose().getY());
         });
-        OI.autoLineUpEvent().rising().ifHigh(() ->{
-            if (lineUptracker)
+        /*OI.autoLineUpEvent().rising().ifHigh(() ->{
             AutoLineUpTeleopGroup.get(drivetrain, robotPosition).schedule();
-            else
-            AutoLineUpTeleopGroup.get(drivetrain, robotPosition).cancel();
+        });*/
+        OI.resetMenuLeftGrid().rising().ifHigh(() ->{OI.leftGridMenu = false;});
+        OI.resetMenuRightGrid().rising().ifHigh(() ->{OI.rightGridMenu = false;});
+        OI.resetMenuMiddleGrid().rising().ifHigh(() ->{OI.middleGridMenu = false;});
+        OI.resetMenuPickup().rising().ifHigh(() ->{OI.pickupMenu = false;});
 
-            lineUptracker = !lineUptracker;
+        OI.selectDriveLeftGridMenu().rising().ifHigh(()->{OI.leftGridMenu = true;});
+        OI.selectDriveRightGridMenu().rising().ifHigh(()->{OI.rightGridMenu = true;});
+        OI.selectDriveMiddleGridMenu().rising().ifHigh(()->{OI.middleGridMenu = true;});
+        OI.selectDrivePickupMenu().rising().ifHigh(()->{OI.pickupMenu = true;});
+
+        OI.selectDriveLeftConeLeftGrid().rising().ifHigh(()->{
+            OI.leftGridMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.LeftConeLeftGrid).schedule();
+        });
+        OI.selectDriveMiddleCubeLeftGrid().rising().ifHigh(()->{
+            OI.leftGridMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.MiddleCubeLeftGrid).schedule();
+        });
+        OI.selectDriveRightConeLeftGrid().rising().ifHigh(()->{
+            OI.leftGridMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.RightConeLeftGrid).schedule();
+        });
+
+        OI.selectDriveLeftConeMiddleGrid().rising().ifHigh(()->{
+            OI.middleGridMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.LeftConeMiddleGrid).schedule();
+        });
+        OI.selectDriveMiddleCubeMiddleGrid().rising().ifHigh(()->{
+            OI.middleGridMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.MiddleCubeMiddleGrid).schedule();
+        });
+        OI.selectDriveRightConeMiddleGrid().rising().ifHigh(()->{
+            OI.middleGridMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.RightConeMiddleGrid).schedule();
+        });
+
+        OI.selectDriveLeftConeRightGrid().rising().ifHigh(()->{
+            OI.rightGridMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.LeftConeRightGrid).schedule();
+        });
+        OI.selectDriveMiddleCubeRightGrid().rising().ifHigh(()->{
+            OI.rightGridMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.MiddleCubeRightGrid).schedule();
+        });
+        OI.selectDriveRightConeRightGrid().rising().ifHigh(()->{
+            OI.rightGridMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.RightConeRightGrid).schedule();
+        });
+
+        OI.selectDriveSingleSub().rising().ifHigh(()->{
+            OI.pickupMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.SingleSubstation).schedule();
+        });
+        OI.selectDriveDoubleSubLeft().rising().ifHigh(()->{
+            OI.pickupMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.DoubleSubstationLeft).schedule();
+        });
+        OI.selectDriveDoubleSubRight().rising().ifHigh(()->{
+            OI.pickupMenu = false;
+            AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.DoubleSubstationRight).schedule();
+
         });
 
         OI.zeroArm().rising().ifHigh(() -> {
