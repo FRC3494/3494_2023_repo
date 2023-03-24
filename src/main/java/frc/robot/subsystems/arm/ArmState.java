@@ -18,6 +18,11 @@ public class ArmState implements StateMachineState {
         this.forearmState = forearmState;
         this.wristState =  wristState;
     }
+    public ArmState(ShoulderState shoulderState, WristState wristState, ForearmState forearmState) {
+        this.shoulderState = shoulderState;
+        this.forearmState = forearmState;
+        this.wristState =  wristState;
+    }
 
     public boolean equals(StateMachineState otherState) {
         if (!(otherState instanceof ArmState)) return false;
