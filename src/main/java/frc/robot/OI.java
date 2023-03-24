@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import frc.robot.subsystems.NavX;
-import frc.robot.subsystems.drivetrain.DriveLocation;
 
 public final class OI {
     static boolean pickupMenu = false;

@@ -1,6 +1,9 @@
 package frc.robot.subsystems.claw;
 
 public enum ClawState {
-    Open,
-    Closed
+    Idle,
+    IntakeCube,
+    IntakeCone,
+    OuttakeCube,
+    OuttakeCone,
 }
