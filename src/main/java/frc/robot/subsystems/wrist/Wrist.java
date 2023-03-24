@@ -21,13 +21,13 @@ public class Wrist extends SubsystemBase implements IStateControllable<ArmState>
 
     public Wrist() {
         wristMotor = new CANSparkMax(
-                Constants.Subsystems.Forearm.MOTOR_CHANNEL, MotorType.kBrushless);
+                Constants.Subsystems.Wrist.MOTOR_CHANNEL, MotorType.kBrushless);
 
-        wristMotor.getPIDController().setOutputRange(-0.5, 0.75);
-        wristMotor.getPIDController().setP(Constants.Subsystems.Forearm.PIDF.P);
-        wristMotor.getPIDController().setI(Constants.Subsystems.Forearm.PIDF.I);
-        wristMotor.getPIDController().setD(Constants.Subsystems.Forearm.PIDF.D);
-        wristMotor.getPIDController().setFF(Constants.Subsystems.Forearm.PIDF.F);
+        wristMotor.getPIDController().setOutputRange(-0.5, 0.5);
+        wristMotor.getPIDController().setP(Constants.Subsystems.Wrist.PIDF.P);
+        wristMotor.getPIDController().setI(Constants.Subsystems.Wrist.PIDF.I);
+        wristMotor.getPIDController().setD(Constants.Subsystems.Wrist.PIDF.D);
+        wristMotor.getPIDController().setFF(Constants.Subsystems.Wrist.PIDF.F);
 
         wristMotor.setClosedLoopRampRate(0.5);
 
@@ -36,7 +36,7 @@ public class Wrist extends SubsystemBase implements IStateControllable<ArmState>
 
         wristPotentiometer = new AnalogPotentiometer(Constants.Subsystems.Wrist.ENCODER_CHANNEL, 360);
 
-        correctForearmNeo();
+        correctWristNeo();
     }
 
     @Override
@@ -45,34 +45,34 @@ public class Wrist extends SubsystemBase implements IStateControllable<ArmState>
             isDoneMoving = isAt(currentWristState);
     }
 
-    double getAbsoluteEncoderForearmAngle() { // should only be used for correcting
-        // return ((forearmPotentiometer.get() + 210) % 360) - 180;// -
+    double getAbsoluteEncoderWristAngle() { // should only be used for correcting
+        // return ((wristPotentiometer.get() + 210) % 360) - 180;// -
         // getShoulderPosition();
         return 0;
     }
 
-    double getForearmAngle() {
+    double getWristAngle() {
         return -wristMotor.getEncoder().getPosition() *
                 Constants.Subsystems.Wrist.MOTOR_REDUCTION * 360.0;
     }
 
-    void correctForearmNeo() {
+    void correctWristNeo() {
         wristMotor.getEncoder().setPosition(
-                (-getAbsoluteEncoderForearmAngle() / 360.0) /
+                (-getAbsoluteEncoderWristAngle() / 360.0) /
                         Constants.Subsystems.Wrist.MOTOR_REDUCTION);
     }
 
     public void setState(ArmState newState) {
-        setForearmTargetAngle(
+        setWristTargetAngle(
                 Constants.Subsystems.Wrist.POSITIONS.get(newState.wristState));
 
         currentWristState = newState.wristState;
 
-        System.out.println("Forearm: " + newState.toString() + " Angle: " +
+        System.out.println("Wrist: " + newState.toString() + " Angle: " +
                 Constants.Subsystems.Wrist.POSITIONS.get(newState.wristState));
     }
 
-    void setForearmTargetAngle(double angle) {
+    void setWristTargetAngle(double angle) {
         double rotationsNeeded = -angle / 360.0 / Constants.Subsystems.Wrist.MOTOR_REDUCTION;
 
         wristMotor.getPIDController().setReference(rotationsNeeded,
@@ -84,33 +84,33 @@ public class Wrist extends SubsystemBase implements IStateControllable<ArmState>
     }
 
     public boolean isAt(WristState state) {
-        boolean there = Math.abs(getForearmAngle() -
+        boolean there = Math.abs(getWristAngle() -
                 Constants.Subsystems.Wrist.POSITIONS.get(
                         state)) <= Constants.Subsystems.Wrist.TARGET_POSITION_TOLERANCE;
 
         return there;
     }
 
-    boolean forearmDirectDriveEnabled = false;
+    boolean wristDirectDriveEnabled = false;
 
-    public void enableForearmDirectDrive() {
+    public void enableWristDirectDrive() {
         if (!isDoneMoving)
             return;
 
-        forearmDirectDriveEnabled = true;
+        wristDirectDriveEnabled = true;
     }
 
-    public void disableForearmDirectDrive() {
-        forearmDirectDriveEnabled = false;
+    public void disableWristDirectDrive() {
+        wristDirectDriveEnabled = false;
 
         if (!isDoneMoving)
             return;
 
-        setForearmTargetAngle(getForearmAngle());
+        setWristTargetAngle(getWristAngle());
     }
 
-    public void directDriveForearm(double power) {
-        if (!isDoneMoving || !forearmDirectDriveEnabled)
+    public void directDriveWrist(double power) {
+        if (!isDoneMoving || !wristDirectDriveEnabled)
             return;
 
         wristMotor.set(power);

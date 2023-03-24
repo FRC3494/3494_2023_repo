@@ -58,7 +58,6 @@ public class RobotContainer {
 
     private Command autoBalanceDrivetrainCommand;
     private boolean alternateAutoBalance = true;
-    private boolean lineUptracker = true;
 
     public RobotContainer() {
         PathPlannerServer.startServer(3494);
@@ -326,7 +325,7 @@ public class RobotContainer {
             arm.setTarget(Constants.Subsystems.Arm.KEY_POSITIONS.get(ArmPosition.Base1Cube1));
         });
 
-        /*
+        
         // OI.resetHeadingEvent().rising().ifHigh(drivetrain::zeroYaw);
         OI.resetHeadingEvent().rising().ifHigh(() -> {
             OI.zeroControls();
@@ -341,11 +340,6 @@ public class RobotContainer {
             alternateAutoBalance = !alternateAutoBalance;
         });
 
-        OI.autoLineUpEvent().rising().ifHigh(() -> {
-            // drivetrain.resetOdometry(AutoLineUpTeleopGroup.get(drivetrain,
-            // robotPosition));
-        });
-
         OI.driveTrainLock().rising().ifHigh(() -> {
             drivetrain.lock();
         });
@@ -356,15 +350,7 @@ public class RobotContainer {
         OI.printOdometryEvent().rising().ifHigh(() -> {
             System.out.println("Current Odo " + drivetrain.getPose().getX() + ":" + drivetrain.getPose().getY());
         });
-        OI.autoLineUpEvent().rising().ifHigh(() ->{
-            if (lineUptracker)
-            AutoLineUpTeleopGroup.get(drivetrain, robotPosition).schedule();
-            else
-            AutoLineUpTeleopGroup.get(drivetrain, robotPosition).cancel();
-
-            lineUptracker = !lineUptracker;
-        });
-
+        /*
         OI.zeroArm().rising().ifHigh(() -> {
             arm.declareInStore();
         });
