@@ -26,36 +26,36 @@ public final class Constants extends AutoConfigurable {
         }
         public static final class Drivetrain {
             public static final class FrontLeftModule {
-                public static int DRIVE_MOTOR_PORT = 12;
-                public static int STEER_MOTOR_PORT = 11;
+                public static int DRIVE_MOTOR_PORT = 18;
+                public static int STEER_MOTOR_PORT = 16;
 
-                public static int ENCODER_MOTOR_PORT = 0;
+                public static int ENCODER_MOTOR_PORT = 16;
 
                 public static double STEER_OFFSET = -Math.toRadians(290f-36f+0.6-94.4);
             }
 
             public static final class FrontRightModule {
-                public static int DRIVE_MOTOR_PORT = 7;
-                public static int STEER_MOTOR_PORT = 8;
+                public static int DRIVE_MOTOR_PORT = 3;
+                public static int STEER_MOTOR_PORT = 1;
 
-                public static int ENCODER_MOTOR_PORT = 1;
+                public static int ENCODER_MOTOR_PORT = 3;
 
                 public static double STEER_OFFSET = -Math.toRadians(243f-123.0+2.5-6);
             }
 
             public static final class BackLeftModule {
-                public static int DRIVE_MOTOR_PORT = 14;
-                public static int STEER_MOTOR_PORT = 15;
+                public static int DRIVE_MOTOR_PORT = 19;
+                public static int STEER_MOTOR_PORT = 17;
 
-                public static int ENCODER_MOTOR_PORT = 2;
+                public static int ENCODER_MOTOR_PORT = 17;
 
                 public static double STEER_OFFSET = -Math.toRadians(290f-36f-0.8-154.7);
             }
 
             public static final class BackRightModule {
                 public static int DRIVE_MOTOR_PORT = 5;
-                public static int STEER_MOTOR_PORT = 4;
-                public static int ENCODER_MOTOR_PORT = 3;
+                public static int STEER_MOTOR_PORT = 2;
+                public static int ENCODER_MOTOR_PORT = 30;
                 public static double STEER_OFFSET = -Math.toRadians(164f+8f+2f+10f+5f+3.8f-8.3-119);
             }
 
