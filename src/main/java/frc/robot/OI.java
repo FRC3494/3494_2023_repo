@@ -265,17 +265,32 @@ public final class OI {
 
     public static BooleanEvent forearmFineAdjustPositiveEvent() {
         // return leftButtonBoard.button(21, eventLoop);
-        return leftButtonBoard.axisGreaterThan(1, 0.1, eventLoop);
+        return rightButtonBoard.axisGreaterThan(1, 0.1, eventLoop);
     }
 
     public static BooleanEvent forearmFineAdjustNegativeEvent() {
         // return leftButtonBoard.button(20, eventLoop);
-        return leftButtonBoard.axisLessThan(1, -0.1, eventLoop);
+        return rightButtonBoard.axisLessThan(1, -0.1, eventLoop);
     }
 
-    public static BooleanEvent zeroArm() {
+    public static BooleanEvent clawIntakeCone() {
+        // return leftButtonBoard.button(21, eventLoop);
+        return leftButtonBoard.axisGreaterThan(0, -0.1, eventLoop);
+    }
+
+    public static BooleanEvent clawIntakeCube() {
         // return leftButtonBoard.button(20, eventLoop);
-        return rightButtonBoard.button(10, eventLoop);
+        return leftButtonBoard.axisLessThan(1, 0.1, eventLoop);
+    }
+
+    public static BooleanEvent clawOuttakeCone() {
+        // return leftButtonBoard.button(21, eventLoop);
+        return leftButtonBoard.axisGreaterThan(0, 0.1, eventLoop);
+    }
+
+    public static BooleanEvent clawOuttakeCube() {
+        // return leftButtonBoard.button(20, eventLoop);
+        return leftButtonBoard.axisLessThan(1, -0.1, eventLoop);
     }
 
     public static BooleanEvent ledsIndicateCone() {

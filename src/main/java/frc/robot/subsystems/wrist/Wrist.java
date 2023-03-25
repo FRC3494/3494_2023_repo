@@ -48,7 +48,7 @@ public class Wrist extends SubsystemBase implements IStateControllable<ArmState>
     double getAbsoluteEncoderWristAngle() { // should only be used for correcting
         // return ((wristPotentiometer.get() + 210) % 360) - 180;// -
         // getShoulderPosition();
-        return 0;
+        return wristPotentiometer.get() - 180;
     }
 
     double getWristAngle() {

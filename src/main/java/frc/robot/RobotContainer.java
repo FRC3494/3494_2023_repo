@@ -335,10 +335,6 @@ public class RobotContainer {
         OI.printOdometryEvent().rising().ifHigh(() -> {
             System.out.println("Current Odo " + drivetrain.getPose().getX() + ":" + drivetrain.getPose().getY());
         });
-        
-        // OI.zeroArm().rising().ifHigh(() -> {
-        //     arm.declareInStore();
-        // });
 
         OI.forearmFineAdjustPositiveEvent().ifHigh(() -> {
             forearm.directDriveForearm(Constants.OI.FOREARM_FINE_ADJUST_SPEED);
@@ -359,6 +355,8 @@ public class RobotContainer {
             forearm.disableForearmDirectDrive();
         });
         
+        OI.armUndo().rising().ifHigh(() -> arm.undo());
+        
         OI.armStore().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.Store));
         OI.armGroundIntakeCone().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.GroundIntakeCone));
         OI.armGroundIntakeCube().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.GroundIntakeCube));
@@ -372,6 +370,11 @@ public class RobotContainer {
         OI.armBase2Cone1().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.Base2Cone1));
         OI.armBase2Cube1().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.Base2Cube1));
         OI.armBase1Hybrid().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.Base1Hybrid));
+        
+        OI.clawIntakeCone().rising().ifHigh(() -> claw.set(ClawState.IntakeCone));
+        OI.clawIntakeCube().rising().ifHigh(() -> claw.set(ClawState.IntakeCube));
+        OI.clawOuttakeCone().rising().ifHigh(() -> claw.set(ClawState.OuttakeCone));
+        OI.clawOuttakeCube().rising().ifHigh(() -> claw.set(ClawState.OuttakeCube));
 
         OI.ledsIndicateCone().rising().ifHigh(() -> leds.setPattern(LedPattern.CONE));
         OI.ledsIndicateCube().rising().ifHigh(() -> leds.setPattern(LedPattern.CUBE));

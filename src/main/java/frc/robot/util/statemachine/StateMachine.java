@@ -17,6 +17,9 @@ public abstract class StateMachine<T extends StateMachineState> extends Subsyste
 
     List<T> history = new ArrayList<>();
 
+    List<T> currentSequence = new ArrayList<>();
+    boolean sequenceChanged = false;
+
     IStateControllable<T>[] controllables;
 
     public StateMachine(List<T> nodes, List<StateConnection<T>> connections, T initialState) {
@@ -82,6 +85,8 @@ public abstract class StateMachine<T extends StateMachineState> extends Subsyste
         else history.add(targetNode);
 
         targetNode = normalizedState;
+
+        if (!initial) recomputeSequence();
     }
 
     @Override
@@ -100,61 +105,90 @@ public abstract class StateMachine<T extends StateMachineState> extends Subsyste
             }
         }
 
-        int smallestDistance = Integer.MAX_VALUE;
-        T smallestTarget = null;
+        if (sequenceChanged) {
+            arrived = true;
+            sequenceChanged = false;
+        }
 
+        if (arrived && currentSequence.size() != 0) {
+            nextState(currentSequence.remove(0));
+
+            return;
+        }
+    }
+
+    class SeekResult {
+        boolean found = false;
+        List<T> sequence = new ArrayList<>();
+    }
+
+    void recomputeSequence() {
+        currentSequence.clear();
+
+        List<List<T>> sequences = new ArrayList<>();
+        
         for (T node : nodes) {
             if (!currentNode.equals(node) && adjacencyMatrix.get(currentNode).get(node)) {
                 if (node.equals(targetNode)) {
-                    smallestDistance = 0;
-                    smallestTarget = node;
+                    currentSequence.add(targetNode);
+                    sequenceChanged = true;
 
-                    break;
+                    return;
                 }
 
-                nodeHistory.clear();
-                nodeHistory.add(currentNode);
-                nodeHistory.add(node);
-                int result = recursiveFind(node);
+                List<T> seekingSequence = new ArrayList<>();
+
+                SeekResult result = recursiveFind(node, new SeekResult());
     
-                if (result >= 0 && result < smallestDistance) {
-                    smallestDistance = result;
-                    smallestTarget = node;
+                if (result.found) {
+                    sequences.add(seekingSequence);
                 }
             }
         }
 
-        if (smallestTarget != null && arrived) {
-            nextState(smallestTarget);
+        int smallestDistance = Integer.MAX_VALUE;
+        int bestSequence = -1;
 
-            return;
+        for (int i = 0; i < sequences.size(); i++) {
+            if (sequences.get(i).size() < smallestDistance)
+                bestSequence = i;
+        }
+
+        if (bestSequence != -1) {
+            currentSequence = sequences.get(bestSequence);
+            sequenceChanged = true;
         }
     }
 
     List<T> nodeHistory = new ArrayList<>();
 
     @SuppressWarnings("unchecked") // java is a hell language
-    int recursiveFind(T previous) {
+    SeekResult recursiveFind(T previous, SeekResult seekResult) {
         for (T node : nodes) {
-            if (!previous.equals(node) && !nodeHistory.contains(node) && adjacencyMatrix.get(previous).get(node)) {
-                if (node.equals(targetNode)) 
-                    return 2;
-                else {
-                    nodeHistory.add(node);
+            if (!previous.equals(node) && !seekResult.sequence.contains(node) && adjacencyMatrix.get(previous).get(node)) {
+                if (node.equals(targetNode)) {
+                    seekResult.sequence.add(node);
+                    seekResult.sequence.add(targetNode);
 
-                    List<T> copiedNodeHistory = (ArrayList<T>) ((ArrayList<T>) nodeHistory).clone();
+                    seekResult.found = true;
 
-                    int result = recursiveFind(node);
+                    return seekResult;
+                } else {
+                    seekResult.sequence.add(node);
 
-                    if (result >= 0) 
-                        return result + 1;
-                    else 
-                        nodeHistory = copiedNodeHistory;
+                    List<T> copiedNodeHistory = (ArrayList<T>) ((ArrayList<T>) seekResult.sequence).clone();
+
+                    SeekResult result = recursiveFind(node, seekResult);
+
+                    if (result.found)
+                        return result;
+                    else
+                        seekResult.sequence = copiedNodeHistory;
                 }
             }
         }
 
-        return -1;
+        return seekResult;
     }
 
     public void undo() {
