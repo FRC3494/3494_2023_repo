@@ -71,7 +71,6 @@ public class RobotContainer {
         shoulder = new Shoulder();
         forearm = new Forearm();
         wrist = new Wrist();
-
         arm = new Arm(shoulder, forearm, wrist);
 
         claw = new Claw();
@@ -145,7 +144,7 @@ public class RobotContainer {
         }),
         PushExitBalance("Push Cube, Exit, Balance", (container) -> {
             return new SequentialCommandGroup(
-                    new AutoSetArm(container.arm, ArmPosition.LowerHopperGrab),
+                    new AutoSetArm(container.arm, ArmPosition.Store),
                     new WaitCommand(0.5),
                     new AutoSetClaw(container.claw, ClawState.OuttakeCube),
                     pathFollow(container, "Level1ExitPark"),
@@ -153,14 +152,14 @@ public class RobotContainer {
         }),
         JustBalance("Just Balance", (container) -> {
             return new SequentialCommandGroup(
-                    new AutoSetArm(container.arm, ArmPosition.LowerHopperGrab),
+                    new AutoSetArm(container.arm, ArmPosition.Store),
                     new WaitCommand(0.5),
                     new AutoSetClaw(container.claw, ClawState.OuttakeCube),
                     AutoBalanceGroup.get(container.drivetrain));
         }),
         JustBalanceYAxis("Just Balance Y Axis", (container) -> {
             return new SequentialCommandGroup(
-                    new AutoSetArm(container.arm, ArmPosition.LowerHopperGrab),
+                    new AutoSetArm(container.arm, ArmPosition.Store),
                     new WaitCommand(0.5),
                     new AutoSetClaw(container.claw, ClawState.OuttakeCube),
                     AutoBalanceGroupYAxis.get(container.drivetrain));
@@ -186,7 +185,7 @@ public class RobotContainer {
                     new AutoSetClaw(container.claw, ClawState.OuttakeCone),
                     new WaitCommand(0.5),
                     new ParallelCommandGroup(
-                            new AutoSetArm(container.arm, ArmPosition.GroundIntake),
+                            new AutoSetArm(container.arm, ArmPosition.GroundIntakeCube),
                             pathFollow(container, "LeaveComPickUp")
                     ),
                     new WaitCommand(0.2),
@@ -210,7 +209,7 @@ public class RobotContainer {
                     new AutoSetClaw(container.claw, ClawState.OuttakeCone),
                     new WaitCommand(0.5),
                     new ParallelCommandGroup(
-                            new AutoSetArm(container.arm, ArmPosition.GroundIntake),
+                            new AutoSetArm(container.arm, ArmPosition.GroundIntakeCube),
                             pathFollow(container, "LeaveComPickUp")
                     ),
                     new WaitCommand(0.2),
@@ -312,20 +311,6 @@ public class RobotContainer {
     }
 
     public void configureButtonBindings() {
-        OI.armStore().rising().ifHigh(() -> {
-            arm.setTarget(Constants.Subsystems.Arm.KEY_POSITIONS.get(ArmPosition.Store));
-        });
-        OI.armDoubleSubstation().rising().ifHigh(() -> {
-            arm.setTarget(Constants.Subsystems.Arm.KEY_POSITIONS.get(ArmPosition.DoubleSubstation));
-        });
-        OI.armGroundIntake().rising().ifHigh(() -> {
-            arm.setTarget(Constants.Subsystems.Arm.KEY_POSITIONS.get(ArmPosition.GroundIntake));
-        });
-        OI.armBase1Cube1().rising().ifHigh(() -> {
-            arm.setTarget(Constants.Subsystems.Arm.KEY_POSITIONS.get(ArmPosition.Base1Cube1));
-        });
-
-        
         // OI.resetHeadingEvent().rising().ifHigh(drivetrain::zeroYaw);
         OI.resetHeadingEvent().rising().ifHigh(() -> {
             OI.zeroControls();
@@ -350,152 +335,45 @@ public class RobotContainer {
         OI.printOdometryEvent().rising().ifHigh(() -> {
             System.out.println("Current Odo " + drivetrain.getPose().getX() + ":" + drivetrain.getPose().getY());
         });
-        /*
-        OI.zeroArm().rising().ifHigh(() -> {
-            arm.declareInStore();
-        });
-
-        OI.clawOpenEvent().rising().ifHigh(() -> {
-            claw.set(ClawState.Closed);
-        });
-
-        OI.clawCloseEvent().rising().ifHigh(() -> {
-            claw.set(ClawState.Open);
-        });
+        
+        // OI.zeroArm().rising().ifHigh(() -> {
+        //     arm.declareInStore();
+        // });
 
         OI.forearmFineAdjustPositiveEvent().ifHigh(() -> {
-            arm.directDriveForearm(Constants.OI.FOREARM_FINE_ADJUST_SPEED);
+            forearm.directDriveForearm(Constants.OI.FOREARM_FINE_ADJUST_SPEED);
         });
-        OI.forearmFineAdjustPositiveEvent().rising().ifHigh(() -> arm.enableForearmDirectDrive());
+
+        OI.forearmFineAdjustPositiveEvent().rising().ifHigh(() -> forearm.enableForearmDirectDrive());
         OI.forearmFineAdjustPositiveEvent().falling().ifHigh(() -> {
-            arm.directDriveForearm(0);
-            arm.disableForearmDirectDrive();
+            forearm.directDriveForearm(0);
+            forearm.disableForearmDirectDrive();
         });
 
         OI.forearmFineAdjustNegativeEvent().ifHigh(() -> {
-            arm.directDriveForearm(-Constants.OI.FOREARM_FINE_ADJUST_SPEED);
+            forearm.directDriveForearm(-Constants.OI.FOREARM_FINE_ADJUST_SPEED);
         });
-        OI.forearmFineAdjustNegativeEvent().rising().ifHigh(() -> arm.enableForearmDirectDrive());
+        OI.forearmFineAdjustNegativeEvent().rising().ifHigh(() -> forearm.enableForearmDirectDrive());
         OI.forearmFineAdjustNegativeEvent().falling().ifHigh(() -> {
-            arm.directDriveForearm(0);
-            arm.disableForearmDirectDrive();
+            forearm.directDriveForearm(0);
+            forearm.disableForearmDirectDrive();
         });
-
-        OI.shoulderBase1().rising().ifHigh(() -> {
-            if (!arm.isInCancelMode())
-                return;
-
-            arm.setShoulderState(ShoulderState.Base1);
-        });
-        OI.shoulderBase2().rising().ifHigh(() -> {
-            if (!arm.isInCancelMode())
-                return;
-
-            arm.setShoulderState(ShoulderState.Base2);
-        });
-        OI.shoulderBase4().rising().ifHigh(() -> {
-            if (!arm.isInCancelMode())
-                return;
-
-            arm.setShoulderState(ShoulderState.Base4);
-        });
-
-        OI.hopperExtend().rising().ifHigh(() -> {
-            arm.setHopperState(HopperState.Extended);
-        });
-
-        OI.hopperExtend().falling().ifHigh(() -> {
-            if (arm.isInCancelMode())
-                return;
-
-            arm.setHopperState(HopperState.Retracted);
-        });
-
-        OI.hopperRetract().rising().ifHigh(() -> {
-            if (arm.isInCancelMode())
-                arm.setHopperState(HopperState.Retracted);
-        });
-
-        OI.armCancelToggle().rising().ifHigh(() -> {
-            if (!arm.isInCancelMode()) {
-                arm.startCancelMode();
-            } else {
-                arm.endCancelMode();
-            }
-        });
-
-        OI.armHopperGrab().rising().ifHigh(() -> {
-            if (arm.isInCancelMode())
-                return;
-
-            arm.setArmState(ArmPosition.LowerHopperGrab);
-        });
-
-        OI.armGroundIntake().rising().ifHigh(() -> {
-            if (arm.isInCancelMode())
-                return;
-
-            arm.setArmState(ArmPosition.GroundIntake);
-        });
-
-        OI.armDoubleSubstation().rising().ifHigh(() -> {
-            if (arm.isInCancelMode())
-                return;
-
-            arm.setArmState(ArmPosition.DoubleSubstation);
-        });
-
-        OI.armHybrid().rising().ifHigh(() -> {
-            if (arm.isInCancelMode())
-                return;
-
-            arm.setArmState(ArmPosition.Hybrid);
-        });
-
-        OI.armStore().rising().ifHigh(() -> {
-            if (arm.isInCancelMode())
-                return;
-
-            arm.setArmState(ArmPosition.Store);
-        });
-
-        OI.armBase4Cone2().rising().ifHigh(() -> {
-            if (arm.isInCancelMode())
-                return;
-
-            arm.setArmState(ArmPosition.Base4Cone2);
-        });
-
-        OI.armBase4Cube2().rising().ifHigh(() -> {
-            if (arm.isInCancelMode())
-                return;
-
-            arm.setArmState(ArmPosition.Base4Cube2);
-        });
-
-        OI.armBase4Cube1().rising().ifHigh(() -> {
-            if (arm.isInCancelMode())
-                return;
-
-            arm.setArmState(ArmPosition.Base4Cube1);
-        });
-
-        OI.armBase2Cone1().rising().ifHigh(() -> {
-            if (arm.isInCancelMode())
-                return;
-
-            arm.setArmState(ArmPosition.Base2Cone1);
-        });
-
-        OI.armBase1Cube1().rising().ifHigh(() -> {
-            if (arm.isInCancelMode())
-                return;
-
-            arm.setArmState(ArmPosition.Base1Cube1);
-        });
+        
+        OI.armStore().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.Store));
+        OI.armGroundIntakeCone().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.GroundIntakeCone));
+        OI.armGroundIntakeCube().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.GroundIntakeCube));
+        OI.armDoubleSubstationCone().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.DoubleSubstationCone));
+        OI.armDoubleSubstationCube().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.DoubleSubstationCube));
+        OI.armSingleSubstation().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.SingleSubstation));
+        OI.armBase4Cone2().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.Base4Cone2));
+        OI.armBase4Cube2().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.Base4Cube2));
+        OI.armBase4Cone1().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.Base4Cone1));
+        OI.armBase4Cube1().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.Base4Cube1));
+        OI.armBase2Cone1().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.Base2Cone1));
+        OI.armBase2Cube1().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.Base2Cube1));
+        OI.armBase1Hybrid().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.Base1Hybrid));
 
         OI.ledsIndicateCone().rising().ifHigh(() -> leds.setPattern(LedPattern.CONE));
         OI.ledsIndicateCube().rising().ifHigh(() -> leds.setPattern(LedPattern.CUBE));
-        */
     }
 }

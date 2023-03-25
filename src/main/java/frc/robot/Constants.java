@@ -24,17 +24,19 @@ public final class Constants extends AutoConfigurable {
 
             public static HashMap<ArmPosition, ArmState> KEY_POSITIONS = new HashMap<>() {
                 {
-                    put(ArmPosition.LowerHopperGrab, new ArmState(ShoulderState.Base1, ForearmState.LowerHopperGrab, WristState.Store));
-                    put(ArmPosition.UpperHopperGrab, new ArmState(ShoulderState.Base1, ForearmState.UpperHopperGrab, WristState.Store));
-                    put(ArmPosition.GroundIntake, new ArmState(ShoulderState.Base1, ForearmState.GroundIntake, WristState.Store));
-                    put(ArmPosition.DoubleSubstation, new ArmState(ShoulderState.Base4, ForearmState.DoubleSubstation, WristState.Store));
-                    put(ArmPosition.Hybrid, new ArmState(ShoulderState.Base1, ForearmState.Base1Hybrid, WristState.Store));
                     put(ArmPosition.Store, new ArmState(ShoulderState.Base2, ForearmState.Store, WristState.Store));
-                    put(ArmPosition.Base4Cone2, new ArmState(ShoulderState.Base4, ForearmState.Base4Cone2, WristState.Store));
-                    put(ArmPosition.Base4Cube2, new ArmState(ShoulderState.Base4, ForearmState.Base4Cube2, WristState.Store));
-                    put(ArmPosition.Base4Cube1, new ArmState(ShoulderState.Base4, ForearmState.Base4Cube1, WristState.Store));
-                    put(ArmPosition.Base2Cone1, new ArmState(ShoulderState.Base2, ForearmState.Base2Cone1, WristState.Store));
-                    put(ArmPosition.Base1Cube1, new ArmState(ShoulderState.Base1, ForearmState.Base1Cube1, WristState.Store));
+                    put(ArmPosition.GroundIntakeCone, new ArmState(ShoulderState.Base1, ForearmState.GroundIntake, WristState.GroundCone));
+                    put(ArmPosition.GroundIntakeCube, new ArmState(ShoulderState.Base1, ForearmState.GroundIntake, WristState.GroundCube));
+                    put(ArmPosition.DoubleSubstationCone, new ArmState(ShoulderState.Base4, ForearmState.DoubleSubstation, WristState.DoubleSubCone));
+                    put(ArmPosition.DoubleSubstationCube, new ArmState(ShoulderState.Base4, ForearmState.DoubleSubstation, WristState.DoubleSubCube));
+                    put(ArmPosition.SingleSubstation, new ArmState(ShoulderState.Base2, ForearmState.SingleSubstation, WristState.SingleSub));
+                    put(ArmPosition.Base4Cone2, new ArmState(ShoulderState.Base4, ForearmState.Base4Cone2, WristState.Base4Cone2));
+                    put(ArmPosition.Base4Cube2, new ArmState(ShoulderState.Base4, ForearmState.Base4Cube2, WristState.Base4Cube2));
+                    put(ArmPosition.Base4Cone1, new ArmState(ShoulderState.Base4, ForearmState.Base4Cone1, WristState.Base4Cone1));
+                    put(ArmPosition.Base4Cube1, new ArmState(ShoulderState.Base4, ForearmState.Base4Cube1, WristState.Base4Cube1));
+                    put(ArmPosition.Base2Cone1, new ArmState(ShoulderState.Base2, ForearmState.Base2Cone1, WristState.Base2Cone1));
+                    put(ArmPosition.Base2Cube1, new ArmState(ShoulderState.Base2, ForearmState.Base2Cube1, WristState.Base2Cube1));
+                    put(ArmPosition.Base1Hybrid, new ArmState(ShoulderState.Base1, ForearmState.Base1Hybrid, WristState.Hybrid));
                 }
             };
         }
@@ -74,19 +76,18 @@ public final class Constants extends AutoConfigurable {
 
             public static HashMap<ForearmState, Double> POSITIONS = new HashMap<>() {
                 {
-                    put(ForearmState.Base4Cube2, -82.0); // real -80
-                    put(ForearmState.Base4Cone2, -105.1); // real -99.0
-                    // Base4Cone1 -76.1 // real -74.8
-                    put(ForearmState.Base4Cube1, -65.0); // real -56.8
-                    put(ForearmState.LowerHopperGrab, -39.0); // -33.09
-                    put(ForearmState.UpperHopperGrab, -49.0); // -33.09
                     put(ForearmState.Intermediate, 66.7); // real 47.9
-                    put(ForearmState.Store, -8.0); // real -20.0
                     put(ForearmState.GroundIntake, 15.0); // real 0.0
                     put(ForearmState.DoubleSubstation, -99.1); // real -99.0
-                    put(ForearmState.Base1Cube1, 101.3); // real 67.4 // change to base2!!!
-                    put(ForearmState.Base2Cone1, 108.7); // real 90
+                    put(ForearmState.SingleSubstation, -8.0);
                     put(ForearmState.Base1Hybrid, 26.5); // real 13.0
+                    put(ForearmState.Store, -8.0); // real -20.0
+                    put(ForearmState.Base4Cone2, -105.1); // real -99.0
+                    put(ForearmState.Base4Cube2, -82.0); // real -80
+                    put(ForearmState.Base4Cone1, -6.0); // real -56.8
+                    put(ForearmState.Base4Cube1, -65.0); // real -56.8
+                    put(ForearmState.Base2Cone1, 108.7); // real 90
+                    put(ForearmState.Base2Cube1, 101.3); // real 67.4
                 }
             };
         }
@@ -108,19 +109,19 @@ public final class Constants extends AutoConfigurable {
 
             public static HashMap<WristState, Double> POSITIONS = new HashMap<>() {
                 {
-                    put(WristState.Base4Cube2, -82.0); // real -80
-                    put(WristState.Base4Cone2, -105.1); // real -99.0
-                    // Base4Cone1 -76.1 // real -74.8
-                    put(WristState.Base4Cube1, -65.0); // real -56.8
-                    put(WristState.LowerHopperGrab, -39.0); // -33.09
-                    put(WristState.UpperHopperGrab, -49.0); // -33.09
-                    put(WristState.Intermediate, 66.7); // real 47.9
-                    put(WristState.Store, -8.0); // real -20.0
-                    put(WristState.GroundIntake, 15.0); // real 0.0
-                    put(WristState.DoubleSubstation, -99.1); // real -99.0
-                    put(WristState.Base1Cube1, 101.3); // real 67.4 // change to base2!!!
-                    put(WristState.Base2Cone1, 108.7); // real 90
-                    put(WristState.Base1Hybrid, 26.5); // real 13.0
+                    put(WristState.Store, 0.0);
+                    put(WristState.GroundCube, 0.0);
+                    put(WristState.GroundCone, 0.0);
+                    put(WristState.Base2Cone1, 0.0);
+                    put(WristState.Base4Cone1, 0.0);
+                    put(WristState.Base4Cone2, 0.0);
+                    put(WristState.Base4Cube1, 0.0);
+                    put(WristState.Base4Cube2, 0.0);
+                    put(WristState.DoubleSubCube, 0.0);
+                    put(WristState.DoubleSubCone, 0.0);
+                    put(WristState.SingleSub, 0.0);
+                    put(WristState.Hybrid, 0.0);
+                    put(WristState.Base2Cube1, 0.0);
                 }
             };
         }

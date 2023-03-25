@@ -17,4 +17,8 @@ public class Arm extends StateMachine<ArmState> {
 
         registerControllables(shoulder, forearm, wrist);
     }
+
+    public void toKeyPosition(ArmPosition keyPosition) {
+        setTarget(Constants.Subsystems.Arm.KEY_POSITIONS.get(keyPosition));
+    }
 }

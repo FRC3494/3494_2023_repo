@@ -63,10 +63,11 @@ public final class OI {
         double forward = primaryController.getLeftY();
         double left = primaryController.getLeftX();
         double dPadPower = ((primaryController.getPOV() == 180) ? Constants.OI.DPAD_SPEED : 0)
-                        + ((primaryController.getPOV() == 0) ? -Constants.OI.DPAD_SPEED : 0);
-        
+                + ((primaryController.getPOV() == 0) ? -Constants.OI.DPAD_SPEED : 0);
+
         double angle = (Math.atan2(forward, left) + Math.toRadians(offset)) % (2 * Math.PI);
-        double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), Constants.OI.MAX_DRIVE_SPEED) + dPadPower;
+        double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), Constants.OI.MAX_DRIVE_SPEED)
+                + dPadPower;
 
         return modifyAxis(-velocity) * Math.cos(angle) * Constants.OI.MAX_DRIVE_SPEED * driveMultiplier();
     }
@@ -75,11 +76,12 @@ public final class OI {
         double forward = primaryController.getLeftY();
         double left = primaryController.getLeftX();
         double dPadPower = ((primaryController.getPOV() == 90) ? Constants.OI.DPAD_SPEED : 0)
-                        + ((primaryController.getPOV() == 270) ? -Constants.OI.DPAD_SPEED : 0);
+                + ((primaryController.getPOV() == 270) ? -Constants.OI.DPAD_SPEED : 0);
 
         double angle = (Math.atan2(forward, left) + Math.toRadians(offset)) % (2 * Math.PI);
-        double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), Constants.OI.MAX_DRIVE_SPEED) + dPadPower;
-        
+        double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), Constants.OI.MAX_DRIVE_SPEED)
+                + dPadPower;
+
         return modifyAxis(velocity) * Math.sin(angle) * Constants.OI.MAX_DRIVE_SPEED * driveMultiplier();
     }
 
@@ -88,7 +90,8 @@ public final class OI {
     }
 
     public static double driveMultiplier() {
-        return (primaryController.getRightTriggerAxis() >= 0.1) ? 0.1 : ((primaryController.getLeftTriggerAxis() >= 0.1) ? 2 : 1);
+        return (primaryController.getRightTriggerAxis() >= 0.1) ? 0.1
+                : ((primaryController.getLeftTriggerAxis() >= 0.1) ? 2 : 1);
     }
 
     public static double armDirectDrivePower() {
@@ -103,21 +106,27 @@ public final class OI {
         return primaryController.y(eventLoop);
     }
 
-   /* public static BooleanEvent autoLineUpEvent() {
-        return primaryController.a(eventLoop);
-    }*/
+    /*
+     * public static BooleanEvent autoLineUpEvent() {
+     * return primaryController.a(eventLoop);
+     * }
+     */
     public static BooleanEvent selectDrivePickupMenu() {
         return primaryController.a(eventLoop).and(() -> !pickupMenu);
     }
+
     public static BooleanEvent resetMenuPickup() {
         return primaryController.a(eventLoop).and(() -> pickupMenu);
     }
+
     public static BooleanEvent selectDriveSingleSub() {
         return primaryController.rightTrigger(eventLoop).and(() -> pickupMenu);
     }
+
     public static BooleanEvent selectDriveDoubleSubLeft() {
         return primaryController.rightBumper(eventLoop).and(() -> pickupMenu);
     }
+
     public static BooleanEvent selectDriveDoubleSubRight() {
         return primaryController.leftBumper(eventLoop).and(() -> pickupMenu);
     }
@@ -125,64 +134,62 @@ public final class OI {
     public static BooleanEvent selectDriveLeftGridMenu() {
         return primaryController.leftTrigger(eventLoop).and(() -> !leftGridMenu);
     }
+
     public static BooleanEvent resetMenuLeftGrid() {
         return primaryController.a(eventLoop).and(() -> leftGridMenu);
     }
+
     public static BooleanEvent selectDriveLeftConeLeftGrid() {
         return primaryController.leftTrigger(eventLoop).and(() -> leftGridMenu);
     }
+
     public static BooleanEvent selectDriveMiddleCubeLeftGrid() {
         return primaryController.leftBumper(eventLoop).and(() -> leftGridMenu);
     }
+
     public static BooleanEvent selectDriveRightConeLeftGrid() {
         return primaryController.rightBumper(eventLoop).and(() -> leftGridMenu);
     }
 
-
-
-
     public static BooleanEvent selectDriveMiddleGridMenu() {
         return primaryController.leftBumper(eventLoop).and(() -> !middleGridMenu);
     }
+
     public static BooleanEvent resetMenuMiddleGrid() {
         return primaryController.a(eventLoop).and(() -> middleGridMenu);
     }
+
     public static BooleanEvent selectDriveLeftConeMiddleGrid() {
         return primaryController.leftTrigger(eventLoop).and(() -> middleGridMenu);
     }
+
     public static BooleanEvent selectDriveMiddleCubeMiddleGrid() {
         return primaryController.leftBumper(eventLoop).and(() -> middleGridMenu);
     }
+
     public static BooleanEvent selectDriveRightConeMiddleGrid() {
         return primaryController.rightBumper(eventLoop).and(() -> middleGridMenu);
     }
 
-    
     public static BooleanEvent selectDriveRightGridMenu() {
         return primaryController.rightBumper(eventLoop).and(() -> !rightGridMenu);
     }
+
     public static BooleanEvent resetMenuRightGrid() {
         return primaryController.a(eventLoop).and(() -> rightGridMenu);
     }
+
     public static BooleanEvent selectDriveLeftConeRightGrid() {
         return primaryController.leftTrigger(eventLoop).and(() -> rightGridMenu);
     }
+
     public static BooleanEvent selectDriveMiddleCubeRightGrid() {
         return primaryController.leftBumper(eventLoop).and(() -> rightGridMenu);
     }
+
     public static BooleanEvent selectDriveRightConeRightGrid() {
         return primaryController.rightBumper(eventLoop).and(() -> rightGridMenu);
     }
-
-    
-
-
-
-
-
-
-
-
 
     public static BooleanEvent driveTrainLock() {
         return primaryController.b(eventLoop);
@@ -197,59 +204,63 @@ public final class OI {
     // private static Joystick rightButtonBoard = new
     // Joystick(Constants.OI.SECONDARY_RIGHT_CONTROLLER_PORT);
 
+    public static BooleanEvent armUndo() {
+        return rightButtonBoard.button(1, eventLoop)
+                .or(rightButtonBoard.button(2, eventLoop))
+                .or(rightButtonBoard.button(3, eventLoop))
+                .or(rightButtonBoard.button(4, eventLoop));
+    }
 
-    public static BooleanEvent armCancelToggle() {
+    public static BooleanEvent armStore() {
+        return rightButtonBoard.button(8, eventLoop);
+    }
+
+    public static BooleanEvent armGroundIntakeCone() {
+        return leftButtonBoard.button(9, eventLoop);
+    }
+
+    public static BooleanEvent armGroundIntakeCube() {
+        return leftButtonBoard.button(10, eventLoop);
+    }
+
+    public static BooleanEvent armDoubleSubstationCone() {
         return leftButtonBoard.button(7, eventLoop);
     }
 
-    public static BooleanEvent armBase1Cube1() {
-        return leftButtonBoard.button(1, eventLoop);
+    public static BooleanEvent armDoubleSubstationCube() {
+        return leftButtonBoard.button(8, eventLoop);
     }
 
-    public static BooleanEvent armBase4Cube1() {
-        return leftButtonBoard.button(2, eventLoop);
-    }
-
-    public static BooleanEvent armBase4Cube2() {
-        return leftButtonBoard.button(3, eventLoop);
-    }
-
-    public static BooleanEvent armBase2Cone1() {
-        return leftButtonBoard.button(5, eventLoop);
+    public static BooleanEvent armSingleSubstation() {
+        return rightButtonBoard.button(9, eventLoop);
     }
 
     public static BooleanEvent armBase4Cone2() {
         return leftButtonBoard.button(6, eventLoop);
     }
 
-    public static BooleanEvent armStore() {
+    public static BooleanEvent armBase4Cube2() {
+        return leftButtonBoard.button(3, eventLoop);
+    }
+
+    public static BooleanEvent armBase4Cone1() {
+        return leftButtonBoard.button(5, eventLoop);
+    }
+
+    public static BooleanEvent armBase4Cube1() {
+        return leftButtonBoard.button(2, eventLoop);
+    }
+
+    public static BooleanEvent armBase2Cone1() {
         return leftButtonBoard.button(4, eventLoop);
     }
 
-    public static BooleanEvent armHybrid() {
-        return rightButtonBoard.button(8, eventLoop);
+    public static BooleanEvent armBase2Cube1() {
+        return leftButtonBoard.button(1, eventLoop);
     }
 
-    public static BooleanEvent armHopperGrab() {
-        return leftButtonBoard.button(8, eventLoop);
-    }
-
-    public static BooleanEvent armGroundIntake() {
-        return leftButtonBoard.button(9, eventLoop);
-    }
-
-    public static BooleanEvent armDoubleSubstation() {
-        return leftButtonBoard.button(10, eventLoop);
-    }
-
-    public static BooleanEvent clawOpenEvent() {
-        // return leftButtonBoard.button(18, eventLoop);
-        return leftButtonBoard.axisGreaterThan(0, -0.1, eventLoop);
-    }
-
-    public static BooleanEvent clawCloseEvent() {
-        // return leftButtonBoard.button(19, eventLoop);
-        return leftButtonBoard.axisLessThan(0, 0.1, eventLoop);
+    public static BooleanEvent armBase1Hybrid() {
+        return rightButtonBoard.button(10, eventLoop);
     }
 
     public static BooleanEvent forearmFineAdjustPositiveEvent() {
@@ -260,31 +271,6 @@ public final class OI {
     public static BooleanEvent forearmFineAdjustNegativeEvent() {
         // return leftButtonBoard.button(20, eventLoop);
         return leftButtonBoard.axisLessThan(1, -0.1, eventLoop);
-    }
-
-    public static BooleanEvent shoulderBase1() {
-        // return leftButtonBoard.button(21, eventLoop);
-        return leftButtonBoard.button(1, eventLoop);
-    }
-
-    public static BooleanEvent shoulderBase2() {
-        // return leftButtonBoard.button(20, eventLoop);
-        return leftButtonBoard.button(2, eventLoop);
-    }
-
-    public static BooleanEvent shoulderBase4() {
-        // return leftButtonBoard.button(20, eventLoop);
-        return leftButtonBoard.button(3, eventLoop);
-    }
-
-    public static BooleanEvent hopperExtend() {
-        // return leftButtonBoard.button(20, eventLoop);
-        return rightButtonBoard.button(1, eventLoop);
-    }
-
-    public static BooleanEvent hopperRetract() {
-        // return leftButtonBoard.button(20, eventLoop);
-        return rightButtonBoard.button(2, eventLoop);
     }
 
     public static BooleanEvent zeroArm() {
