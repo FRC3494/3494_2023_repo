@@ -1,10 +1,12 @@
 package frc.robot.subsystems.wrist;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.arm.ArmState;
@@ -13,7 +15,7 @@ import frc.robot.util.statemachine.IStateControllable;
 public class Wrist extends SubsystemBase implements IStateControllable<ArmState> {
     private CANSparkMax wristMotor;
 
-    AnalogPotentiometer wristPotentiometer;
+    SparkMaxAbsoluteEncoder wristEncoder;
 
     WristState currentWristState;
 
@@ -34,7 +36,8 @@ public class Wrist extends SubsystemBase implements IStateControllable<ArmState>
         wristMotor.setSmartCurrentLimit(10);
         wristMotor.setIdleMode(IdleMode.kBrake);
 
-        wristPotentiometer = new AnalogPotentiometer(Constants.Subsystems.Wrist.ENCODER_CHANNEL, 360);
+        wristEncoder = wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
+        wristEncoder.setPositionConversionFactor(360);
 
         correctWristNeo();
     }
@@ -45,10 +48,8 @@ public class Wrist extends SubsystemBase implements IStateControllable<ArmState>
             isDoneMoving = isAt(currentWristState);
     }
 
-    double getAbsoluteEncoderWristAngle() { // should only be used for correcting
-        // return ((wristPotentiometer.get() + 210) % 360) - 180;// -
-        // getShoulderPosition();
-        return wristPotentiometer.get() - 180;
+    double getAbsoluteEncoderWristAngle() {
+        return wristEncoder.getPosition() - 180;
     }
 
     double getWristAngle() {

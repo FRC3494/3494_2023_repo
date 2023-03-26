@@ -1,13 +1,12 @@
 package frc.robot.subsystems.forearm;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import edu.wpi.first.wpilibj.ADXL345_I2C;
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
-import edu.wpi.first.wpilibj.I2C.Port;
-import edu.wpi.first.wpilibj.interfaces.Accelerometer.Range;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.arm.ArmState;
@@ -16,9 +15,7 @@ import frc.robot.util.statemachine.IStateControllable;
 public class Forearm extends SubsystemBase implements IStateControllable<ArmState> {
     private CANSparkMax forearmMotor;
 
-    AnalogPotentiometer forearmPotentiometer;
-
-    ADXL345_I2C forearmIMU;
+    SparkMaxAbsoluteEncoder forearmEncoder;
 
     ForearmState currentForearmState;
 
@@ -39,10 +36,8 @@ public class Forearm extends SubsystemBase implements IStateControllable<ArmStat
         forearmMotor.setSmartCurrentLimit(10);
         forearmMotor.setIdleMode(IdleMode.kBrake);
 
-        // forearmPotentiometer = new
-        // AnalogPotentiometer(Constants.Subsystems.Arm.FOREARM_ENCODER_CHANNEL,
-        // 360);
-        forearmIMU = new ADXL345_I2C(Port.kOnboard, Range.k16G);
+        forearmEncoder = forearmMotor.getAbsoluteEncoder(Type.kDutyCycle);
+        forearmEncoder.setPositionConversionFactor(360);
 
         correctForearmNeo();
     }
@@ -53,10 +48,8 @@ public class Forearm extends SubsystemBase implements IStateControllable<ArmStat
             isDoneMoving = isAt(currentForearmState);
     }
 
-    double getAbsoluteEncoderForearmAngle() { // should only be used for correcting
-        // return ((forearmPotentiometer.get() + 210) % 360) - 180;// -
-        // getShoulderPosition();
-        return -Math.atan(forearmIMU.getZ() / forearmIMU.getY()) * (180 / Math.PI);
+    double getAbsoluteEncoderForearmAngle() {
+        return (forearmEncoder.getPosition() - 180) * Constants.Subsystems.Forearm.ENCODER_REDUCTION;
     }
 
     double getForearmAngle() {

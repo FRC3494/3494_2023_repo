@@ -30,7 +30,7 @@ public class Shoulder extends SubsystemBase implements IStateControllable<ArmSta
                 Constants.Subsystems.Shoulder.BOTTOM_PISTON_SOLENOID_CHANNEL + 1);
 
         shoulderPotentiometer = new AnalogPotentiometer(
-                Constants.Subsystems.Shoulder.SHOULDER_POTENTIOMETER_CHANNEL, 1);
+                Constants.Subsystems.Shoulder.POTENTIOMETER_CHANNEL, 1);
     }
 
     void setTopPiston(Value value) {
@@ -74,9 +74,7 @@ public class Shoulder extends SubsystemBase implements IStateControllable<ArmSta
     public boolean isAt(ArmState state) {
         return Math.abs(shoulderPotentiometer.get() -
                 Constants.Subsystems.Shoulder.POSITIONS
-                        .get(state.shoulderState)) <= Constants.Subsystems.Shoulder.SHOULDER_TARGET_TOLERANCE;
-        // return (System.currentTimeMillis() - lastShoulderActuationTime) >= 1500;
-        // TODO: check sensors
+                        .get(state.shoulderState)) <= Constants.Subsystems.Shoulder.TARGET_TOLERANCE;
     }
 
     public boolean crashDetected() {

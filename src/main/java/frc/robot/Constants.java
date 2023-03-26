@@ -20,23 +20,36 @@ import frc.robot.subsystems.wrist.WristState;
 public final class Constants extends AutoConfigurable {
     public static final class Subsystems {
         public static final class Arm {
-            public static ArmState INITIAL_STATE = new ArmState(ShoulderState.Base2, ForearmState.Store, WristState.Store);
+            public static ArmState INITIAL_STATE = new ArmState(ShoulderState.Base2, ForearmState.Store,
+                    WristState.Store);
 
             public static HashMap<ArmPosition, ArmState> KEY_POSITIONS = new HashMap<>() {
                 {
                     put(ArmPosition.Store, new ArmState(ShoulderState.Base2, ForearmState.Store, WristState.Store));
-                    put(ArmPosition.GroundIntakeCone, new ArmState(ShoulderState.Base1, ForearmState.GroundIntake, WristState.GroundCone));
-                    put(ArmPosition.GroundIntakeCube, new ArmState(ShoulderState.Base1, ForearmState.GroundIntake, WristState.GroundCube));
-                    put(ArmPosition.DoubleSubstationCone, new ArmState(ShoulderState.Base4, ForearmState.DoubleSubstation, WristState.DoubleSubCone));
-                    put(ArmPosition.DoubleSubstationCube, new ArmState(ShoulderState.Base4, ForearmState.DoubleSubstation, WristState.DoubleSubCube));
-                    put(ArmPosition.SingleSubstation, new ArmState(ShoulderState.Base2, ForearmState.SingleSubstation, WristState.SingleSub));
-                    put(ArmPosition.Base4Cone2, new ArmState(ShoulderState.Base4, ForearmState.Base4Cone2, WristState.Base4Cone2));
-                    put(ArmPosition.Base4Cube2, new ArmState(ShoulderState.Base4, ForearmState.Base4Cube2, WristState.Base4Cube2));
-                    put(ArmPosition.Base4Cone1, new ArmState(ShoulderState.Base4, ForearmState.Base4Cone1, WristState.Base4Cone1));
-                    put(ArmPosition.Base4Cube1, new ArmState(ShoulderState.Base4, ForearmState.Base4Cube1, WristState.Base4Cube1));
-                    put(ArmPosition.Base2Cone1, new ArmState(ShoulderState.Base2, ForearmState.Base2Cone1, WristState.Base2Cone1));
-                    put(ArmPosition.Base2Cube1, new ArmState(ShoulderState.Base2, ForearmState.Base2Cube1, WristState.Base2Cube1));
-                    put(ArmPosition.Base1Hybrid, new ArmState(ShoulderState.Base1, ForearmState.Base1Hybrid, WristState.Hybrid));
+                    put(ArmPosition.GroundIntakeCone,
+                            new ArmState(ShoulderState.Base1, ForearmState.GroundIntake, WristState.GroundCone));
+                    put(ArmPosition.GroundIntakeCube,
+                            new ArmState(ShoulderState.Base1, ForearmState.GroundIntake, WristState.GroundCube));
+                    put(ArmPosition.DoubleSubstationCone,
+                            new ArmState(ShoulderState.Base4, ForearmState.DoubleSubstation, WristState.DoubleSubCone));
+                    put(ArmPosition.DoubleSubstationCube,
+                            new ArmState(ShoulderState.Base4, ForearmState.DoubleSubstation, WristState.DoubleSubCube));
+                    put(ArmPosition.SingleSubstation,
+                            new ArmState(ShoulderState.Base2, ForearmState.SingleSubstation, WristState.SingleSub));
+                    put(ArmPosition.Base4Cone2,
+                            new ArmState(ShoulderState.Base4, ForearmState.Base4Cone2, WristState.Base4Cone2));
+                    put(ArmPosition.Base4Cube2,
+                            new ArmState(ShoulderState.Base4, ForearmState.Base4Cube2, WristState.Base4Cube2));
+                    put(ArmPosition.Base4Cone1,
+                            new ArmState(ShoulderState.Base4, ForearmState.Base4Cone1, WristState.Base4Cone1));
+                    put(ArmPosition.Base4Cube1,
+                            new ArmState(ShoulderState.Base4, ForearmState.Base4Cube1, WristState.Base4Cube1));
+                    put(ArmPosition.Base2Cone1,
+                            new ArmState(ShoulderState.Base2, ForearmState.Base2Cone1, WristState.Base2Cone1));
+                    put(ArmPosition.Base2Cube1,
+                            new ArmState(ShoulderState.Base2, ForearmState.Base2Cube1, WristState.Base2Cube1));
+                    put(ArmPosition.Base1Hybrid,
+                            new ArmState(ShoulderState.Base1, ForearmState.Base1Hybrid, WristState.Hybrid));
                 }
             };
         }
@@ -45,9 +58,9 @@ public final class Constants extends AutoConfigurable {
             public static int TOP_PISTON_SOLENOID_CHANNEL = 2;
             public static int BOTTOM_PISTON_SOLENOID_CHANNEL = 0;
 
-            public static int SHOULDER_POTENTIOMETER_CHANNEL = 4;
+            public static int POTENTIOMETER_CHANNEL = 4;
 
-            public static double SHOULDER_TARGET_TOLERANCE = 0.012;
+            public static double TARGET_TOLERANCE = 0.012;
 
             public static HashMap<ShoulderState, Double> POSITIONS = new HashMap<>() {
                 {
@@ -58,12 +71,11 @@ public final class Constants extends AutoConfigurable {
                 }
             };
         }
-        public static final class Forearm {
-            public static int MOTOR_CHANNEL = 9;
-            public static double MOTOR_REDUCTION = (1.0 / 60.0) * (10.0 / 22.0);
 
-            public static int ENCODER_CHANNEL = 5;
-            public static double ENCODER_OFFSET = 331.12251217887376;
+        public static final class Forearm {
+            public static int MOTOR_CHANNEL = 5;
+            public static double MOTOR_REDUCTION = (1.0 / 60.0) * (1 / 4.0);
+            public static double ENCODER_REDUCTION = (42.0 / 41.0);
 
             public static double TARGET_POSITION_TOLERANCE = 2; // degrees
 
@@ -91,12 +103,10 @@ public final class Constants extends AutoConfigurable {
                 }
             };
         }
-        public static final class Wrist { //TODO: SET CORRECT VALUES
-            public static int MOTOR_CHANNEL = 99;
-            public static double MOTOR_REDUCTION = (1.0 / 60.0) * (10.0 / 22.0);
 
-            public static int ENCODER_CHANNEL = 99;
-            public static double ENCODER_OFFSET = 331.12251217887376;
+        public static final class Wrist {
+            public static int MOTOR_CHANNEL = 9;
+            public static double MOTOR_REDUCTION = (1.0 / 25.0) * (1.0 / 4.0);
 
             public static double TARGET_POSITION_TOLERANCE = 2; // degrees
 
@@ -126,8 +136,8 @@ public final class Constants extends AutoConfigurable {
             };
         }
 
-        public static final class Claw { //TODO: SET CORRECT VALUES
-            public static int CLAW_MOTOR_CHANNEL = 99; 
+        public static final class Claw {
+            public static int MOTOR_CHANNEL = 8;
 
             public static HashMap<ClawState, Double> SPEEDS = new HashMap<>() {
                 {
@@ -139,7 +149,8 @@ public final class Constants extends AutoConfigurable {
                 }
             };
 
-            public static double intakeCurrentCutoff = 10.0;
+            public static double CURRENT_CUTOFF = 5.0;
+            public static double CURRENT_CUTOFF_DURATION = 0.25;
         }
 
         public static final class Drivetrain {
@@ -173,7 +184,9 @@ public final class Constants extends AutoConfigurable {
             public static final class BackRightModule {
                 public static int DRIVE_MOTOR_PORT = 3;// 5;
                 public static int STEER_MOTOR_PORT = 1;// 4;
+
                 public static int ENCODER_MOTOR_PORT = 3;
+
                 public static double STEER_OFFSET = -Math.toRadians(8.247);
             }
 
@@ -190,9 +203,11 @@ public final class Constants extends AutoConfigurable {
                     // Back right
                     new Translation2d(-TRACKLENGTH_METERS / 2.0, -TRACKWIDTH_METERS / 2.0));
 
-            /*public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
-                    SdsModuleConfigurations.MK4I_L1.getDriveReduction() *
-                    SdsModuleConfigurations.MK4I_L1.getWheelDiameter() * Math.PI;*/
+            /*
+             * public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
+             * SdsModuleConfigurations.MK4I_L1.getDriveReduction() *
+             * SdsModuleConfigurations.MK4I_L1.getWheelDiameter() * Math.PI;
+             */
 
             public static final double MAX_VELOCITY_METERS_PER_SECOND = 3.6576f;
 
@@ -201,14 +216,13 @@ public final class Constants extends AutoConfigurable {
             public static final double MAX_STANDARD_DEVIATION_LIMELIGHT = 0.01;
         }
 
-
         public static final class Pneumatics {
             public static int BASE_PCM = 21;
 
             public static double MIN_PRESSURE = 100;
             public static double MAX_PRESSURE = 110;
         }
-    
+
         public static final class Leds {
             public static int LED_PORT = 0;
 
@@ -218,26 +232,29 @@ public final class Constants extends AutoConfigurable {
 
     public static final class Commands {
         public static final class FollowPath {
-            public static final PIDController X_CONTROLLER = new PIDController(1, 0, 0);//.1 "4, 0.1, 0"
-            public static final PIDController Y_CONTROLLER = new PIDController(1, 0, 0);//.1
+            public static final PIDController X_CONTROLLER = new PIDController(1, 0, 0);// .1 "4, 0.1, 0"
+            public static final PIDController Y_CONTROLLER = new PIDController(1, 0, 0);// .1
             public static final ProfiledPIDController THETA_CONTROLLER = new ProfiledPIDController(
-                5.0, 0, 0,//2.4,0,0
-                new TrapezoidProfile.Constraints(3,
-                        3));//max vel, max acc
-        
+                    5.0, 0, 0, // 2.4,0,0
+                    new TrapezoidProfile.Constraints(3,
+                            3));// max vel, max acc
+
             public static final PIDController PP_THETA_CONTROLLER = new PIDController(0.3, 0.0, 0.0);
 
-            //public static final PIDController X_CONTROLLER = new PIDController(2.5, 1.5, 0);
-            //public static final PIDController Y_CONTROLLER = new PIDController(2.5, 1, 0);
-            //public static final PIDController THETA_CONTROLLER = new PIDController(2.5, 1.2, 0.5);
-            //public static final PIDController THETA_CONTROLLER = new PIDController(0.0, 0.0, 0.05);
+            // public static final PIDController X_CONTROLLER = new PIDController(2.5, 1.5,
+            // 0);
+            // public static final PIDController Y_CONTROLLER = new PIDController(2.5, 1,
+            // 0);
+            // public static final PIDController THETA_CONTROLLER = new PIDController(2.5,
+            // 1.2, 0.5);
+            // public static final PIDController THETA_CONTROLLER = new PIDController(0.0,
+            // 0.0, 0.05);
 
-
-
-            //public static final PIDController X_CONTROLLER = new PIDController(10, 0, 0);
-            //public static final PIDController Y_CONTROLLER = new PIDController(10, 0, 0);
-//
-            //public static final PIDController THETA_CONTROLLER = new PIDController(10, 0, 0);
+            // public static final PIDController X_CONTROLLER = new PIDController(10, 0, 0);
+            // public static final PIDController Y_CONTROLLER = new PIDController(10, 0, 0);
+            //
+            // public static final PIDController THETA_CONTROLLER = new PIDController(10, 0,
+            // 0);
 
             /*
              * public static final ProfiledPIDController THETA_CONTROLLER = new
@@ -249,12 +266,12 @@ public final class Constants extends AutoConfigurable {
         public static final class AutoBalance {
             public static final double TRIGGER_ANGLE = 23;
 
-            public static final double PEAK_ANGLE = 19;//23
+            public static final double PEAK_ANGLE = 19;// 23
 
             public static final double LEVEL_ANGLE = 5;
 
             public static final double FAST_POWER = 0.1;
-            public static final double SLOW_POWER = 0.0585;//0.05
+            public static final double SLOW_POWER = 0.0585;// 0.05
             public static final double DIVIDE_FACTOR = 3;
             public static final double DIVIDE_ANGLE = 8.5;
 
@@ -269,7 +286,7 @@ public final class Constants extends AutoConfigurable {
 
     public static final class RobotContainer {
         public static final class PathPlanner {
-            public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(4, 4);
+            public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(3.6, 2);
 
             public static HashMap<String, Command> PATH_EVENTS = new HashMap<>() {
                 {

@@ -3,6 +3,7 @@ package frc.robot.subsystems.claw;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -11,9 +12,13 @@ public class Claw extends SubsystemBase {
 
     ClawState currentState;
 
+    Timer stallTimer;
+
     public Claw() {
         clawMotor = new CANSparkMax(
-                Constants.Subsystems.Claw.CLAW_MOTOR_CHANNEL, MotorType.kBrushless);
+                Constants.Subsystems.Claw.MOTOR_CHANNEL, MotorType.kBrushless);
+
+        stallTimer = new Timer();
 
         set(ClawState.Idle);
     }
@@ -27,7 +32,14 @@ public class Claw extends SubsystemBase {
     @Override
     public void periodic() {
         if ((currentState == ClawState.IntakeCone || currentState == ClawState.IntakeCube)
-                && clawMotor.getOutputCurrent() >= Constants.Subsystems.Claw.intakeCurrentCutoff)
+                && clawMotor.getOutputCurrent() >= Constants.Subsystems.Claw.CURRENT_CUTOFF)
+            stallTimer.start();
+        else {
+            stallTimer.stop();
+            stallTimer.reset();
+        }
+
+        if (stallTimer.hasElapsed(Constants.Subsystems.Claw.CURRENT_CUTOFF_DURATION))
             set(ClawState.Idle);
     }
 }
