@@ -10,10 +10,8 @@ public class Arm extends StateMachine<ArmState> {
     @SuppressWarnings("unchecked") // java is a hell language
     public Arm(Shoulder shoulder, Forearm forearm, Wrist wrist) {
         super(
-            ArmState.every(),
             ArmConnections.connections,
             Constants.Subsystems.Arm.INITIAL_STATE);
-            //new ArmState(ShoulderState.Base2, ForearmState.Store, HopperState.Retracted));
 
         registerControllables(shoulder, forearm, wrist);
     }

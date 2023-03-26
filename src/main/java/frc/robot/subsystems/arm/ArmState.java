@@ -25,11 +25,11 @@ public class ArmState implements StateMachineState {
     }
 
     public boolean equals(StateMachineState otherState) {
-        if (!(otherState instanceof ArmState)) return false;
+        ArmState armState = (ArmState) otherState;
 
-        return shoulderState == ((ArmState) otherState).shoulderState &&
-                forearmState == ((ArmState) otherState).forearmState &&
-                wristState == ((ArmState) otherState).wristState;
+        return shoulderState == armState.shoulderState &&
+                forearmState == armState.forearmState &&
+                wristState == armState.wristState;
     }
 
     public Enum<?>[] getEnumArray() {
@@ -52,5 +52,9 @@ public class ArmState implements StateMachineState {
         }
 
         return everyState;
+    }
+
+    public String toString() {
+        return "[ " + shoulderState.name() + ", " + forearmState.name() + ", " + wristState.name() + "]";
     }
 }

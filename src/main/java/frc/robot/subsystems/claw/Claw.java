@@ -8,23 +8,24 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Claw extends SubsystemBase {
-    CANSparkMax clawMotor;
+    CANSparkMax motor;
 
     ClawState currentState;
 
     Timer stallTimer;
 
     public Claw() {
-        clawMotor = new CANSparkMax(
+        motor = new CANSparkMax(
                 Constants.Subsystems.Claw.MOTOR_CHANNEL, MotorType.kBrushless);
 
+        motor.setSmartCurrentLimit(Constants.Subsystems.Claw.CURRENT_LIMIT);
         stallTimer = new Timer();
 
         set(ClawState.Idle);
     }
 
     public void set(ClawState state) {
-        clawMotor.set(Constants.Subsystems.Claw.SPEEDS.get(state));
+        motor.set(Constants.Subsystems.Claw.SPEEDS.get(state));
 
         currentState = state;
     }
@@ -32,7 +33,7 @@ public class Claw extends SubsystemBase {
     @Override
     public void periodic() {
         if ((currentState == ClawState.IntakeCone || currentState == ClawState.IntakeCube)
-                && clawMotor.getOutputCurrent() >= Constants.Subsystems.Claw.CURRENT_CUTOFF)
+                && motor.getOutputCurrent() >= Constants.Subsystems.Claw.CURRENT_CUTOFF)
             stallTimer.start();
         else {
             stallTimer.stop();

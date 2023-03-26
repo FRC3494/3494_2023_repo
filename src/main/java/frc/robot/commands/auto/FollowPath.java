@@ -69,25 +69,13 @@ public class FollowPath extends CommandBase {
         PathPlannerState targetState = (PathPlannerState) trajectory.sample(curTime); 
         Pose2d targetPose = new Pose2d(targetState.poseMeters.getTranslation(), targetState.holonomicRotation);
 
-
         Pose2d currentPose = drivetrain.getPose();
 		drivetrain.periodic();
 		field2d.setRobotPose(currentPose);
 		fieldObject2d.setPose(targetPose);
-		
-       // double xSpeed = .calculate(currentPose.getX(), targetPose.getX());
-        //double ySpeed = Constants.Commands.FollowPath.Y_CONTROLLER.calculate(currentPose.getY(), targetPose.getY());
-        //double thetaSpeed = Constants.Commands.FollowPath.THETA_CONTROLLER.calculate(currentPose.getRotation().getDegrees(), targetPose.getRotation().getDegrees());
-		//FIX ME
+	
 		ChassisSpeeds targetSpeeds = controller.calculate(drivetrain.getPose(), targetState, targetState.holonomicRotation);
 
-		//ChassisSpeeds targetSpeeds = new ChassisSpeeds(0.2, 0, 0);
-
-		/*System.out.println("Current:"+currentPose.getRotation().getDegrees());
-		System.out.println("Target:"+targetPose.getRotation().getDegrees());
-		System.out.println("Speed:"+thetaSpeed);*/
-	
-        //drivetrain.drive(0.2, 0, 0,false);
 		drivetrain.drive(targetSpeeds);
 		
         PathPlannerServer.sendPathFollowingData(targetPose, currentPose);

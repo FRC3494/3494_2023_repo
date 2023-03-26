@@ -337,22 +337,22 @@ public class RobotContainer {
         });
 
         OI.forearmFineAdjustPositiveEvent().ifHigh(() -> {
-            forearm.directDriveForearm(Constants.OI.FOREARM_FINE_ADJUST_SPEED);
+            forearm.directDrive(Constants.OI.FOREARM_FINE_ADJUST_SPEED);
         });
 
-        OI.forearmFineAdjustPositiveEvent().rising().ifHigh(() -> forearm.enableForearmDirectDrive());
+        OI.forearmFineAdjustPositiveEvent().rising().ifHigh(() -> forearm.enableDirectDrive());
         OI.forearmFineAdjustPositiveEvent().falling().ifHigh(() -> {
-            forearm.directDriveForearm(0);
-            forearm.disableForearmDirectDrive();
+            forearm.directDrive(0);
+            forearm.disableDirectDrive();
         });
 
         OI.forearmFineAdjustNegativeEvent().ifHigh(() -> {
-            forearm.directDriveForearm(-Constants.OI.FOREARM_FINE_ADJUST_SPEED);
+            forearm.directDrive(-Constants.OI.FOREARM_FINE_ADJUST_SPEED);
         });
-        OI.forearmFineAdjustNegativeEvent().rising().ifHigh(() -> forearm.enableForearmDirectDrive());
+        OI.forearmFineAdjustNegativeEvent().rising().ifHigh(() -> forearm.enableDirectDrive());
         OI.forearmFineAdjustNegativeEvent().falling().ifHigh(() -> {
-            forearm.directDriveForearm(0);
-            forearm.disableForearmDirectDrive();
+            forearm.directDrive(0);
+            forearm.disableDirectDrive();
         });
         
         OI.armUndo().rising().ifHigh(() -> arm.undo());

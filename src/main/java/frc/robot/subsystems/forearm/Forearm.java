@@ -13,70 +13,72 @@ import frc.robot.subsystems.arm.ArmState;
 import frc.robot.util.statemachine.IStateControllable;
 
 public class Forearm extends SubsystemBase implements IStateControllable<ArmState> {
-    private CANSparkMax forearmMotor;
+    private CANSparkMax motor;
 
-    SparkMaxAbsoluteEncoder forearmEncoder;
+    SparkMaxAbsoluteEncoder encoder;
 
-    ForearmState currentForearmState;
+    ForearmState currentState;
 
     boolean isDoneMoving = true;
 
     public Forearm() {
-        forearmMotor = new CANSparkMax(
+        motor = new CANSparkMax(
                 Constants.Subsystems.Forearm.MOTOR_CHANNEL, MotorType.kBrushless);
 
-        forearmMotor.getPIDController().setOutputRange(-0.5, 0.75);
-        forearmMotor.getPIDController().setP(Constants.Subsystems.Forearm.PIDF.P);
-        forearmMotor.getPIDController().setI(Constants.Subsystems.Forearm.PIDF.I);
-        forearmMotor.getPIDController().setD(Constants.Subsystems.Forearm.PIDF.D);
-        forearmMotor.getPIDController().setFF(Constants.Subsystems.Forearm.PIDF.F);
+        motor.getPIDController().setOutputRange(-0.25, 0.25);
+        motor.getPIDController().setP(Constants.Subsystems.Forearm.PIDF.P);
+        motor.getPIDController().setI(Constants.Subsystems.Forearm.PIDF.I);
+        motor.getPIDController().setD(Constants.Subsystems.Forearm.PIDF.D);
+        motor.getPIDController().setFF(Constants.Subsystems.Forearm.PIDF.F);
 
-        forearmMotor.setClosedLoopRampRate(0.5);
+        motor.setClosedLoopRampRate(0.5);
 
-        forearmMotor.setSmartCurrentLimit(10);
-        forearmMotor.setIdleMode(IdleMode.kBrake);
+        motor.setSmartCurrentLimit(10);
+        motor.setIdleMode(IdleMode.kBrake);
 
-        forearmEncoder = forearmMotor.getAbsoluteEncoder(Type.kDutyCycle);
-        forearmEncoder.setPositionConversionFactor(360);
+        encoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
+        encoder.setPositionConversionFactor(360);
 
-        correctForearmNeo();
+        correctNeo();
+
+        setState(Constants.Subsystems.Arm.INITIAL_STATE);
     }
 
     @Override
     public void periodic() {
-        if (currentForearmState != null)
-            isDoneMoving = isAt(currentForearmState);
+        if (currentState != null)
+            isDoneMoving = isAt(currentState);
     }
 
-    double getAbsoluteEncoderForearmAngle() {
-        return (forearmEncoder.getPosition() - 180) * Constants.Subsystems.Forearm.ENCODER_REDUCTION;
+    double getAbsoluteEncoderAngle() {
+        return encoder.getPosition() - 180;
     }
 
-    double getForearmAngle() {
-        return -forearmMotor.getEncoder().getPosition() *
+    double getAngle() {
+        return -motor.getEncoder().getPosition() *
                 Constants.Subsystems.Forearm.MOTOR_REDUCTION * 360.0;
     }
 
-    void correctForearmNeo() {
-        forearmMotor.getEncoder().setPosition(
-                (-getAbsoluteEncoderForearmAngle() / 360.0) /
+    void correctNeo() {
+        motor.getEncoder().setPosition(
+                (-getAbsoluteEncoderAngle() / 360.0) /
                         Constants.Subsystems.Forearm.MOTOR_REDUCTION);
     }
 
     public void setState(ArmState newState) {
-        setForearmTargetAngle(
+        setTargetAngle(
                 Constants.Subsystems.Forearm.POSITIONS.get(newState.forearmState));
 
-        currentForearmState = newState.forearmState;
+        currentState = newState.forearmState;
 
         System.out.println("Forearm: " + newState.toString() + " Angle: " +
                 Constants.Subsystems.Forearm.POSITIONS.get(newState.forearmState));
     }
 
-    void setForearmTargetAngle(double angle) {
+    void setTargetAngle(double angle) {
         double rotationsNeeded = -angle / 360.0 / Constants.Subsystems.Forearm.MOTOR_REDUCTION;
 
-        forearmMotor.getPIDController().setReference(rotationsNeeded,
+        motor.getPIDController().setReference(rotationsNeeded,
                 ControlType.kPosition);
     }
 
@@ -85,7 +87,7 @@ public class Forearm extends SubsystemBase implements IStateControllable<ArmStat
     }
 
     public boolean isAt(ForearmState state) {
-        boolean there = Math.abs(getForearmAngle() -
+        boolean there = Math.abs(getAngle() -
                 Constants.Subsystems.Forearm.POSITIONS.get(
                         state)) <= Constants.Subsystems.Forearm.TARGET_POSITION_TOLERANCE;
 
@@ -94,27 +96,27 @@ public class Forearm extends SubsystemBase implements IStateControllable<ArmStat
 
     boolean forearmDirectDriveEnabled = false;
 
-    public void enableForearmDirectDrive() {
+    public void enableDirectDrive() {
         if (!isDoneMoving)
             return;
 
         forearmDirectDriveEnabled = true;
     }
 
-    public void disableForearmDirectDrive() {
+    public void disableDirectDrive() {
         forearmDirectDriveEnabled = false;
 
         if (!isDoneMoving)
             return;
 
-        setForearmTargetAngle(getForearmAngle());
+        setTargetAngle(getAngle());
     }
 
-    public void directDriveForearm(double power) {
+    public void directDrive(double power) {
         if (!isDoneMoving || !forearmDirectDriveEnabled)
             return;
 
-        forearmMotor.set(power);
+        motor.set(power);
     }
 
     public boolean crashDetected() {

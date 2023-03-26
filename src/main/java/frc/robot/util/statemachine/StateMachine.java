@@ -22,13 +22,28 @@ public abstract class StateMachine<T extends StateMachineState> extends Subsyste
 
     IStateControllable<T>[] controllables;
 
-    public StateMachine(List<T> nodes, List<StateConnection<T>> connections, T initialState) {
-        init(nodes, connections, initialState);
+    public StateMachine(List<StateConnection<T>> connections, T initialState) {
+        init(connections, initialState);
     }
 
-    public void init(List<T> nodes, List<StateConnection<T>> connections, T initialState) {
-        this.nodes = nodes;
+    public void init(List<StateConnection<T>> connections, T initialState) {
+        //this.nodes = nodes;
         this.connections = connections;
+
+        this.nodes = new ArrayList<>();
+
+        for (StateConnection<T> connection : connections) {
+            boolean foundFrom = false;
+            boolean foundTo = false;
+
+            for (T node : nodes) {
+                if (node.equals(connection.from)) foundFrom = true;
+                if (node.equals(connection.to)) foundTo = true;
+            }
+
+            if (!foundFrom) nodes.add(connection.from);
+            if (!foundTo && !connection.from.equals(connection.to)) nodes.add(connection.to);
+        }
 
         setTarget(initialState, true);
 
@@ -86,7 +101,7 @@ public abstract class StateMachine<T extends StateMachineState> extends Subsyste
 
         targetNode = normalizedState;
 
-        if (!initial) recomputeSequence();
+        recomputeSequence();
     }
 
     @Override
@@ -125,6 +140,8 @@ public abstract class StateMachine<T extends StateMachineState> extends Subsyste
     void recomputeSequence() {
         currentSequence.clear();
 
+        if (currentNode.equals(targetNode)) return;
+
         List<List<T>> sequences = new ArrayList<>();
         
         for (T node : nodes) {
@@ -162,28 +179,31 @@ public abstract class StateMachine<T extends StateMachineState> extends Subsyste
 
     List<T> nodeHistory = new ArrayList<>();
 
-    @SuppressWarnings("unchecked") // java is a hell language
     SeekResult recursiveFind(T previous, SeekResult seekResult) {
         for (T node : nodes) {
             if (!previous.equals(node) && !seekResult.sequence.contains(node) && adjacencyMatrix.get(previous).get(node)) {
                 if (node.equals(targetNode)) {
-                    seekResult.sequence.add(node);
-                    seekResult.sequence.add(targetNode);
+                    return new SeekResult() {{
+                        found = true;
 
-                    seekResult.found = true;
+                        sequence = new ArrayList<>();
 
-                    return seekResult;
+                        sequence.addAll(seekResult.sequence);
+                        sequence.add(node);
+                        sequence.add(targetNode);
+                    }};
                 } else {
-                    seekResult.sequence.add(node);
+                    SeekResult result = recursiveFind(node, new SeekResult() {{
+                        found = true;
 
-                    List<T> copiedNodeHistory = (ArrayList<T>) ((ArrayList<T>) seekResult.sequence).clone();
+                        sequence = new ArrayList<>();
 
-                    SeekResult result = recursiveFind(node, seekResult);
+                        sequence.addAll(seekResult.sequence);
+                        sequence.add(node);
+                    }});
 
                     if (result.found)
                         return result;
-                    else
-                        seekResult.sequence = copiedNodeHistory;
                 }
             }
         }
@@ -192,6 +212,8 @@ public abstract class StateMachine<T extends StateMachineState> extends Subsyste
     }
 
     public void undo() {
-        setTarget(history.remove(history.size() - 1), false);
+        targetNode = history.remove(history.size() - 1);
+
+        recomputeSequence();
     }
 }

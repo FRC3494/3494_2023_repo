@@ -74,8 +74,7 @@ public final class Constants extends AutoConfigurable {
 
         public static final class Forearm {
             public static int MOTOR_CHANNEL = 5;
-            public static double MOTOR_REDUCTION = (1.0 / 60.0) * (1 / 4.0);
-            public static double ENCODER_REDUCTION = (42.0 / 41.0);
+            public static double MOTOR_REDUCTION = (1.0 / 5.0) * (1.0 / 4.0) * (1.0 / 3.0) * (10.0 / 40.0);
 
             public static double TARGET_POSITION_TOLERANCE = 2; // degrees
 
@@ -88,25 +87,25 @@ public final class Constants extends AutoConfigurable {
 
             public static HashMap<ForearmState, Double> POSITIONS = new HashMap<>() {
                 {
-                    put(ForearmState.Intermediate, 66.7); // real 47.9
-                    put(ForearmState.GroundIntake, 15.0); // real 0.0
-                    put(ForearmState.DoubleSubstation, -99.1); // real -99.0
-                    put(ForearmState.SingleSubstation, -8.0);
-                    put(ForearmState.Base1Hybrid, 26.5); // real 13.0
-                    put(ForearmState.Store, -8.0); // real -20.0
-                    put(ForearmState.Base4Cone2, -105.1); // real -99.0
-                    put(ForearmState.Base4Cube2, -82.0); // real -80
-                    put(ForearmState.Base4Cone1, -6.0); // real -56.8
-                    put(ForearmState.Base4Cube1, -65.0); // real -56.8
-                    put(ForearmState.Base2Cone1, 108.7); // real 90
-                    put(ForearmState.Base2Cube1, 101.3); // real 67.4
+                    put(ForearmState.Intermediate, 0.0);
+                    put(ForearmState.GroundIntake, 0.0);
+                    put(ForearmState.DoubleSubstation, 0.0);
+                    put(ForearmState.SingleSubstation, 0.0);
+                    put(ForearmState.Base1Hybrid, 0.0);
+                    put(ForearmState.Store, 0.0);
+                    put(ForearmState.Base4Cone2, 0.0);
+                    put(ForearmState.Base4Cube2, 0.0);
+                    put(ForearmState.Base4Cone1, 0.0);
+                    put(ForearmState.Base4Cube1, 0.0);
+                    put(ForearmState.Base2Cone1, 0.0);
+                    put(ForearmState.Base2Cube1, 0.0);
                 }
             };
         }
 
         public static final class Wrist {
             public static int MOTOR_CHANNEL = 9;
-            public static double MOTOR_REDUCTION = (1.0 / 25.0) * (1.0 / 4.0);
+            public static double MOTOR_REDUCTION = (1.0 / 5.0) * (1.0 / 5.0) * (18.0 / 60.0);
 
             public static double TARGET_POSITION_TOLERANCE = 2; // degrees
 
@@ -141,7 +140,7 @@ public final class Constants extends AutoConfigurable {
 
             public static HashMap<ClawState, Double> SPEEDS = new HashMap<>() {
                 {
-                    put(ClawState.Idle, 0.05);
+                    put(ClawState.Idle, 0.0);
                     put(ClawState.IntakeCone, 0.5);
                     put(ClawState.IntakeCube, 0.25);
                     put(ClawState.OuttakeCone, -0.5);
@@ -149,7 +148,8 @@ public final class Constants extends AutoConfigurable {
                 }
             };
 
-            public static double CURRENT_CUTOFF = 5.0;
+            public static int CURRENT_LIMIT = 30;
+            public static double CURRENT_CUTOFF = 28.0;
             public static double CURRENT_CUTOFF_DURATION = 0.25;
         }
 
