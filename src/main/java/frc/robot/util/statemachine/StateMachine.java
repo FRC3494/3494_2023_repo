@@ -10,7 +10,7 @@ public abstract class StateMachine<T extends StateMachineState> extends Subsyste
     List<T> nodes;
     List<StateConnection<T>> connections;
 
-    HashMap<T, HashMap<T, Boolean>> adjacencyMatrix = new HashMap<>();
+    HashMap<T, HashMap<T, Double>> adjacencyMatrix = new HashMap<>();
 
     T currentNode;
     T targetNode;
@@ -49,19 +49,19 @@ public abstract class StateMachine<T extends StateMachineState> extends Subsyste
 
         //lord help me
         for (T fromState : nodes) {
-            adjacencyMatrix.put(fromState, new HashMap<T, Boolean>());
+            adjacencyMatrix.put(fromState, new HashMap<T, Double>());
 
             for (T toState : nodes) {
-                boolean found = false;
+                double distance = -1;
 
                 for (StateConnection<T> connection : connections) {
                     if (connection.from.equals(fromState) && connection.to.equals(toState)) {
-                        found = true;
+                        distance = 1;
                         break;
                     }
                 }
 
-                adjacencyMatrix.get(fromState).put(toState, found);
+                adjacencyMatrix.get(fromState).put(toState, distance);
             }
         }
     }
@@ -133,7 +133,12 @@ public abstract class StateMachine<T extends StateMachineState> extends Subsyste
     }
 
     class SeekResult {
-        boolean found = false;
+        double distance = -1;
+        List<T> sequence = new ArrayList<>();
+    }
+
+    class SeekContext {
+        double distance = 0;
         List<T> sequence = new ArrayList<>();
     }
 
@@ -141,74 +146,55 @@ public abstract class StateMachine<T extends StateMachineState> extends Subsyste
         currentSequence.clear();
 
         if (currentNode.equals(targetNode)) return;
-
-        List<List<T>> sequences = new ArrayList<>();
         
-        for (T node : nodes) {
-            if (!currentNode.equals(node) && adjacencyMatrix.get(currentNode).get(node)) {
-                if (node.equals(targetNode)) {
-                    currentSequence.add(targetNode);
-                    sequenceChanged = true;
+        SeekResult result = seekFrom(currentNode, new SeekContext() {{
+            sequence.add(currentNode);
+        }});
 
-                    return;
-                }
-
-                List<T> seekingSequence = new ArrayList<>();
-
-                SeekResult result = recursiveFind(node, new SeekResult());
-    
-                if (result.found) {
-                    sequences.add(seekingSequence);
-                }
-            }
-        }
-
-        int smallestDistance = Integer.MAX_VALUE;
-        int bestSequence = -1;
-
-        for (int i = 0; i < sequences.size(); i++) {
-            if (sequences.get(i).size() < smallestDistance)
-                bestSequence = i;
-        }
-
-        if (bestSequence != -1) {
-            currentSequence = sequences.get(bestSequence);
+        if (result.distance >= 0) {
+            currentSequence = result.sequence;
             sequenceChanged = true;
         }
     }
 
-    List<T> nodeHistory = new ArrayList<>();
+    SeekResult seekFrom(T node, SeekContext seekContext) {
+        SeekResult best = new SeekResult() {{
+            distance = Double.MAX_VALUE;
+        }};
+        boolean bestExists = false;
 
-    SeekResult recursiveFind(T previous, SeekResult seekResult) {
-        for (T node : nodes) {
-            if (!previous.equals(node) && !seekResult.sequence.contains(node) && adjacencyMatrix.get(previous).get(node)) {
-                if (node.equals(targetNode)) {
-                    return new SeekResult() {{
-                        found = true;
+        for (T possibleNode : nodes) {
+            double possibleDistance = adjacencyMatrix.get(node).get(possibleNode);
 
-                        sequence = new ArrayList<>();
+            if (possibleDistance < 0)
+                continue;
 
-                        sequence.addAll(seekResult.sequence);
-                        sequence.add(node);
-                        sequence.add(targetNode);
-                    }};
-                } else {
-                    SeekResult result = recursiveFind(node, new SeekResult() {{
-                        found = true;
+            if (possibleNode.equals(targetNode)) {
+                return new SeekResult() {{
+                    distance = seekContext.distance + possibleDistance;
 
-                        sequence = new ArrayList<>();
+                    sequence.addAll(seekContext.sequence);
+                    sequence.add(possibleNode);
+                }};
+            }
 
-                        sequence.addAll(seekResult.sequence);
-                        sequence.add(node);
-                    }});
+            if (!seekContext.sequence.contains(possibleNode)) {
+                SeekResult option = seekFrom(possibleNode, new SeekContext() {{
+                    distance = seekContext.distance + possibleDistance;
 
-                    if (result.found)
-                        return result;
+                    sequence.addAll(seekContext.sequence);
+                    sequence.add(possibleNode);
+                }});
+
+                if (option.distance >= 0 && option.distance < best.distance) {
+                    best = option;
+                    bestExists = true;
                 }
             }
         }
 
-        return seekResult;
+        if (bestExists) return best;
+        return new SeekResult();
     }
 
     public void undo() {
