@@ -25,7 +25,7 @@ public class Forearm extends SubsystemBase implements IStateControllable<ArmStat
         motor = new CANSparkMax(
                 Constants.Subsystems.Forearm.MOTOR_CHANNEL, MotorType.kBrushless);
 
-        motor.getPIDController().setOutputRange(-0.25, 0.25);
+        motor.getPIDController().setOutputRange(-0.12, 0.12);//was 25
         motor.getPIDController().setP(Constants.Subsystems.Forearm.PIDF.P);
         motor.getPIDController().setI(Constants.Subsystems.Forearm.PIDF.I);
         motor.getPIDController().setD(Constants.Subsystems.Forearm.PIDF.D);
@@ -54,7 +54,7 @@ public class Forearm extends SubsystemBase implements IStateControllable<ArmStat
         return encoder.getPosition() - 180;
     }
 
-    double getAngle() {
+    public double getAngle() {
         return -motor.getEncoder().getPosition() *
                 Constants.Subsystems.Forearm.MOTOR_REDUCTION * 360.0;
     }

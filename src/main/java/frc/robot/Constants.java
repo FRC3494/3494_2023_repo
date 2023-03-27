@@ -87,18 +87,18 @@ public final class Constants extends AutoConfigurable {
 
             public static HashMap<ForearmState, Double> POSITIONS = new HashMap<>() {
                 {
-                    put(ForearmState.Intermediate, 0.0);
-                    put(ForearmState.GroundIntake, 0.0);
-                    put(ForearmState.DoubleSubstation, 0.0);
-                    put(ForearmState.SingleSubstation, 0.0);
-                    put(ForearmState.Base1Hybrid, 0.0);
-                    put(ForearmState.Store, 0.0);
-                    put(ForearmState.Base4Cone2, 0.0);
-                    put(ForearmState.Base4Cube2, 0.0);
-                    put(ForearmState.Base4Cone1, 0.0);
-                    put(ForearmState.Base4Cube1, 0.0);
-                    put(ForearmState.Base2Cone1, 0.0);
-                    put(ForearmState.Base2Cube1, 0.0);
+                    put(ForearmState.Intermediate, 52.8);
+                    put(ForearmState.GroundIntake, 46.9);
+                    put(ForearmState.DoubleSubstation, -73.25);
+                    put(ForearmState.SingleSubstation, 28.09);
+                    put(ForearmState.Base1Hybrid, 25.3);
+                    put(ForearmState.Store,11.9);
+                    put(ForearmState.Base4Cone2, -126.62);
+                    put(ForearmState.Base4Cube2, -120.08);
+                    put(ForearmState.Base4Cone1, -112.7);
+                    put(ForearmState.Base4Cube1, -5.3);
+                    put(ForearmState.Base2Cone1, 110.5);
+                    put(ForearmState.Base2Cube1, 100.9);
                 }
             };
         }
@@ -118,19 +118,19 @@ public final class Constants extends AutoConfigurable {
 
             public static HashMap<WristState, Double> POSITIONS = new HashMap<>() {
                 {
-                    put(WristState.Store, 0.0);
-                    put(WristState.GroundCube, 0.0);
-                    put(WristState.GroundCone, 0.0);
-                    put(WristState.Base2Cone1, 0.0);
-                    put(WristState.Base4Cone1, 0.0);
-                    put(WristState.Base4Cone2, 0.0);
-                    put(WristState.Base4Cube1, 0.0);
-                    put(WristState.Base4Cube2, 0.0);
-                    put(WristState.DoubleSubCube, 0.0);
-                    put(WristState.DoubleSubCone, 0.0);
-                    put(WristState.SingleSub, 0.0);
-                    put(WristState.Hybrid, 0.0);
-                    put(WristState.Base2Cube1, 0.0);
+                    put(WristState.Store, -136.0);
+                    put(WristState.GroundCube, 40.8);
+                    put(WristState.GroundCone, 66.38);
+                    put(WristState.Base2Cone1, -4.8);
+                    put(WristState.Base4Cone1, 135.5);
+                    put(WristState.Base4Cone2, 66.55);
+                    put(WristState.Base4Cube1, -104.5);
+                    put(WristState.Base4Cube2, 58.2);
+                    put(WristState.DoubleSubCube, 56.06);
+                    put(WristState.DoubleSubCone, 43.0);
+                    put(WristState.SingleSub, 119.01);
+                    put(WristState.Hybrid, 95.2);
+                    put(WristState.Base2Cube1, -9.97);
                 }
             };
         }
@@ -141,10 +141,10 @@ public final class Constants extends AutoConfigurable {
             public static HashMap<ClawState, Double> SPEEDS = new HashMap<>() {
                 {
                     put(ClawState.Idle, 0.0);
-                    put(ClawState.IntakeCone, 0.5);
-                    put(ClawState.IntakeCube, 0.25);
-                    put(ClawState.OuttakeCone, -0.5);
-                    put(ClawState.OuttakeCube, -0.25);
+                    put(ClawState.IntakeCone, 0.5);//0.5
+                    put(ClawState.IntakeCube, -0.25);
+                    put(ClawState.OuttakeCone, -0.5);//-0.5
+                    put(ClawState.OuttakeCube, 0.25);
                 }
             };
 

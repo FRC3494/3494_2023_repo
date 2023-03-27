@@ -25,7 +25,7 @@ public class Wrist extends SubsystemBase implements IStateControllable<ArmState>
         motor = new CANSparkMax(
                 Constants.Subsystems.Wrist.MOTOR_CHANNEL, MotorType.kBrushless);
 
-        motor.getPIDController().setOutputRange(-0.5, 0.5);
+        motor.getPIDController().setOutputRange(-0.18, 0.18);//was 0.5
         motor.getPIDController().setP(Constants.Subsystems.Wrist.PIDF.P);
         motor.getPIDController().setI(Constants.Subsystems.Wrist.PIDF.I);
         motor.getPIDController().setD(Constants.Subsystems.Wrist.PIDF.D);
@@ -56,7 +56,7 @@ public class Wrist extends SubsystemBase implements IStateControllable<ArmState>
         return -encoder.getPosition() + 180;
     }
 
-    double getAngle() {
+    public double getAngle() {
         return motor.getEncoder().getPosition() *
                 Constants.Subsystems.Wrist.MOTOR_REDUCTION * 360.0;
     }
@@ -78,7 +78,7 @@ public class Wrist extends SubsystemBase implements IStateControllable<ArmState>
     }
 
     void setTargetAngle(double angle) {
-        double rotationsNeeded = -angle / 360.0 / Constants.Subsystems.Wrist.MOTOR_REDUCTION;
+        double rotationsNeeded = angle / 360.0 / Constants.Subsystems.Wrist.MOTOR_REDUCTION; // was a negative on angle
 
         motor.getPIDController().setReference(rotationsNeeded,
                 ControlType.kPosition);
