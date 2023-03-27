@@ -290,10 +290,9 @@ public class RobotContainer {
         fieldTab.addDouble("NavX Pitch", () -> NavX.getPitch()).withPosition(8, 0);
         fieldTab.addDouble("NavX Roll", () -> NavX.getRoll()).withPosition(8, 1);
         fieldTab.addDouble("NavX Yaw", () -> NavX.getYaw()).withPosition(8, 2);
+        
         fieldTab.addDouble("Forearm Position", () -> forearm.getAngle()).withPosition(8, 3);
-
-
-        fieldTab.addDouble("Wrist Position", () -> wrist.getAngle()).withPosition(8, 3);
+        fieldTab.addDouble("Wrist Position", () -> wrist.getAngle()).withPosition(8, 4);
 
 
         mainTab.add(camera.getCamera()).withPosition(2, 0).withSize(4, 4);

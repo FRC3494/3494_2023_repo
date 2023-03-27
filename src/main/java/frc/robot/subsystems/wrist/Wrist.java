@@ -46,8 +46,6 @@ public class Wrist extends SubsystemBase implements IStateControllable<ArmState>
 
     @Override
     public void periodic() {
-        System.out.println("w a" + getAbsoluteEncoderAngle() + " m" + getAngle());
-
         if (currentState != null)
             isDoneMoving = isAt(currentState);
     }

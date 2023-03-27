@@ -1,5 +1,20 @@
 {
   "HALProvider": {
+    "Addressable LEDs": {
+      "window": {
+        "visible": true
+      }
+    },
+    "Analog Inputs": {
+      "window": {
+        "visible": true
+      }
+    },
+    "PWM Outputs": {
+      "window": {
+        "visible": true
+      }
+    },
     "RoboRIO": {
       "window": {
         "visible": true
@@ -18,7 +33,10 @@
     }
   },
   "NetworkTables": {
-    "Persistent Values": {
+    "Retained Values": {
+      "open": false
+    },
+    "Transitory Values": {
       "open": false
     },
     "transitory": {
@@ -50,6 +68,9 @@
         "open": true
       }
     }
+  },
+  "NetworkTables View": {
+    "visible": false
   },
   "Plot": {
     "Plot <0>": {
