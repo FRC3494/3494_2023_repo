@@ -16,6 +16,7 @@ public abstract class StateMachine<T extends StateMachineState> extends Subsyste
     T targetNode;
 
     List<T> history = new ArrayList<>();
+    List<T> queue = new ArrayList<>();
 
     List<T> currentSequence = new ArrayList<>();
     boolean sequenceChanged = false;
@@ -157,44 +158,22 @@ public abstract class StateMachine<T extends StateMachineState> extends Subsyste
         }
     }
 
-    SeekResult seekFrom(T node, SeekContext seekContext) {
-        SeekResult best = new SeekResult() {{
-            distance = Double.MAX_VALUE;
-        }};
-        boolean bestExists = false;
+    boolean seekFrom(T node, SeekContext seekContext) {
+        if (nodes.contains(targetNode)) {
+            queue.push(targetNode);
+            queue.push(node);
+            return true;
+}
+        
 
-        for (T possibleNode : nodes) {
-            double possibleDistance = adjacencyMatrix.get(node).get(possibleNode);
+        if (!seekContext.sequence.contains(possibleNode)) {
+            SeekResult option = seekFrom(possibleNode, new SeekContext() {{
+                distance = seekContext.distance + possibleDistance;
 
-            if (possibleDistance < 0)
-                continue;
-
-            if (possibleNode.equals(targetNode)) {
-                return new SeekResult() {{
-                    distance = seekContext.distance + possibleDistance;
-
-                    sequence.addAll(seekContext.sequence);
-                    sequence.add(possibleNode);
-                }};
-            }
-
-            if (!seekContext.sequence.contains(possibleNode)) {
-                SeekResult option = seekFrom(possibleNode, new SeekContext() {{
-                    distance = seekContext.distance + possibleDistance;
-
-                    sequence.addAll(seekContext.sequence);
-                    sequence.add(possibleNode);
-                }});
-
-                if (option.distance >= 0 && option.distance < best.distance) {
-                    best = option;
-                    bestExists = true;
-                }
-            }
+                sequence.addAll(seekContext.sequence);
+                sequence.add(possibleNode);
+            }});
         }
-
-        if (bestExists) return best;
-        return new SeekResult();
     }
 
     public void undo() {
