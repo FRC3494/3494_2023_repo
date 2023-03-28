@@ -1,6 +1,7 @@
 package frc.robot.commands.teleop;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.OI;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.forearm.Forearm;
@@ -18,6 +19,29 @@ public class TeleopDrive extends CommandBase {
         this.wrist = wrist;
 
 		addRequirements(drivetrain);
+
+        /*
+         * 
+
+        OI.forearmFineAdjustPositiveEvent().ifHigh(() -> {
+            forearm.directDrive(Constants.OI.FOREARM_FINE_ADJUST_SPEED);
+        });
+
+        OI.forearmFineAdjustPositiveEvent().rising().ifHigh(() -> forearm.enableDirectDrive());
+        OI.forearmFineAdjustPositiveEvent().falling().ifHigh(() -> {
+            forearm.directDrive(0);
+            forearm.disableDirectDrive();
+        });
+
+        OI.forearmFineAdjustNegativeEvent().ifHigh(() -> {
+            forearm.directDrive(-Constants.OI.FOREARM_FINE_ADJUST_SPEED);
+        });
+        OI.forearmFineAdjustNegativeEvent().rising().ifHigh(() -> forearm.enableDirectDrive());
+        OI.forearmFineAdjustNegativeEvent().falling().ifHigh(() -> {
+            forearm.directDrive(0);
+            forearm.disableDirectDrive();
+        });
+         */
 	}
 
     @Override
@@ -29,6 +53,11 @@ public class TeleopDrive extends CommandBase {
 	@Override
 	public void execute() {
 		drivetrain.drive(OI.teleopXVelocity(), OI.teleopYVelocity(), -OI.teleopTurnVelocity(), true);
+
+        if (Math.abs(OI.forearmFineAdjust()) >= 0.1) {
+            forearm.enableDirectDrive();
+            forearm.directDrive(OI.forearmFineAdjust() * Constants.Subsystems.Forearm.);
+        }
 
         //forearm.directDrive((OI.teleopXVelocity() / 3) * 0.6);
         //wrist.directDrive((OI.teleopTurnVelocity() / 3) * 0.6);

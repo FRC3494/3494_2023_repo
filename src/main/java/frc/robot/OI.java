@@ -264,16 +264,6 @@ public final class OI {
         return leftButtonBoard.button(3, eventLoop);
     }
 
-    public static BooleanEvent forearmFineAdjustPositiveEvent() {
-        // return leftButtonBoard.button(21, eventLoop);
-        return leftButtonBoard.axisGreaterThan(1, 0.1, eventLoop);
-    }
-
-    public static BooleanEvent forearmFineAdjustNegativeEvent() {
-        // return leftButtonBoard.button(20, eventLoop);
-        return leftButtonBoard.axisLessThan(1, -0.1, eventLoop);
-    }
-
     public static BooleanEvent clawIntakeCone() {
         // return leftButtonBoard.button(21, eventLoop);
         return leftButtonBoard.axisGreaterThan(0, -0.1, eventLoop).and(()->coneMode);
@@ -295,6 +285,16 @@ public final class OI {
     }
     public static BooleanEvent clawIdle(){
         return leftButtonBoard.axisGreaterThan(0, -0.1, eventLoop).and(leftButtonBoard.axisLessThan(0, 0.1, eventLoop));
+    }
+
+    public static double forearmFineAdjust() {
+        // return leftButtonBoard.button(21, eventLoop);
+        return leftButtonBoard.getRawAxis(1);
+    }
+
+    public static double forearmFineAdjustNegativeEvent() {
+        // return leftButtonBoard.button(20, eventLoop);
+        return rightButtonBoard.getRawAxis(1);
     }
 
 

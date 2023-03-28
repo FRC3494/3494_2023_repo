@@ -348,25 +348,6 @@ public class RobotContainer {
         OI.printOdometryEvent().rising().ifHigh(() -> {
             System.out.println("Current Odo " + drivetrain.getPose().getX() + ":" + drivetrain.getPose().getY());
         });
-
-        OI.forearmFineAdjustPositiveEvent().ifHigh(() -> {
-            forearm.directDrive(Constants.OI.FOREARM_FINE_ADJUST_SPEED);
-        });
-
-        OI.forearmFineAdjustPositiveEvent().rising().ifHigh(() -> forearm.enableDirectDrive());
-        OI.forearmFineAdjustPositiveEvent().falling().ifHigh(() -> {
-            forearm.directDrive(0);
-            forearm.disableDirectDrive();
-        });
-
-        OI.forearmFineAdjustNegativeEvent().ifHigh(() -> {
-            forearm.directDrive(-Constants.OI.FOREARM_FINE_ADJUST_SPEED);
-        });
-        OI.forearmFineAdjustNegativeEvent().rising().ifHigh(() -> forearm.enableDirectDrive());
-        OI.forearmFineAdjustNegativeEvent().falling().ifHigh(() -> {
-            forearm.directDrive(0);
-            forearm.disableDirectDrive();
-        });
         
         OI.armUndo().rising().ifHigh(() -> arm.undo());
         
