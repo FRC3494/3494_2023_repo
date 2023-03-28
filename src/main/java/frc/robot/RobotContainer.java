@@ -379,8 +379,15 @@ public class RobotContainer {
         OI.clawIntakeCube().rising().ifHigh(() -> claw.set(ClawState.IntakeCube));
         OI.clawOuttakeCone().rising().ifHigh(() -> claw.set(ClawState.OuttakeCone));
         OI.clawOuttakeCube().rising().ifHigh(() -> claw.set(ClawState.OuttakeCube));
+        OI.clawIdle().rising().ifHigh(()->claw.set(ClawState.Idle));
 
-        OI.ledsIndicateCone().rising().ifHigh(() -> leds.setPattern(LedPattern.CONE));
-        OI.ledsIndicateCube().rising().ifHigh(() -> leds.setPattern(LedPattern.CUBE));
+        OI.ledsIndicateCone().rising().ifHigh(() -> {
+            leds.setPattern(LedPattern.CONE);
+            OI.coneMode = true;
+        });
+        OI.ledsIndicateCube().rising().ifHigh(() -> {
+            leds.setPattern(LedPattern.CUBE);
+            OI.coneMode = false;
+        });
     }
 }
