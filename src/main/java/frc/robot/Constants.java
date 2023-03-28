@@ -27,13 +27,13 @@ public final class Constants extends AutoConfigurable {
                 {
                     put(ArmPosition.Store, new ArmState(ShoulderState.Base2, ForearmState.Store, WristState.Store));
                     put(ArmPosition.GroundIntakeCone,
-                            new ArmState(ShoulderState.Base1, ForearmState.GroundIntake, WristState.GroundCone));
+                            new ArmState(ShoulderState.Base1, ForearmState.GroundIntakeCone, WristState.GroundCone));
                     put(ArmPosition.GroundIntakeCube,
-                            new ArmState(ShoulderState.Base1, ForearmState.GroundIntake, WristState.GroundCube));
+                            new ArmState(ShoulderState.Base1, ForearmState.GroundIntakeCube, WristState.GroundCube));
                     put(ArmPosition.DoubleSubstationCone,
-                            new ArmState(ShoulderState.Base4, ForearmState.DoubleSubstation, WristState.DoubleSubCone));
+                            new ArmState(ShoulderState.Base2, ForearmState.DoubleSubstation, WristState.DoubleSubCone));
                     put(ArmPosition.DoubleSubstationCube,
-                            new ArmState(ShoulderState.Base4, ForearmState.DoubleSubstation, WristState.DoubleSubCube));
+                            new ArmState(ShoulderState.Base2, ForearmState.DoubleSubstation, WristState.DoubleSubCube));
                     put(ArmPosition.SingleSubstation,
                             new ArmState(ShoulderState.Base2, ForearmState.SingleSubstation, WristState.SingleSub));
                     put(ArmPosition.Base4Cone2,
@@ -79,14 +79,14 @@ public final class Constants extends AutoConfigurable {
             public static double MAX_SPEED = 0.5;
             public static double MIN_SPEED = -0.5;
 
-            public static float MIN_POSITION = -86.241f; //135.5
-            public static float MAX_POSITION = 85.099f; //-136.0
+            public static float MIN_POSITION = -86.241f; // 135.5
+            public static float MAX_POSITION = 91.505f; // -136.0
 
             public static double TARGET_POSITION_TOLERANCE = 2; // degrees
 
             public static double RAMP_RATE = 0.5;
 
-            public static int CURRENT_LIMIT = 40; //50
+            public static int CURRENT_LIMIT = 40; // 50
 
             public static class PIDF {
                 public static double P = 0.05;
@@ -98,12 +98,15 @@ public final class Constants extends AutoConfigurable {
             public static HashMap<ForearmState, Double> POSITIONS = new HashMap<>() {
                 {
                     put(ForearmState.Intermediate, 52.8);
-                    put(ForearmState.GroundIntake, 46.9);
+                    put(ForearmState.GroundIntakeCube, 46.9);
+                    put(ForearmState.GroundIntakeCone, 79.52);// 52
+                    // for
+                    // cone
                     put(ForearmState.DoubleSubstation, -73.25);
                     put(ForearmState.SingleSubstation, 28.09);
                     put(ForearmState.Base1Hybrid, 25.3);
                     put(ForearmState.Store, 11.9);
-                    put(ForearmState.Base4Cone2, -126.62);
+                    put(ForearmState.Base4Cone2, -134.62);
                     put(ForearmState.Base4Cube2, -120.08);
                     put(ForearmState.Base4Cone1, -112.7);
                     put(ForearmState.Base4Cube1, -5.3);
@@ -139,11 +142,11 @@ public final class Constants extends AutoConfigurable {
             public static HashMap<WristState, Double> POSITIONS = new HashMap<>() {
                 {
                     put(WristState.Store, -136.0);
-                    put(WristState.GroundCube, 40.8);
-                    put(WristState.GroundCone, 66.38);
+                    put(WristState.GroundCube, 24.0);// 40.8
+                    put(WristState.GroundCone, 19.7);// 66.38
                     put(WristState.Base2Cone1, -4.8);
                     put(WristState.Base4Cone1, 135.5);
-                    put(WristState.Base4Cone2, 66.55);
+                    put(WristState.Base4Cone2, 60.00);
                     put(WristState.Base4Cube1, -104.5);
                     put(WristState.Base4Cube2, 58.2);
                     put(WristState.DoubleSubCube, 56.06);
@@ -160,16 +163,16 @@ public final class Constants extends AutoConfigurable {
 
             public static HashMap<ClawState, Double> SPEEDS = new HashMap<>() {
                 {
-                    put(ClawState.Idle, 0.0);
-                    put(ClawState.IntakeCone, 0.5);//0.5
-                    put(ClawState.IntakeCube, -0.25);
-                    put(ClawState.OuttakeCone, -0.5);//-0.5
-                    put(ClawState.OuttakeCube, 0.25);
+                    put(ClawState.Idle, 0.1);
+                    put(ClawState.IntakeCone, 0.75);// 0.5
+                    put(ClawState.IntakeCube, 0.5);
+                    put(ClawState.OuttakeCone, -0.75);// -0.5
+                    put(ClawState.OuttakeCube, -0.5);
                 }
             };
 
-            public static int CURRENT_LIMIT = 30;
-            public static double CURRENT_CUTOFF = 28.0;
+            public static int CURRENT_LIMIT = 40;
+            public static double CURRENT_CUTOFF = 38.0;
             public static double CURRENT_CUTOFF_DURATION = 0.25;
         }
 

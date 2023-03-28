@@ -253,11 +253,11 @@ public final class OI {
     }
 
     public static BooleanEvent armBase2Cone1() {
-        return leftButtonBoard.button(4, eventLoop).and(() -> coneMode);
+        return leftButtonBoard.button(5, eventLoop).and(() -> coneMode);
     }
 
     public static BooleanEvent armBase2Cube1() {
-        return leftButtonBoard.button(4, eventLoop).and(() -> !coneMode);
+        return leftButtonBoard.button(5, eventLoop).and(() -> !coneMode);
     }
 
     public static BooleanEvent armBase1Hybrid() {
@@ -266,7 +266,7 @@ public final class OI {
 
     public static BooleanEvent clawIntakeCone() {
         // return leftButtonBoard.button(21, eventLoop);
-        return leftButtonBoard.axisGreaterThan(0, -0.1, eventLoop).and(() -> coneMode);
+        return leftButtonBoard.axisLessThan(0, -0.1, eventLoop).and(() -> coneMode);
     }
 
     public static BooleanEvent clawIntakeCube() {
@@ -281,7 +281,7 @@ public final class OI {
 
     public static BooleanEvent clawOuttakeCube() {
         // return leftButtonBoard.button(20, eventLoop);
-        return leftButtonBoard.axisLessThan(0, -0.1, eventLoop).and(() -> !coneMode);
+        return leftButtonBoard.axisGreaterThan(0, 0.1, eventLoop).and(() -> !coneMode);
     }
 
     public static BooleanEvent clawIdle() {
