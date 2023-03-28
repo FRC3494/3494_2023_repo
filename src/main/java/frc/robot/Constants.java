@@ -76,12 +76,22 @@ public final class Constants extends AutoConfigurable {
             public static int MOTOR_CHANNEL = 5;
             public static double MOTOR_REDUCTION = (1.0 / 5.0) * (1.0 / 4.0) * (1.0 / 3.0) * (10.0 / 40.0);
 
+            public static double MAX_SPEED = 0.5;
+            public static double MIN_SPEED = -0.5;
+
+            public static float MIN_POSITION = -86.241f; //135.5
+            public static float MAX_POSITION = 85.099f; //-136.0
+
             public static double TARGET_POSITION_TOLERANCE = 2; // degrees
 
+            public static double RAMP_RATE = 0.5;
+
+            public static int CURRENT_LIMIT = 40; //50
+
             public static class PIDF {
-                public static double P = 0.1;
+                public static double P = 0.05;
                 public static double I = 0;
-                public static double D = 0;
+                public static double D = 0.075;
                 public static double F = 0;
             }
 
@@ -92,7 +102,7 @@ public final class Constants extends AutoConfigurable {
                     put(ForearmState.DoubleSubstation, -73.25);
                     put(ForearmState.SingleSubstation, 28.09);
                     put(ForearmState.Base1Hybrid, 25.3);
-                    put(ForearmState.Store,11.9);
+                    put(ForearmState.Store, 11.9);
                     put(ForearmState.Base4Cone2, -126.62);
                     put(ForearmState.Base4Cube2, -120.08);
                     put(ForearmState.Base4Cone1, -112.7);
@@ -107,7 +117,17 @@ public final class Constants extends AutoConfigurable {
             public static int MOTOR_CHANNEL = 9;
             public static double MOTOR_REDUCTION = (1.0 / 5.0) * (1.0 / 5.0) * (18.0 / 60.0);
 
+            public static double MAX_SPEED = 0.3;
+            public static double MIN_SPEED = -0.3;
+
+            public static float MIN_POSITION = -33.403f;
+            public static float MAX_POSITION = 37.905f;
+
             public static double TARGET_POSITION_TOLERANCE = 2; // degrees
+
+            public static double RAMP_RATE = 0.5;
+
+            public static int CURRENT_LIMIT = 40;
 
             public static class PIDF {
                 public static double P = 0.1;
@@ -302,7 +322,7 @@ public final class Constants extends AutoConfigurable {
         public static final int SECONDARY_RIGHT_CONTROLLER_PORT = 2;
 
         public static final double MAX_DRIVE_SPEED = 3; // m/s
-        public static final double MAX_TURN_SPEED = .8; // rad/s
+        public static final double MAX_TURN_SPEED = 5.5; // rad/s
         public static final double DPAD_SPEED = 0.1;
 
         public static final double FOREARM_FINE_ADJUST_SPEED = 0.8;

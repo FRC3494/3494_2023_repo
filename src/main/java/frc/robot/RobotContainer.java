@@ -88,7 +88,7 @@ public class RobotContainer {
 
         // Configure default commands
         // drivetrain.setDefaultCommand(new AutoLineUp(drivetrain));
-        drivetrain.setDefaultCommand(new TeleopDrive(drivetrain));
+        drivetrain.setDefaultCommand(new TeleopDrive(drivetrain, forearm, wrist));
         // drivetrain.setDefaultCommand(new driveForward(drivetrain));
         pneumatics.setDefaultCommand(new RunPneumatics(pneumatics));
 
@@ -228,7 +228,16 @@ public class RobotContainer {
         // ParkTest("Park Test", (container) -> pathFollow(container, "ParkTest")),
         // StarOfDeath("Star of Death", (container) -> pathFollow(container, "Star Of
         // Death")),
-        UrMom("ur mom lol", (container) -> pathFollow(container, "ur mom"));
+        UrMom("ur mom lol", (container) -> pathFollow(container, "ur mom")),
+        ArmTest("arm test", (container) -> new SequentialCommandGroup(
+            new AutoSetArm(container.arm, ArmPosition.Base2Cube1),
+            new WaitCommand(3),
+            new AutoSetArm(container.arm, ArmPosition.Base1Hybrid),
+            new WaitCommand(3),
+            new AutoSetArm(container.arm, ArmPosition.Base2Cube1),
+            new WaitCommand(3),
+            new AutoSetArm(container.arm, ArmPosition.Store)
+        ));
 
         String displayName;
         Function<RobotContainer, Command> commandFunction;

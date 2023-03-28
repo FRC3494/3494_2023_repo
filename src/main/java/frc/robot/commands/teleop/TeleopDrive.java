@@ -3,23 +3,42 @@ package frc.robot.commands.teleop;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.OI;
 import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.forearm.Forearm;
+import frc.robot.subsystems.wrist.Wrist;
 
 public class TeleopDrive extends CommandBase {
 	Drivetrain drivetrain;
 
-	public TeleopDrive(Drivetrain drivetrain) {
+    Forearm forearm;
+    Wrist wrist;
+
+	public TeleopDrive(Drivetrain drivetrain, Forearm forearm, Wrist wrist) {
 		this.drivetrain = drivetrain;
+        this.forearm = forearm;
+        this.wrist = wrist;
+
 		addRequirements(drivetrain);
 	}
+
+    @Override
+    public void initialize() {
+        //forearm.enableDirectDrive();
+        //wrist.enableDirectDrive();
+    }
 	
 	@Override
 	public void execute() {
 		drivetrain.drive(OI.teleopXVelocity(), OI.teleopYVelocity(), -OI.teleopTurnVelocity(), true);
+
+        //forearm.directDrive((OI.teleopXVelocity() / 3) * 0.6);
+        //wrist.directDrive((OI.teleopTurnVelocity() / 3) * 0.6);
 	}
 
 	@Override
 	public void end(boolean interrupted) {
 		drivetrain.drive(0, 0, 0, false);
+        //forearm.disableDirectDrive();
+        //wrist.disableDirectDrive();
 	}
 
 	@Override
