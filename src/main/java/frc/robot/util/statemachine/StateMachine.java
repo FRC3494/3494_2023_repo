@@ -6,56 +6,60 @@ import java.util.List;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public abstract class StateMachine<T extends StateMachineState> extends SubsystemBase {
-    List<T> nodes;
-    List<StateConnection<T>> connections;
+public abstract class StateMachine<TState extends StateMachineState> extends SubsystemBase {
+    List<TState> nodes;
+    List<StateConnection<TState>> connections;
 
-    HashMap<T, HashMap<T, Double>> adjacencyMatrix = new HashMap<>();
+    HashMap<TState, HashMap<TState, Double>> adjacencyMatrix = new HashMap<>();
 
-    T currentNode;
-    T targetNode;
+    TState currentNode;
+    TState targetNode;
 
-    List<T> history = new ArrayList<>();
-    List<T> queue = new ArrayList<>();
+    List<TState> history = new ArrayList<>();
+    List<TState> queue = new ArrayList<>();
 
-    List<T> currentSequence = new ArrayList<>();
+    List<TState> currentSequence = new ArrayList<>();
     boolean sequenceChanged = false;
 
-    IStateControllable<T>[] controllables;
+    IStateControllable<TState>[] controllables;
 
-    public StateMachine(List<StateConnection<T>> connections, T initialState) {
+    public StateMachine(List<StateConnection<TState>> connections, TState initialState) {
         init(connections, initialState);
     }
 
-    public void init(List<StateConnection<T>> connections, T initialState) {
-        //this.nodes = nodes;
+    public void init(List<StateConnection<TState>> connections, TState initialState) {
+        // this.nodes = nodes;
         this.connections = connections;
 
         this.nodes = new ArrayList<>();
 
-        for (StateConnection<T> connection : connections) {
+        for (StateConnection<TState> connection : connections) {
             boolean foundFrom = false;
             boolean foundTo = false;
 
-            for (T node : nodes) {
-                if (node.equals(connection.from)) foundFrom = true;
-                if (node.equals(connection.to)) foundTo = true;
+            for (TState node : nodes) {
+                if (node.equals(connection.from))
+                    foundFrom = true;
+                if (node.equals(connection.to))
+                    foundTo = true;
             }
 
-            if (!foundFrom) nodes.add(connection.from);
-            if (!foundTo && !connection.from.equals(connection.to)) nodes.add(connection.to);
+            if (!foundFrom)
+                nodes.add(connection.from);
+            if (!foundTo && !connection.from.equals(connection.to))
+                nodes.add(connection.to);
         }
 
         setTarget(initialState, true);
 
-        //lord help me
-        for (T fromState : nodes) {
-            adjacencyMatrix.put(fromState, new HashMap<T, Double>());
+        // lord help me
+        for (TState fromState : nodes) {
+            adjacencyMatrix.put(fromState, new HashMap<TState, Double>());
 
-            for (T toState : nodes) {
+            for (TState toState : nodes) {
                 double distance = -1;
 
-                for (StateConnection<T> connection : connections) {
+                for (StateConnection<TState> connection : connections) {
                     if (connection.from.equals(fromState) && connection.to.equals(toState)) {
                         distance = 1;
                         break;
@@ -67,38 +71,41 @@ public abstract class StateMachine<T extends StateMachineState> extends Subsyste
         }
     }
 
-    T preregisteredEquivalent(T similarState) {
-        for (T checkingState : nodes) {
-            if (checkingState.equals(similarState)) return checkingState;
+    TState preregisteredEquivalent(TState similarState) {
+        for (TState checkingState : nodes) {
+            if (checkingState.equals(similarState))
+                return checkingState;
         }
 
         return null;
     }
 
     @SuppressWarnings("unchecked") // java is a hell language
-    public void registerControllables(IStateControllable<T> ...controllables) {
+    public void registerControllables(IStateControllable<TState>... controllables) {
         this.controllables = controllables;
 
         nextState(currentNode);
     }
 
-    void nextState(T state) {
+    void nextState(TState state) {
         currentNode = state;
 
-        for (IStateControllable<T> controllable : controllables) { 
+        for (IStateControllable<TState> controllable : controllables) {
             controllable.setState(state);
         }
     }
 
-    public void setTarget(T target) {
+    public void setTarget(TState target) {
         setTarget(target, false);
     }
 
-    void setTarget(T target, boolean initial) {
-        T normalizedState = preregisteredEquivalent(target);
+    void setTarget(TState target, boolean initial) {
+        TState normalizedState = preregisteredEquivalent(target);
 
-        if (initial) currentNode = normalizedState;
-        else history.add(targetNode);
+        if (initial)
+            currentNode = normalizedState;
+        else
+            history.add(targetNode);
 
         targetNode = normalizedState;
 
@@ -107,12 +114,14 @@ public abstract class StateMachine<T extends StateMachineState> extends Subsyste
 
     @Override
     public void periodic() {
-        if (currentNode == targetNode) return;
+        if (currentNode == targetNode)
+            return;
 
         boolean arrived = true;
 
-        for (IStateControllable<T> controllable : controllables) { 
-            if (!controllable.isAt(currentNode)) arrived = false;
+        for (IStateControllable<TState> controllable : controllables) {
+            if (!controllable.isAt(currentNode))
+                arrived = false;
 
             if (controllable.crashDetected()) {
                 undo();
@@ -135,22 +144,23 @@ public abstract class StateMachine<T extends StateMachineState> extends Subsyste
 
     class SeekResult {
         double distance = -1;
-        List<T> sequence = new ArrayList<>();
+        List<TState> sequence = new ArrayList<>();
     }
 
     class SeekContext {
         double distance = 0;
-        List<T> sequence = new ArrayList<>();
+        List<TState> sequence = new ArrayList<>();
     }
 
     void recomputeSequence() {
         currentSequence.clear();
 
-        if (currentNode.equals(targetNode)) return;
-        
-        SeekResult result = seekFrom(currentNode, new SeekContext() {{
-            sequence.add(currentNode);
-        }});
+        if (currentNode.equals(targetNode))
+            return;
+        SeekResult s = new SeekResult();
+        s.sequence = find(currentNode);
+
+        SeekResult result = s;
 
         if (result.distance >= 0) {
             currentSequence = result.sequence;
@@ -158,22 +168,30 @@ public abstract class StateMachine<T extends StateMachineState> extends Subsyste
         }
     }
 
-    boolean seekFrom(T node, SeekContext seekContext) {
-        if (nodes.contains(targetNode)) {
-            queue.push(targetNode);
-            queue.push(node);
-            return true;
-}
-        
+    ArrayList<TState> find(TState startingNode) {
+        for (TState searchingNode : nodes) {
+            boolean targetNodeExistsInChildren = adjacencyMatrix.get(startingNode).get(searchingNode) >= 0.0;
 
-        if (!seekContext.sequence.contains(possibleNode)) {
-            SeekResult option = seekFrom(possibleNode, new SeekContext() {{
-                distance = seekContext.distance + possibleDistance;
+            if (targetNodeExistsInChildren) {
+                if (searchingNode.equals(targetNode)) {
+                    ArrayList<TState> sequence = new ArrayList<TState>();
+                    sequence.add(searchingNode);
+                    return sequence;
+                }
+            }
 
-                sequence.addAll(seekContext.sequence);
-                sequence.add(possibleNode);
-            }});
+            for (TState searchingNodeB : nodes) {
+                if (adjacencyMatrix.get(searchingNode).get(searchingNodeB) >= 0.0) {
+                    if (searchingNodeB.equals(targetNode)) {
+                        ArrayList<TState> sequence = new ArrayList<TState>();
+                        sequence.add(searchingNode);
+                        sequence.add(searchingNodeB);
+                        return sequence;
+                    }
+                }
+            }
         }
+        return new ArrayList<TState>();
     }
 
     public void undo() {
