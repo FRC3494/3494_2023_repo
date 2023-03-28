@@ -161,8 +161,8 @@ public abstract class StateMachine<TState extends StateMachineState> extends Sub
         s.sequence = find(currentNode);
 
         SeekResult result = s;
-
-        //if (result.distance >= 0) {
+        System.out.println(result.sequence);
+        // if (result.distance >= 0) {
         if (result.sequence.size() > 0) {
             currentSequence = result.sequence;
             sequenceChanged = true;

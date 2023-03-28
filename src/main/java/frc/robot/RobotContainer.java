@@ -82,7 +82,7 @@ public class RobotContainer {
         // autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
 
         autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
-        
+
         // Configure the button bindings
         configureButtonBindings();
 
@@ -109,18 +109,24 @@ public class RobotContainer {
                 Constants.RobotContainer.PathPlanner.PATH_CONSTRAINTS);
         System.out.println("Running An Auto");
         return new FollowPath(container.drivetrain, loadedPath, container.robotPosition, true);
-       /* return new FollowPathWithEvents(new FollowPath(container.drivetrain, loadedPath, container.robotPosition),
-                loadedPath.getMarkers(),
-                Constants.RobotContainer.PathPlanner.PATH_EVENTS);*/
+        /*
+         * return new FollowPathWithEvents(new FollowPath(container.drivetrain,
+         * loadedPath, container.robotPosition),
+         * loadedPath.getMarkers(),
+         * Constants.RobotContainer.PathPlanner.PATH_EVENTS);
+         */
     }
 
     public static Command pathFollow(RobotContainer container, String pathName, double targetSpeed) {
         PathPlannerTrajectory loadedPath = PathPlanner.loadPath(pathName, new PathConstraints(targetSpeed,
-            Constants.RobotContainer.PathPlanner.PATH_CONSTRAINTS.maxAcceleration));
+                Constants.RobotContainer.PathPlanner.PATH_CONSTRAINTS.maxAcceleration));
         return new FollowPath(container.drivetrain, loadedPath, container.robotPosition, true);
-        /*return new FollowPathWithEvents(new FollowPath(container.drivetrain, loadedPath, container.robotPosition),
-                loadedPath.getMarkers(),
-                Constants.RobotContainer.PathPlanner.PATH_EVENTS);*/
+        /*
+         * return new FollowPathWithEvents(new FollowPath(container.drivetrain,
+         * loadedPath, container.robotPosition),
+         * loadedPath.getMarkers(),
+         * Constants.RobotContainer.PathPlanner.PATH_EVENTS);
+         */
     }
 
     public enum Autos {
@@ -171,13 +177,12 @@ public class RobotContainer {
                     new WaitCommand(0.5),
                     new ParallelCommandGroup(
                             new ParallelCommandGroup(
-                                new AutoSetArm(container.arm, ArmPosition.Store),
-                                new AutoSetClaw(container.claw, ClawState.Idle)),
+                                    new AutoSetArm(container.arm, ArmPosition.Store),
+                                    new AutoSetClaw(container.claw, ClawState.Idle)),
                             new SequentialCommandGroup(
-                                pathFollow(container, "LeaveCom"),
-                                new WaitCommand(0.3),
-                                AutoBalanceGroupYAxis.get(container.drivetrain))
-                            ));
+                                    pathFollow(container, "LeaveCom"),
+                                    new WaitCommand(0.3),
+                                    AutoBalanceGroupYAxis.get(container.drivetrain))));
         }),
         PlacePickupBalance("Place then Pickup Cube then Balance", (container) -> {
             return new SequentialCommandGroup(
@@ -186,21 +191,21 @@ public class RobotContainer {
                     new WaitCommand(0.5),
                     new ParallelCommandGroup(
                             new AutoSetArm(container.arm, ArmPosition.GroundIntakeCube),
-                            pathFollow(container, "LeaveComPickUp")
-                    ),
+                            pathFollow(container, "LeaveComPickUp")),
                     new WaitCommand(0.2),
                     new AutoSetClaw(container.claw, ClawState.IntakeCone),
                     new WaitCommand(0.5),
                     new ParallelCommandGroup(
                             new AutoSetArm(container.arm, ArmPosition.Base4Cube2),
-                            pathFollow(container, "LeaveComPickUpReturn")
-                    ),
+                            pathFollow(container, "LeaveComPickUpReturn")),
                     new AutoSetClaw(container.claw, ClawState.OuttakeCone),
                     pathFollow(container, "Backup")
-                    /*new WaitCommand(0.2),
-                    new AutoSetClaw(container.claw, ClawState.Open),
-                    new WaitCommand(0.5),
-                    new AutoSetArm(container.arm, ArmPosition.Store)*/
+            /*
+             * new WaitCommand(0.2),
+             * new AutoSetClaw(container.claw, ClawState.Open),
+             * new WaitCommand(0.5),
+             * new AutoSetArm(container.arm, ArmPosition.Store)
+             */
             );
         }),
         PlacePickupPlace("Place then Pickup Cube then Place", (container) -> {
@@ -210,16 +215,17 @@ public class RobotContainer {
                     new WaitCommand(0.5),
                     new ParallelCommandGroup(
                             new AutoSetArm(container.arm, ArmPosition.GroundIntakeCube),
-                            pathFollow(container, "LeaveComPickUp")
-                    ),
+                            pathFollow(container, "LeaveComPickUp")),
                     new WaitCommand(0.2),
                     new AutoSetClaw(container.claw, ClawState.IntakeCone),
                     new WaitCommand(0.5),
                     pathFollow(container, "FromPickup")
-                    /*new WaitCommand(0.2),
-                    new AutoSetClaw(container.claw, ClawState.Open),
-                    new WaitCommand(0.5),
-                    new AutoSetArm(container.arm, ArmPosition.Store)*/
+            /*
+             * new WaitCommand(0.2),
+             * new AutoSetClaw(container.claw, ClawState.Open),
+             * new WaitCommand(0.5),
+             * new AutoSetArm(container.arm, ArmPosition.Store)
+             */
             );
         }),
         Turn90("Turn 90", (container) -> pathFollow(container, "Turn90")),
@@ -230,14 +236,13 @@ public class RobotContainer {
         // Death")),
         UrMom("ur mom lol", (container) -> pathFollow(container, "ur mom")),
         ArmTest("arm test", (container) -> new SequentialCommandGroup(
-            new AutoSetArm(container.arm, ArmPosition.Base2Cube1),
-            new WaitCommand(3),
-            new AutoSetArm(container.arm, ArmPosition.Base1Hybrid),
-            new WaitCommand(3),
-            new AutoSetArm(container.arm, ArmPosition.Base2Cube1),
-            new WaitCommand(3),
-            new AutoSetArm(container.arm, ArmPosition.Store)
-        ));
+                new AutoSetArm(container.arm, ArmPosition.Base2Cube1),
+                new WaitCommand(3),
+                new AutoSetArm(container.arm, ArmPosition.Base1Hybrid),
+                new WaitCommand(3),
+                new AutoSetArm(container.arm, ArmPosition.Base2Cube1),
+                new WaitCommand(3),
+                new AutoSetArm(container.arm, ArmPosition.Store)));
 
         String displayName;
         Function<RobotContainer, Command> commandFunction;
@@ -299,10 +304,9 @@ public class RobotContainer {
         fieldTab.addDouble("NavX Pitch", () -> NavX.getPitch()).withPosition(8, 0);
         fieldTab.addDouble("NavX Roll", () -> NavX.getRoll()).withPosition(8, 1);
         fieldTab.addDouble("NavX Yaw", () -> NavX.getYaw()).withPosition(8, 2);
-        
+
         fieldTab.addDouble("Forearm Position", () -> forearm.getAngle()).withPosition(8, 3);
         fieldTab.addDouble("Wrist Position", () -> wrist.getAngle()).withPosition(8, 4);
-
 
         mainTab.add(camera.getCamera()).withPosition(2, 0).withSize(4, 4);
 
@@ -348,34 +352,45 @@ public class RobotContainer {
         OI.printOdometryEvent().rising().ifHigh(() -> {
             System.out.println("Current Odo " + drivetrain.getPose().getX() + ":" + drivetrain.getPose().getY());
         });
-        
+
         OI.armUndo().rising().ifHigh(() -> arm.undo());
-        
+
         OI.armStore().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.Store));
         OI.armGroundIntakeCone().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.GroundIntakeCone));
         OI.armGroundIntakeCube().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.GroundIntakeCube));
         OI.armDoubleSubstationCone().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.DoubleSubstationCone));
-        OI.armDoubleSubstationCube().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.DoubleSubstationCube));
+        OI.armDoubleSubstationCube().rising().ifHigh(() -> {
+            arm.toKeyPosition(ArmPosition.DoubleSubstationCube);
+            System.out.println("going To Double Sub");
+        });
         OI.armSingleSubstation().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.SingleSubstation));
-        OI.armBase4Cone2().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.Base4Cone2));
-        OI.armBase4Cube2().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.Base4Cube2));
+        OI.armBase4Cone2().rising().ifHigh(() -> {
+            System.out.println("Going to cone2");
+            arm.toKeyPosition(ArmPosition.Base4Cone2);
+        });
+        OI.armBase4Cube2().rising().ifHigh(() -> {
+            System.out.println("going to CUBE 2 ---------------------------------------------------");
+            arm.toKeyPosition(ArmPosition.Base4Cube2);
+        });
         OI.armBase4Cone1().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.Base4Cone1));
         OI.armBase4Cube1().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.Base4Cube1));
         OI.armBase2Cone1().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.Base2Cone1));
         OI.armBase2Cube1().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.Base2Cube1));
         OI.armBase1Hybrid().rising().ifHigh(() -> arm.toKeyPosition(ArmPosition.Base1Hybrid));
-        
+
         OI.clawIntakeCone().rising().ifHigh(() -> claw.set(ClawState.IntakeCone));
         OI.clawIntakeCube().rising().ifHigh(() -> claw.set(ClawState.IntakeCube));
         OI.clawOuttakeCone().rising().ifHigh(() -> claw.set(ClawState.OuttakeCone));
         OI.clawOuttakeCube().rising().ifHigh(() -> claw.set(ClawState.OuttakeCube));
-        OI.clawIdle().rising().ifHigh(()->claw.set(ClawState.Idle));
+        OI.clawIdle().rising().ifHigh(() -> claw.set(ClawState.Idle));
 
         OI.ledsIndicateCone().rising().ifHigh(() -> {
+            System.out.println(OI.coneMode);
             leds.setPattern(LedPattern.CONE);
             OI.coneMode = true;
         });
         OI.ledsIndicateCube().rising().ifHigh(() -> {
+            System.out.println(OI.coneMode);
             leds.setPattern(LedPattern.CUBE);
             OI.coneMode = false;
         });

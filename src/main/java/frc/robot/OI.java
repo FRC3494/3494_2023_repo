@@ -207,9 +207,9 @@ public final class OI {
 
     public static BooleanEvent armUndo() {
         return rightButtonBoard.button(3, eventLoop);
-             //   .or(rightButtonBoard.button(2, eventLoop))
-             //   .or(rightButtonBoard.button(3, eventLoop))
-             //   .or(rightButtonBoard.button(4, eventLoop));
+        // .or(rightButtonBoard.button(2, eventLoop))
+        // .or(rightButtonBoard.button(3, eventLoop))
+        // .or(rightButtonBoard.button(4, eventLoop));
     }
 
     public static BooleanEvent armStore() {
@@ -217,19 +217,19 @@ public final class OI {
     }
 
     public static BooleanEvent armGroundIntakeCone() {
-        return leftButtonBoard.button(7, eventLoop).and(()->coneMode);
+        return leftButtonBoard.button(7, eventLoop).and(() -> coneMode);
     }
 
     public static BooleanEvent armGroundIntakeCube() {
-        return leftButtonBoard.button(7, eventLoop).and(()->!coneMode);
+        return leftButtonBoard.button(7, eventLoop).and(() -> !coneMode);
     }
 
     public static BooleanEvent armDoubleSubstationCone() {
-        return leftButtonBoard.button(9, eventLoop).and(()->coneMode);
+        return leftButtonBoard.button(9, eventLoop).and(() -> coneMode);
     }
 
     public static BooleanEvent armDoubleSubstationCube() {
-        return leftButtonBoard.button(9, eventLoop).and(()->!coneMode);
+        return leftButtonBoard.button(9, eventLoop).and(() -> !coneMode);
     }
 
     public static BooleanEvent armSingleSubstation() {
@@ -237,27 +237,27 @@ public final class OI {
     }
 
     public static BooleanEvent armBase4Cone2() {
-        return leftButtonBoard.button(1, eventLoop).and(()->coneMode);
+        return leftButtonBoard.button(1, eventLoop).and(() -> coneMode);
     }
 
     public static BooleanEvent armBase4Cube2() {
-        return leftButtonBoard.button(3, eventLoop).and(()->!coneMode);
+        return leftButtonBoard.button(1, eventLoop).and(() -> !coneMode);
     }
 
     public static BooleanEvent armBase4Cone1() {
-        return leftButtonBoard.button(2, eventLoop).and(()->coneMode);
+        return leftButtonBoard.button(2, eventLoop).and(() -> coneMode);
     }
 
     public static BooleanEvent armBase4Cube1() {
-        return leftButtonBoard.button(2, eventLoop).and(()->!coneMode);
+        return leftButtonBoard.button(2, eventLoop).and(() -> !coneMode);
     }
 
     public static BooleanEvent armBase2Cone1() {
-        return leftButtonBoard.button(4, eventLoop).and(()->coneMode);
+        return leftButtonBoard.button(4, eventLoop).and(() -> coneMode);
     }
 
     public static BooleanEvent armBase2Cube1() {
-        return leftButtonBoard.button(4, eventLoop).and(()->!coneMode);
+        return leftButtonBoard.button(4, eventLoop).and(() -> !coneMode);
     }
 
     public static BooleanEvent armBase1Hybrid() {
@@ -266,24 +266,25 @@ public final class OI {
 
     public static BooleanEvent clawIntakeCone() {
         // return leftButtonBoard.button(21, eventLoop);
-        return leftButtonBoard.axisGreaterThan(0, -0.1, eventLoop).and(()->coneMode);
+        return leftButtonBoard.axisGreaterThan(0, -0.1, eventLoop).and(() -> coneMode);
     }
 
     public static BooleanEvent clawIntakeCube() {
         // return leftButtonBoard.button(20, eventLoop);
-        return leftButtonBoard.axisLessThan(0, -0.1, eventLoop).and(()->!coneMode);
+        return leftButtonBoard.axisLessThan(0, -0.1, eventLoop).and(() -> !coneMode);
     }
 
     public static BooleanEvent clawOuttakeCone() {
         // return leftButtonBoard.button(21, eventLoop);
-        return leftButtonBoard.axisGreaterThan(0, 0.1, eventLoop).and(()->coneMode);
+        return leftButtonBoard.axisGreaterThan(0, 0.1, eventLoop).and(() -> coneMode);
     }
 
     public static BooleanEvent clawOuttakeCube() {
         // return leftButtonBoard.button(20, eventLoop);
-        return leftButtonBoard.axisLessThan(0, -0.1, eventLoop).and(()->!coneMode);
+        return leftButtonBoard.axisLessThan(0, -0.1, eventLoop).and(() -> !coneMode);
     }
-    public static BooleanEvent clawIdle(){
+
+    public static BooleanEvent clawIdle() {
         return leftButtonBoard.axisGreaterThan(0, -0.1, eventLoop).and(leftButtonBoard.axisLessThan(0, 0.1, eventLoop));
     }
 
@@ -296,7 +297,6 @@ public final class OI {
         // return leftButtonBoard.button(20, eventLoop);
         return rightButtonBoard.getRawAxis(1);
     }
-
 
     public static BooleanEvent ledsIndicateCone() {
         // return leftButtonBoard.button(20, eventLoop);
