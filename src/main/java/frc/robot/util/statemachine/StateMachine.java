@@ -162,7 +162,8 @@ public abstract class StateMachine<TState extends StateMachineState> extends Sub
 
         SeekResult result = s;
 
-        if (result.distance >= 0) {
+        //if (result.distance >= 0) {
+        if (result.sequence.size() > 0) {
             currentSequence = result.sequence;
             sequenceChanged = true;
         }

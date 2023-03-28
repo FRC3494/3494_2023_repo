@@ -54,10 +54,12 @@ public class TeleopDrive extends CommandBase {
 	public void execute() {
 		drivetrain.drive(OI.teleopXVelocity(), OI.teleopYVelocity(), -OI.teleopTurnVelocity(), true);
 
-        if (Math.abs(OI.forearmFineAdjust()) >= 0.1) {
+        /*if (Math.abs(OI.forearmFineAdjust()) >= 0.1) {
             forearm.enableDirectDrive();
-            forearm.directDrive(OI.forearmFineAdjust() * Constants.Subsystems.Forearm.);
-        }
+            //forearm.directDrive(OI.forearmFineAdjust() * Constants.Subsystems.Forearm.);
+        } else {
+            forearm.disableDirectDrive();
+        }*/
 
         //forearm.directDrive((OI.teleopXVelocity() / 3) * 0.6);
         //wrist.directDrive((OI.teleopTurnVelocity() / 3) * 0.6);
