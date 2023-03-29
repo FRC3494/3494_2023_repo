@@ -337,4 +337,9 @@ public final class Constants extends AutoConfigurable {
         public static final double FOREARM_FINE_ADJUST_SPEED = 0.15;
         public static final double WRIST_FINE_ADJUST_SPEED = 0.15;
     }
+
+    public static final class OakDCameraProps {
+        public static final String UDP_IP = "127.0.0.1";
+        public static final int UDP_PORT = 5005;
+    }
 }
