@@ -79,6 +79,9 @@ public final class Constants extends AutoConfigurable {
             public static double MAX_SPEED = 0.5;
             public static double MIN_SPEED = -0.5;
 
+            public static double SLOW_MAX_SPEED = 0.15;
+            public static double SLOW_MIN_SPEED = -0.15;
+
             public static float MIN_POSITION = -86.241f; // 135.5
             public static float MAX_POSITION = 89.505f; // -136.0
 

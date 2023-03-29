@@ -7,16 +7,32 @@ import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.util.statemachine.StateMachine;
 
 public class Arm extends StateMachine<ArmState> {
+    Forearm forearm;
+    Shoulder shoulder;
+
     @SuppressWarnings("unchecked") // java is a hell language
     public Arm(Shoulder shoulder, Forearm forearm, Wrist wrist) {
         super(
             ArmConnections.connections,
             Constants.Subsystems.Arm.INITIAL_STATE);
 
+        this.forearm = forearm;
+        this.shoulder = shoulder;
+
         registerControllables(shoulder, forearm, wrist);
     }
 
     public void toKeyPosition(ArmPosition keyPosition) {
         setTarget(Constants.Subsystems.Arm.KEY_POSITIONS.get(keyPosition));
+    }
+
+    @Override
+    public void periodic() {
+        super.periodic();
+
+        if (shoulder.needsSlow()) 
+            forearm.slowMode(true);
+        else 
+            forearm.slowMode(false);
     }
 }

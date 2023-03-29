@@ -29,8 +29,7 @@ public class Forearm extends SubsystemBase implements IStateControllable<ArmStat
         motor = new CANSparkMax(
                 Constants.Subsystems.Forearm.MOTOR_CHANNEL, MotorType.kBrushless);
 
-        motor.getPIDController().setOutputRange(Constants.Subsystems.Forearm.MIN_SPEED,
-                Constants.Subsystems.Forearm.MAX_SPEED);// was 25
+        slowMode(false);
         motor.getPIDController().setP(Constants.Subsystems.Forearm.PIDF.P);
         motor.getPIDController().setI(Constants.Subsystems.Forearm.PIDF.I);
         motor.getPIDController().setD(Constants.Subsystems.Forearm.PIDF.D);
@@ -148,5 +147,12 @@ public class Forearm extends SubsystemBase implements IStateControllable<ArmStat
 
     public boolean crashDetected() {
         return false;
+    }
+
+    public void slowMode(boolean slow) {
+        if (!slow)
+            motor.getPIDController().setOutputRange(Constants.Subsystems.Forearm.MIN_SPEED, Constants.Subsystems.Forearm.MAX_SPEED);
+        else 
+            motor.getPIDController().setOutputRange(Constants.Subsystems.Forearm.SLOW_MIN_SPEED, Constants.Subsystems.Forearm.SLOW_MAX_SPEED);
     }
 }

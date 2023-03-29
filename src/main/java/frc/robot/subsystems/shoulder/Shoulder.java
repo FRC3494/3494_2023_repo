@@ -35,6 +35,12 @@ public class Shoulder extends SubsystemBase implements IStateControllable<ArmSta
         setState(Constants.Subsystems.Arm.INITIAL_STATE);
     }
 
+    @Override
+    public void periodic() {
+        if (currentState != null && isAt(currentState))
+            shouldWeSlow = false;
+    }
+
     void setTopPiston(Value value) {
         topPiston.set((value == Value.kForward) ? Value.kForward : Value.kReverse);
     }
@@ -47,26 +53,42 @@ public class Shoulder extends SubsystemBase implements IStateControllable<ArmSta
     long lastShoulderActuationTime = System.currentTimeMillis();
 
     public void setState(ArmState newState) {
-        switch (newState.shoulderState) {
+        setState(newState.shoulderState);
+    }
+
+    boolean shouldWeSlow = false;
+
+    public void setState(ShoulderState newState) {
+        switch (newState) {
             case Base1:
                 setTopPiston(Value.kReverse);
                 setBottomPiston(Value.kReverse);
+
+                shouldWeSlow = false;
                 break;
             case Base2:
                 setTopPiston(Value.kReverse);
                 setBottomPiston(Value.kForward);
+
+                shouldWeSlow = false;
                 break;
             case Base3:
                 setTopPiston(Value.kForward);
                 setBottomPiston(Value.kReverse);
+
+                shouldWeSlow = true;
                 break;
             case Base4:
                 setTopPiston(Value.kForward);
                 setBottomPiston(Value.kForward);
+
+                shouldWeSlow = true;
                 break;
         }
 
-        currentState = newState.shoulderState;
+        if (currentState == newState) shouldWeSlow = false;
+
+        currentState = newState;
 
         lastShoulderActuationTime = System.currentTimeMillis();
 
@@ -85,5 +107,9 @@ public class Shoulder extends SubsystemBase implements IStateControllable<ArmSta
 
     public boolean crashDetected() {
         return false;
+    }
+
+    public boolean needsSlow() {
+        return shouldWeSlow;
     }
 }
