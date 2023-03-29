@@ -289,13 +289,21 @@ public final class OI {
     }
 
     public static double forearmFineAdjust() {
-        // return leftButtonBoard.button(21, eventLoop);
-        return leftButtonBoard.getRawAxis(1);
+        double speed = leftButtonBoard.getRawAxis(1);
+
+        if (Math.abs(speed) < 0.1)
+            return 0;
+
+        return speed * Constants.OI.FOREARM_FINE_ADJUST_SPEED;
     }
 
-    public static double forearmFineAdjustNegativeEvent() {
-        // return leftButtonBoard.button(20, eventLoop);
-        return rightButtonBoard.getRawAxis(1);
+    public static double wristFineAdjust() {
+        double speed = rightButtonBoard.getRawAxis(1);
+
+        if (Math.abs(speed) < 0.1)
+            return 0;
+
+        return speed * Constants.OI.WRIST_FINE_ADJUST_SPEED;
     }
 
     public static BooleanEvent ledsIndicateCone() {

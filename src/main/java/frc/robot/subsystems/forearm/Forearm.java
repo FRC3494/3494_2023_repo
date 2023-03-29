@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.arm.ArmState;
@@ -21,6 +22,8 @@ public class Forearm extends SubsystemBase implements IStateControllable<ArmStat
     ForearmState currentState;
 
     boolean isDoneMoving = true;
+
+    Timer motorStillTimer = new Timer();
 
     public Forearm() {
         motor = new CANSparkMax(
@@ -57,7 +60,18 @@ public class Forearm extends SubsystemBase implements IStateControllable<ArmStat
         if (currentState != null)
             isDoneMoving = isAt(currentState);
 
-        // System.out.println(motor.getEncoder().getPosition());
+        if (Math.abs(encoder.getVelocity()) <= Constants.Subsystems.Wrist.MAX_CORRECT_VELOCITY &&
+                encoder.getPosition() <= 350 &&
+                encoder.getPosition() >= 10) {
+            motorStillTimer.start();
+        } else {
+            motorStillTimer.stop();
+            motorStillTimer.reset();
+        }
+
+        if (motorStillTimer.hasElapsed(Constants.Subsystems.Wrist.CORRECT_PERIOD)) {
+            correctNeo();
+        }
     }
 
     double getAbsoluteEncoderAngle() {
@@ -112,23 +126,21 @@ public class Forearm extends SubsystemBase implements IStateControllable<ArmStat
     boolean forearmDirectDriveEnabled = false;
 
     public void enableDirectDrive() {
-        if (!isDoneMoving)
-            return;
-
         forearmDirectDriveEnabled = true;
     }
 
     public void disableDirectDrive() {
+        if (forearmDirectDriveEnabled) {
+            motor.set(0);
+
+            setTargetAngle(getAngle());
+        }
+
         forearmDirectDriveEnabled = false;
-
-        if (!isDoneMoving)
-            return;
-
-        setTargetAngle(getAngle());
     }
 
     public void directDrive(double power) {
-        if (!isDoneMoving || !forearmDirectDriveEnabled)
+        if (!forearmDirectDriveEnabled)
             return;
 
         motor.set(power);

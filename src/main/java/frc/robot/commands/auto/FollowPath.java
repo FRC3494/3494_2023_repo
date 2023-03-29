@@ -36,7 +36,6 @@ public class FollowPath extends CommandBase {
 		this.fullAutoMode = fullAutoMode;
 		// drivetrain.resetOdometry(trajectory.getInitialPose());
 
-
 		// drivetrain.resetOdometry(trajectory.getInitialPose());
 
 		addRequirements(drivetrain);
@@ -44,7 +43,8 @@ public class FollowPath extends CommandBase {
 
 	@Override
 	public void initialize() {
-		if (fullAutoMode) drivetrain.resetOdometry(trajectory.getInitialHolonomicPose());
+		if (fullAutoMode)
+			drivetrain.resetOdometry(trajectory.getInitialHolonomicPose());
 
 		PIDController xController = Constants.Commands.FollowPath.X_CONTROLLER;
 		PIDController yController = Constants.Commands.FollowPath.Y_CONTROLLER;
@@ -56,7 +56,7 @@ public class FollowPath extends CommandBase {
 
 		field2d.setRobotPose(drivetrain.getPose());
 
-        PathPlannerServer.sendActivePath(trajectory.getStates());
+		PathPlannerServer.sendActivePath(trajectory.getStates());
 
 		timer.reset();
 		timer.start();
@@ -66,24 +66,26 @@ public class FollowPath extends CommandBase {
 	public void execute() {
 		double curTime = timer.get();
 
-        PathPlannerState targetState = (PathPlannerState) trajectory.sample(curTime); 
-        Pose2d targetPose = new Pose2d(targetState.poseMeters.getTranslation(), targetState.holonomicRotation);
+		PathPlannerState targetState = (PathPlannerState) trajectory.sample(curTime);
+		Pose2d targetPose = new Pose2d(targetState.poseMeters.getTranslation(), targetState.holonomicRotation);
 
-        Pose2d currentPose = drivetrain.getPose();
+		Pose2d currentPose = drivetrain.getPose();
 		drivetrain.periodic();
 		field2d.setRobotPose(currentPose);
 		fieldObject2d.setPose(targetPose);
-	
-		ChassisSpeeds targetSpeeds = controller.calculate(drivetrain.getPose(), targetState, targetState.holonomicRotation);
+
+		ChassisSpeeds targetSpeeds = controller.calculate(drivetrain.getPose(), targetState,
+				targetState.holonomicRotation);
 
 		drivetrain.drive(targetSpeeds);
-		
-        PathPlannerServer.sendPathFollowingData(targetPose, currentPose);
+
+		PathPlannerServer.sendPathFollowingData(targetPose, currentPose);
 	}
 
 	@Override
 	public boolean isFinished() {
-		if (!fullAutoMode) return false; 
+		if (!fullAutoMode)
+			return false;
 
 		return trajectory.getTotalTimeSeconds() <= timer.get();
 	}

@@ -74,9 +74,13 @@ public class Shoulder extends SubsystemBase implements IStateControllable<ArmSta
     }
 
     public boolean isAt(ArmState state) {
+        return isAt(state.shoulderState);
+    }
+
+    public boolean isAt(ShoulderState state) {
         return Math.abs(stringPotentiometer.get() -
                 Constants.Subsystems.Shoulder.POSITIONS
-                        .get(state.shoulderState)) <= Constants.Subsystems.Shoulder.TARGET_TOLERANCE;
+                        .get(state)) <= Constants.Subsystems.Shoulder.TARGET_TOLERANCE;
     }
 
     public boolean crashDetected() {

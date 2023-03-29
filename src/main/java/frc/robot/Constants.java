@@ -80,7 +80,7 @@ public final class Constants extends AutoConfigurable {
             public static double MIN_SPEED = -0.5;
 
             public static float MIN_POSITION = -86.241f; // 135.5
-            public static float MAX_POSITION = 91.505f; // -136.0
+            public static float MAX_POSITION = 89.505f; // -136.0
 
             public static double TARGET_POSITION_TOLERANCE = 2; // degrees
 
@@ -102,7 +102,7 @@ public final class Constants extends AutoConfigurable {
                     put(ForearmState.GroundIntakeCone, 79.52);// 52
                     // for
                     // cone
-                    put(ForearmState.DoubleSubstation, -73.25);
+                    put(ForearmState.DoubleSubstation, -72.00);// -73.25 //Goal -71.25
                     put(ForearmState.SingleSubstation, 28.09);
                     put(ForearmState.Base1Hybrid, 25.3);
                     put(ForearmState.Store, 11.9);
@@ -132,6 +132,9 @@ public final class Constants extends AutoConfigurable {
 
             public static int CURRENT_LIMIT = 40;
 
+            public static double MAX_CORRECT_VELOCITY = Math.toRadians(0.5);
+            public static double CORRECT_PERIOD = 0.5;
+
             public static class PIDF {
                 public static double P = 0.1;
                 public static double I = 0;
@@ -150,7 +153,7 @@ public final class Constants extends AutoConfigurable {
                     put(WristState.Base4Cube1, -104.5);
                     put(WristState.Base4Cube2, 58.2);
                     put(WristState.DoubleSubCube, 56.06);
-                    put(WristState.DoubleSubCone, 43.0);
+                    put(WristState.DoubleSubCone, 20.5);// 43.0
                     put(WristState.SingleSub, 119.01);
                     put(WristState.Hybrid, 95.2);
                     put(WristState.Base2Cube1, -9.97);
@@ -293,8 +296,8 @@ public final class Constants extends AutoConfigurable {
 
             public static final double LEVEL_ANGLE = 5;
 
-            public static final double FAST_POWER = 0.1;
-            public static final double SLOW_POWER = 0.0585;// 0.05
+            public static final double FAST_POWER = 1;
+            public static final double SLOW_POWER = 0.585;// 0.05
             public static final double DIVIDE_FACTOR = 3;
             public static final double DIVIDE_ANGLE = 8.5;
 
@@ -328,6 +331,7 @@ public final class Constants extends AutoConfigurable {
         public static final double MAX_TURN_SPEED = 5.5; // rad/s
         public static final double DPAD_SPEED = 0.1;
 
-        public static final double FOREARM_FINE_ADJUST_SPEED = 0.8;
+        public static final double FOREARM_FINE_ADJUST_SPEED = 0.15;
+        public static final double WRIST_FINE_ADJUST_SPEED = 0.15;
     }
 }

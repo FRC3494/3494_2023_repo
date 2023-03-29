@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.arm.ArmState;
@@ -22,11 +23,14 @@ public class Wrist extends SubsystemBase implements IStateControllable<ArmState>
 
     boolean isDoneMoving = true;
 
+    Timer motorStillTimer = new Timer();
+
     public Wrist() {
         motor = new CANSparkMax(
                 Constants.Subsystems.Wrist.MOTOR_CHANNEL, MotorType.kBrushless);
 
-        motor.getPIDController().setOutputRange(Constants.Subsystems.Wrist.MIN_SPEED, Constants.Subsystems.Wrist.MAX_SPEED);//was 0.5
+        motor.getPIDController().setOutputRange(Constants.Subsystems.Wrist.MIN_SPEED,
+                Constants.Subsystems.Wrist.MAX_SPEED);// was 0.5
         motor.getPIDController().setP(Constants.Subsystems.Wrist.PIDF.P);
         motor.getPIDController().setI(Constants.Subsystems.Wrist.PIDF.I);
         motor.getPIDController().setD(Constants.Subsystems.Wrist.PIDF.D);
@@ -56,7 +60,18 @@ public class Wrist extends SubsystemBase implements IStateControllable<ArmState>
         if (currentState != null)
             isDoneMoving = isAt(currentState);
 
+        if (Math.abs(encoder.getVelocity()) <= Constants.Subsystems.Wrist.MAX_CORRECT_VELOCITY &&
+                encoder.getPosition() <= 350 &&
+                encoder.getPosition() >= 10) {
+            motorStillTimer.start();
+        } else {
+            motorStillTimer.stop();
+            motorStillTimer.reset();
+        }
 
+        if (motorStillTimer.hasElapsed(Constants.Subsystems.Wrist.CORRECT_PERIOD)) {
+            correctNeo();
+        }
     }
 
     double getAbsoluteEncoderAngle() {
@@ -111,23 +126,21 @@ public class Wrist extends SubsystemBase implements IStateControllable<ArmState>
     boolean wristDirectDriveEnabled = false;
 
     public void enableDirectDrive() {
-        if (!isDoneMoving)
-            return;
-
         wristDirectDriveEnabled = true;
     }
 
     public void disableDirectDrive() {
+        if (wristDirectDriveEnabled) {
+            motor.set(0);
+
+            setTargetAngle(getAngle());
+        }
+
         wristDirectDriveEnabled = false;
-
-        if (!isDoneMoving)
-            return;
-
-        setTargetAngle(getAngle());
     }
 
     public void directDrive(double power) {
-        if (!isDoneMoving || !wristDirectDriveEnabled)
+        if (!wristDirectDriveEnabled)
             return;
 
         motor.set(power);
