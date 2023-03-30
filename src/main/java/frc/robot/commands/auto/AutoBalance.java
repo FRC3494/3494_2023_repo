@@ -14,7 +14,7 @@ public class AutoBalance extends CommandBase {
 
 	double previousTime = 0;
 	boolean hitPeak = false;
-	
+
 	double lastAngle = 0;
 
 	public AutoBalance(Drivetrain drivetrain) {
@@ -37,21 +37,23 @@ public class AutoBalance extends CommandBase {
 		double deltaTime = currentTime - previousTime;
 		previousTime = currentTime;
 
-		double currentAngle = NavX.getRoll();
-		//double angleDerivative = lastAngle - currentAngle;
+		double currentAngle = -NavX.getPitch();
+		// double angleDerivative = lastAngle - currentAngle;
 		lastAngle = currentAngle;
 
-		//double angleFactor = Math.min(1 / Math.max(Math.abs(angleDerivative), 0.000001), 10.0) / 4.5;
+		// double angleFactor = Math.min(1 / Math.max(Math.abs(angleDerivative),
+		// 0.000001), 10.0) / 4.5;
 
 		if (Math.abs(currentAngle) < Constants.Commands.AutoBalance.LEVEL_ANGLE) {
 			setDrivetrain(0, 0, 0, false);
 
 			balancedTime += deltaTime;
-		} else  {
+		} else {
 			double curvedPower = Constants.Commands.AutoBalance.SLOW_POWER * Math.pow(currentAngle / 12, 5);
 
-			setDrivetrain(0, Math.min(Math.max(curvedPower, -Constants.Commands.AutoBalance.FAST_POWER), Constants.Commands.AutoBalance.FAST_POWER), 0, false);
-			
+			setDrivetrain(Math.min(Math.max(curvedPower, -Constants.Commands.AutoBalance.FAST_POWER),
+					Constants.Commands.AutoBalance.FAST_POWER), 0, 0, false);
+
 			balancedTime = 0;
 		}
 	}
@@ -62,6 +64,6 @@ public class AutoBalance extends CommandBase {
 	}
 
 	public void setDrivetrain(double x, double y, double w, boolean fieldRelative) {
-		drivetrain.drive(x, y, w, fieldRelative);
+		drivetrain.drive(-x, y, w, fieldRelative);
 	}
 }

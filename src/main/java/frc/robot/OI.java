@@ -306,6 +306,10 @@ public final class OI {
         return speed * Constants.OI.WRIST_FINE_ADJUST_SPEED;
     }
 
+    public static BooleanEvent clawFullPower() {
+        return rightButtonBoard.axisGreaterThan(0, 0.1, eventLoop);
+    }
+
     public static BooleanEvent ledsIndicateCone() {
         // return leftButtonBoard.button(20, eventLoop);
         return rightButtonBoard.button(1, eventLoop);

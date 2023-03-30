@@ -69,8 +69,10 @@ public class Wrist extends SubsystemBase implements IStateControllable<ArmState>
             motorStillTimer.reset();
         }
 
-        if (motorStillTimer.hasElapsed(Constants.Subsystems.Wrist.CORRECT_PERIOD)) {
-            correctNeo();
+        if (currentState == WristState.Store && motorStillTimer.hasElapsed(Constants.Subsystems.Wrist.CORRECT_PERIOD)) {
+            // correctNeo();
+
+            // TODO: fix later
         }
     }
 
@@ -82,11 +84,11 @@ public class Wrist extends SubsystemBase implements IStateControllable<ArmState>
         return motor2Degrees(motor.getEncoder().getPosition());
     }
 
-    double degrees2Motor(double x) {
+    public static double degrees2Motor(double x) {
         return (x / 360.0) / Constants.Subsystems.Wrist.MOTOR_REDUCTION;
     }
 
-    double motor2Degrees(double x) {
+    public static double motor2Degrees(double x) {
         return x * Constants.Subsystems.Wrist.MOTOR_REDUCTION * 360.0;
     }
 

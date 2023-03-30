@@ -68,7 +68,8 @@ public class Forearm extends SubsystemBase implements IStateControllable<ArmStat
             motorStillTimer.reset();
         }
 
-        if (motorStillTimer.hasElapsed(Constants.Subsystems.Wrist.CORRECT_PERIOD)) {
+        if (currentState == ForearmState.Store
+                && motorStillTimer.hasElapsed(Constants.Subsystems.Wrist.CORRECT_PERIOD)) {
             correctNeo();
         }
     }
@@ -81,11 +82,11 @@ public class Forearm extends SubsystemBase implements IStateControllable<ArmStat
         return motor2Degrees(motor.getEncoder().getPosition());
     }
 
-    double degrees2Motor(double x) {
+    public static double degrees2Motor(double x) {
         return (-x / 360.0) / Constants.Subsystems.Forearm.MOTOR_REDUCTION;
     }
 
-    double motor2Degrees(double x) {
+    public static double motor2Degrees(double x) {
         return -x * Constants.Subsystems.Forearm.MOTOR_REDUCTION * 360.0;
     }
 
@@ -151,8 +152,10 @@ public class Forearm extends SubsystemBase implements IStateControllable<ArmStat
 
     public void slowMode(boolean slow) {
         if (!slow)
-            motor.getPIDController().setOutputRange(Constants.Subsystems.Forearm.MIN_SPEED, Constants.Subsystems.Forearm.MAX_SPEED);
-        else 
-            motor.getPIDController().setOutputRange(Constants.Subsystems.Forearm.SLOW_MIN_SPEED, Constants.Subsystems.Forearm.SLOW_MAX_SPEED);
+            motor.getPIDController().setOutputRange(Constants.Subsystems.Forearm.MIN_SPEED,
+                    Constants.Subsystems.Forearm.MAX_SPEED);
+        else
+            motor.getPIDController().setOutputRange(Constants.Subsystems.Forearm.SLOW_MIN_SPEED,
+                    Constants.Subsystems.Forearm.SLOW_MAX_SPEED);
     }
 }

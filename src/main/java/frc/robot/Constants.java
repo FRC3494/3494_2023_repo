@@ -100,12 +100,10 @@ public final class Constants extends AutoConfigurable {
 
             public static HashMap<ForearmState, Double> POSITIONS = new HashMap<>() {
                 {
-                    put(ForearmState.Intermediate, 52.8);
+                    put(ForearmState.Intermediate, 42.8);
                     put(ForearmState.GroundIntakeCube, 46.9);
-                    put(ForearmState.GroundIntakeCone, 79.52);// 52
-                    // for
-                    // cone
-                    put(ForearmState.DoubleSubstation, -72.00);// -73.25 //Goal -71.25
+                    put(ForearmState.GroundIntakeCone, 79.52);
+                    put(ForearmState.DoubleSubstation, -72.00);
                     put(ForearmState.SingleSubstation, 28.09);
                     put(ForearmState.Base1Hybrid, 25.3);
                     put(ForearmState.Store, 11.9);
@@ -126,8 +124,8 @@ public final class Constants extends AutoConfigurable {
             public static double MAX_SPEED = 0.3;
             public static double MIN_SPEED = -0.3;
 
-            public static float MIN_POSITION = -33.403f;
-            public static float MAX_POSITION = 37.905f;
+            public static float MIN_POSITION = -33.403f + (float) frc.robot.subsystems.wrist.Wrist.degrees2Motor(90);
+            public static float MAX_POSITION = 37.905f + (float) frc.robot.subsystems.wrist.Wrist.degrees2Motor(90);
 
             public static double TARGET_POSITION_TOLERANCE = 2; // degrees
 
@@ -147,19 +145,19 @@ public final class Constants extends AutoConfigurable {
 
             public static HashMap<WristState, Double> POSITIONS = new HashMap<>() {
                 {
-                    put(WristState.Store, -136.0);
-                    put(WristState.GroundCube, 24.0);// 40.8
-                    put(WristState.GroundCone, 19.7);// 66.38
-                    put(WristState.Base2Cone1, -4.8);
-                    put(WristState.Base4Cone1, 135.5);
-                    put(WristState.Base4Cone2, 60.00);
-                    put(WristState.Base4Cube1, -104.5);
-                    put(WristState.Base4Cube2, 58.2);
-                    put(WristState.DoubleSubCube, 56.06);
-                    put(WristState.DoubleSubCone, 20.5);// 43.0
-                    put(WristState.SingleSub, 119.01);
-                    put(WristState.Hybrid, 95.2);
-                    put(WristState.Base2Cube1, -9.97);
+                    put(WristState.Store, -136.0 + 90);
+                    put(WristState.GroundCube, 24.0 + 90);
+                    put(WristState.GroundCone, 19.7 + 90);
+                    put(WristState.Base2Cone1, -4.8 + 90);
+                    put(WristState.Base4Cone1, 135.5 + 90);
+                    put(WristState.Base4Cone2, 60.00 + 90);
+                    put(WristState.Base4Cube1, -104.5 + 90);
+                    put(WristState.Base4Cube2, 58.2 + 90);
+                    put(WristState.DoubleSubCube, 56.06 + 90);
+                    put(WristState.DoubleSubCone, 20.5 + 90);
+                    put(WristState.SingleSub, 119.01 + 90);
+                    put(WristState.Hybrid, 95.2 + 90);
+                    put(WristState.Base2Cube1, -9.97 + 90);
                 }
             };
         }
@@ -171,9 +169,11 @@ public final class Constants extends AutoConfigurable {
                 {
                     put(ClawState.Idle, 0.1);
                     put(ClawState.IntakeCone, 0.75);// 0.5
-                    put(ClawState.IntakeCube, 0.5);
+                    put(ClawState.IntakeCube, 0.75);
+                    put(ClawState.FullIntake, 1.0);
                     put(ClawState.OuttakeCone, -0.75);// -0.5
                     put(ClawState.OuttakeCube, -0.5);
+                    put(ClawState.FullOuttake, -1.0);// -0.5
                 }
             };
 
@@ -295,16 +295,22 @@ public final class Constants extends AutoConfigurable {
         public static final class AutoBalance {
             public static final double TRIGGER_ANGLE = 23;
 
-            public static final double PEAK_ANGLE = 19;// 23
+            public static final double PEAK_ANGLE = 14;// 19
 
             public static final double LEVEL_ANGLE = 5;
 
-            public static final double FAST_POWER = 1;
+            public static final double FAST_POWER = 2.2;
             public static final double SLOW_POWER = 0.585;// 0.05
             public static final double DIVIDE_FACTOR = 3;
             public static final double DIVIDE_ANGLE = 8.5;
 
             public static final double EXIT_TIME = 3;
+        }
+
+        public static final class AutoExtendBalance {
+            public static final double TRIGGER_ANGLE = 22;
+
+            public static final double SLOW_POWER = 0.75;
         }
 
         public static final class AutoLineUp {
@@ -315,7 +321,7 @@ public final class Constants extends AutoConfigurable {
 
     public static final class RobotContainer {
         public static final class PathPlanner {
-            public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(3.6, 2);
+            public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(2, 1);
 
             public static HashMap<String, Command> PATH_EVENTS = new HashMap<>() {
                 {

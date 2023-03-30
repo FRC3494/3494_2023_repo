@@ -6,4 +6,6 @@ public enum ClawState {
     IntakeCone,
     OuttakeCube,
     OuttakeCone,
+    FullIntake,
+    FullOuttake
 }

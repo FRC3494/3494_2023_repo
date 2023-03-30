@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -21,8 +22,8 @@ import frc.robot.commands.auto.AutoSetArm;
 import frc.robot.commands.auto.AutoSetClaw;
 import frc.robot.commands.auto.AutoSetWrist;
 import frc.robot.commands.auto.FollowPath;
-import frc.robot.commands.groups.AutoBalanceGroup;
 import frc.robot.commands.groups.AutoBalanceTeleopGroup;
+import frc.robot.commands.groups.AutoExtendBalanceGroup;
 import frc.robot.commands.teleop.TeleopDrive;
 import frc.robot.subsystems.Camera;
 import frc.robot.subsystems.drivetrain.Drivetrain;
@@ -79,9 +80,9 @@ public class RobotContainer {
 
         leds = new Leds();
 
-        // autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
-
         autoBalanceDrivetrainCommand = AutoBalanceTeleopGroup.get(drivetrain);
+
+        // autoBalanceDrivetrainCommand = AutoBalanceGroup.get(drivetrain);
 
         // Configure the button bindings
         configureButtonBindings();
@@ -135,129 +136,42 @@ public class RobotContainer {
                     new AutoSetArm(container.arm, ArmPosition.Base2Cone1),
                     new AutoSetWrist(container.wrist, WristState.Base2Cone1),
                     new WaitCommand(1),
-                    new AutoSetClaw(container.claw, ClawState.IntakeCone),
+                    new AutoSetClaw(container.claw, ClawState.OuttakeCone),
                     new WaitCommand(0.2),
                     new AutoSetWrist(container.wrist, WristState.Store),
                     new AutoSetArm(container.arm, ArmPosition.Store),
+                    new AutoSetClaw(container.claw, ClawState.Idle),
                     pathFollow(container, "Auto1 Segment1"),
-                    AutoBalanceGroup.get(container.drivetrain));
+                    AutoBalanceTeleopGroup.get(container.drivetrain));
+        }),
+
+        Balance("Balance", (container) -> {
+            return AutoExtendBalanceGroup.get(container.drivetrain, container.shoulder);
+        }),
+
+        PlacePickupPlace("Place then Pickup Cube then Place", (container) -> {
+            return new SequentialCommandGroup(
+                    new AutoSetArm(container.arm, ArmPosition.Base2Cone1),
+                    new AutoSetWrist(container.wrist, WristState.Base2Cone1),
+                    new WaitCommand(1),
+                    new AutoSetClaw(container.claw, ClawState.OuttakeCone),
+                    new WaitCommand(0.2),
+                    new ParallelCommandGroup(
+                            new AutoSetArm(container.arm, ArmPosition.GroundIntakeCube),
+                            new AutoSetClaw(container.claw, ClawState.IntakeCube),
+                            pathFollow(container, "LeaveComPickUp")),
+                    new WaitCommand(0.75),
+                    new AutoSetClaw(container.claw, ClawState.IntakeCube),
+                    new ParallelCommandGroup(
+                            new AutoSetArm(container.arm, ArmPosition.Base2Cube1),
+                            pathFollow(container, "LeaveComPickUpReturn")),
+                    new WaitCommand(0.2),
+                    new AutoSetClaw(container.claw, ClawState.OuttakeCube),
+                    new WaitCommand(0.3),
+                    new AutoSetArm(container.arm, ArmPosition.Store),
+                    new AutoSetClaw(container.claw, ClawState.Idle));
         });
 
-        /*
-         * Auto1("Auto1", (container) -> {
-         * return new SequentialCommandGroup(
-         * new AutoSetArm(container.arm, ArmPosition.Base4Cone2),
-         * new AutoSetClaw(container.claw, ClawState.IntakeCube),
-         * new WaitCommand(0.5),
-         * new AutoSetArm(container.arm, ArmPosition.Store),
-         * pathFollow(container, "Auto1 Segment1"),
-         * AutoBalanceGroup.get(container.drivetrain));
-         * 
-         * }),
-         * PlaceThenPark("Place Then Park", (container) -> {
-         * return new SequentialCommandGroup(
-         * new AutoSetArm(container.arm, ArmPosition.Base4Cone2),
-         * new AutoSetClaw(container.claw, ClawState.IntakeCube),
-         * new WaitCommand(0.5),
-         * new AutoSetArm(container.arm, ArmPosition.Store),
-         * pathFollow(container, "LeaveCom"));
-         * }),
-         * PushExitBalance("Push Cube, Exit, Balance", (container) -> {
-         * return new SequentialCommandGroup(
-         * new AutoSetArm(container.arm, ArmPosition.Store),
-         * new WaitCommand(0.5),
-         * new AutoSetClaw(container.claw, ClawState.OuttakeCube),
-         * pathFollow(container, "Level1ExitPark"),
-         * AutoBalanceGroup.get(container.drivetrain));
-         * }),
-         * JustBalance("Just Balance", (container) -> {
-         * return new SequentialCommandGroup(
-         * new AutoSetArm(container.arm, ArmPosition.Store),
-         * new WaitCommand(0.5),
-         * new AutoSetClaw(container.claw, ClawState.OuttakeCube),
-         * AutoBalanceGroup.get(container.drivetrain));
-         * }),
-         * JustBalanceYAxis("Just Balance Y Axis", (container) -> {
-         * return new SequentialCommandGroup(
-         * new AutoSetArm(container.arm, ArmPosition.Store),
-         * new WaitCommand(0.5),
-         * new AutoSetClaw(container.claw, ClawState.OuttakeCube),
-         * AutoBalanceGroupYAxis.get(container.drivetrain));
-         * }),
-         * PlaceThenBalance("Place then Balance Y Axis", (container) -> {
-         * return new SequentialCommandGroup(
-         * new AutoSetArm(container.arm, ArmPosition.Base4Cone2),
-         * new AutoSetClaw(container.claw, ClawState.OuttakeCone),
-         * new WaitCommand(0.5),
-         * new ParallelCommandGroup(
-         * new ParallelCommandGroup(
-         * new AutoSetArm(container.arm, ArmPosition.Store),
-         * new AutoSetClaw(container.claw, ClawState.Idle)),
-         * new SequentialCommandGroup(
-         * pathFollow(container, "LeaveCom"),
-         * new WaitCommand(0.3),
-         * AutoBalanceGroupYAxis.get(container.drivetrain))));
-         * }),
-         * PlacePickupBalance("Place then Pickup Cube then Balance", (container) -> {
-         * return new SequentialCommandGroup(
-         * new AutoSetArm(container.arm, ArmPosition.Base4Cone2),
-         * new AutoSetClaw(container.claw, ClawState.OuttakeCone),
-         * new WaitCommand(0.5),
-         * new ParallelCommandGroup(
-         * new AutoSetArm(container.arm, ArmPosition.GroundIntakeCube),
-         * pathFollow(container, "LeaveComPickUp")),
-         * new WaitCommand(0.2),
-         * new AutoSetClaw(container.claw, ClawState.IntakeCone),
-         * new WaitCommand(0.5),
-         * new ParallelCommandGroup(
-         * new AutoSetArm(container.arm, ArmPosition.Base4Cube2),
-         * pathFollow(container, "LeaveComPickUpReturn")),
-         * new AutoSetClaw(container.claw, ClawState.OuttakeCone),
-         * pathFollow(container, "Backup")
-         * 
-         * new WaitCommand(0.2),
-         * new AutoSetClaw(container.claw, ClawState.Open),
-         * new WaitCommand(0.5),
-         * new AutoSetArm(container.arm, ArmPosition.Store)
-         * 
-         * );
-         * }),
-         * PlacePickupPlace("Place then Pickup Cube then Place", (container) -> {
-         * return new SequentialCommandGroup(
-         * new AutoSetArm(container.arm, ArmPosition.Base4Cone2),
-         * new AutoSetClaw(container.claw, ClawState.OuttakeCone),
-         * new WaitCommand(0.5),
-         * new ParallelCommandGroup(
-         * new AutoSetArm(container.arm, ArmPosition.GroundIntakeCube),
-         * pathFollow(container, "LeaveComPickUp")),
-         * new WaitCommand(0.2),
-         * new AutoSetClaw(container.claw, ClawState.IntakeCone),
-         * new WaitCommand(0.5),
-         * pathFollow(container, "FromPickup")
-         * 
-         * new WaitCommand(0.2),
-         * new AutoSetClaw(container.claw, ClawState.Open),
-         * new WaitCommand(0.5),
-         * new AutoSetArm(container.arm, ArmPosition.Store)
-         * 
-         * );
-         * }),
-         * Turn90("Turn 90", (container) -> pathFollow(container, "Turn90")),
-         * Forward2("Forward", (container) -> pathFollow(container, "ForwardX")),
-         * // Full("Full", (container) -> pathFollow(container, "Full")),
-         * // ParkTest("Park Test", (container) -> pathFollow(container, "ParkTest")),
-         * // StarOfDeath("Star of Death", (container) -> pathFollow(container, "Star Of
-         * // Death")),
-         * UrMom("ur mom lol", (container) -> pathFollow(container, "ur mom")),
-         * ArmTest("arm test", (container) -> new SequentialCommandGroup(
-         * new AutoSetArm(container.arm, ArmPosition.Base2Cube1),
-         * new WaitCommand(3),
-         * new AutoSetArm(container.arm, ArmPosition.Base1Hybrid),
-         * new WaitCommand(3),
-         * new AutoSetArm(container.arm, ArmPosition.Base2Cube1),
-         * new WaitCommand(3),
-         * new AutoSetArm(container.arm, ArmPosition.Store)));
-         */
         String displayName;
         Function<RobotContainer, Command> commandFunction;
 
@@ -398,6 +312,7 @@ public class RobotContainer {
         OI.clawOuttakeCone().rising().ifHigh(() -> claw.set(ClawState.OuttakeCone));
         OI.clawOuttakeCube().rising().ifHigh(() -> claw.set(ClawState.OuttakeCube));
         OI.clawIdle().rising().ifHigh(() -> claw.set(ClawState.Idle));
+        OI.clawFullPower().rising().ifHigh(() -> claw.set(ClawState.FullOuttake));
 
         OI.ledsIndicateCone().rising().ifHigh(() -> {
             System.out.println(OI.coneMode);
