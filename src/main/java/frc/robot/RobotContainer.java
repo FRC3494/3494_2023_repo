@@ -141,8 +141,8 @@ public class RobotContainer {
                     new AutoSetWrist(container.wrist, WristState.Store),
                     new AutoSetArm(container.arm, ArmPosition.Store),
                     new AutoSetClaw(container.claw, ClawState.Idle),
-                    pathFollow(container, "Auto1 Segment1"),
-                    AutoBalanceTeleopGroup.get(container.drivetrain));
+                    pathFollow(container, "Auto1 Segment1", 1.85),
+                    AutoBalanceGroup.get(container.drivetrain));
         }),
 
         Balance("Balance", (container) -> {

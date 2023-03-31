@@ -298,6 +298,8 @@ public final class Constants extends AutoConfigurable {
 
             public static final double PEAK_ANGLE = 14;// 19
 
+            public static final double SUB_LEVEL_ANGLE = 13;// 19
+
             public static final double LEVEL_ANGLE = 5;
 
             public static final double FAST_POWER = 0.75;

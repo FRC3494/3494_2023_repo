@@ -49,10 +49,10 @@ public class AutoBalance extends CommandBase {
 
 			balancedTime += deltaTime;
 		} else {
-			double curvedPower = Constants.Commands.AutoBalance.SLOW_POWER * Math.pow(currentAngle / 12, 5);
+			double curvedPower = Constants.Commands.AutoBalance.SLOW_POWER * Math.pow(currentAngle / 9, 5);
 
-			setDrivetrain(Math.min(Math.max(curvedPower, -Constants.Commands.AutoBalance.FAST_POWER),
-					Constants.Commands.AutoBalance.FAST_POWER), 0, 0, false);
+			setDrivetrain(Math.min(Math.max(curvedPower, -Constants.Commands.AutoBalance.SLOW_POWER),
+					Constants.Commands.AutoBalance.SLOW_POWER), 0, 0, false);
 
 			balancedTime = 0;
 		}
