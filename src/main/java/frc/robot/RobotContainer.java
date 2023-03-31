@@ -155,7 +155,7 @@ public class RobotContainer {
             return new SequentialCommandGroup(
                     new AutoSetArm(container.arm, ArmPosition.Base2Cone1),
                     new AutoSetWrist(container.wrist, WristState.Base2Cone1),
-                    new WaitCommand(1),
+                    new WaitCommand(1.75),
                     new AutoSetClaw(container.claw, ClawState.OuttakeCone),
                     new WaitCommand(0.2),
                     new AutoSetWrist(container.wrist, WristState.Store),
@@ -189,6 +189,30 @@ public class RobotContainer {
                     new AutoSetClaw(container.claw, ClawState.Idle),
                     AutoBalanceGroup.get(container.drivetrain));
         }),
+        PlaceHighMobilityBalance("Place High Mobiliy Balance", (container) -> {
+            return new SequentialCommandGroup(
+                    new ParallelCommandGroup(
+                            new AutoSetForearm(container.forearm, ForearmState.Base4Cone2),
+                            new AutoSetWrist(container.wrist, WristState.Base4Cone2)),
+                    new WaitCommand(0.5),
+                    new AutoSetShoulder(container.shoulder, ShoulderState.Base4),
+                    new WaitCommand(2),
+                    new AutoSetClaw(container.claw, ClawState.OuttakeCone),
+                    new WaitCommand(0.2),
+                    new ParallelCommandGroup(
+                            pathFollow(container, "SmallBackup", 1.85),
+                            new SequentialCommandGroup(
+                                    new WaitCommand(0.75),
+                                    new ParallelCommandGroup(
+                                            new AutoSetShoulder(container.shoulder, ShoulderState.Base2),
+                                            new AutoSetForearm(container.forearm, ForearmState.Store),
+                                            new AutoSetWrist(container.wrist, WristState.Store)),
+                                    new AutoSetClaw(container.claw, ClawState.Idle))),
+                    pathFollow(container, "MobilityNoTurn", 1.85),
+                    AutoBalanceGroupDumb.get(container.drivetrain),
+                    pathFollow(container, "Dumb Balance", 0.5));
+
+        }),
         Place("Place Medium", (container) -> {
             return new SequentialCommandGroup(
                     new AutoSetArm(container.arm, ArmPosition.Base2Cone1),
@@ -200,6 +224,7 @@ public class RobotContainer {
                     new AutoSetArm(container.arm, ArmPosition.Store),
                     new AutoSetClaw(container.claw, ClawState.Idle));
         }),
+
         PlaceHigh("Place High", (container) -> {
             return new SequentialCommandGroup(
                     new ParallelCommandGroup(

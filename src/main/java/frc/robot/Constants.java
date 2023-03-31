@@ -101,7 +101,7 @@ public final class Constants extends AutoConfigurable {
             public static HashMap<ForearmState, Double> POSITIONS = new HashMap<>() {
                 {
                     put(ForearmState.Intermediate, 42.8);
-                    put(ForearmState.GroundIntakeCube, 46.9);
+                    put(ForearmState.GroundIntakeCube, 62.9);
                     put(ForearmState.GroundIntakeCone, 79.52);
                     put(ForearmState.DoubleSubCube, -72.00);
                     put(ForearmState.DoubleSubCone, -86.10);
@@ -112,7 +112,7 @@ public final class Constants extends AutoConfigurable {
                     put(ForearmState.Base4Cube2, -120.08);
                     put(ForearmState.Base4Cone1, -112.7);
                     put(ForearmState.Base4Cube1, -5.3);
-                    put(ForearmState.Base2Cone1, 120.7);
+                    put(ForearmState.Base2Cone1, 123.7);
                     put(ForearmState.Base2Cube1, 100.9);
                 }
             };
@@ -168,7 +168,7 @@ public final class Constants extends AutoConfigurable {
 
             public static HashMap<ClawState, Double> SPEEDS = new HashMap<>() {
                 {
-                    put(ClawState.Idle, 0.1);
+                    put(ClawState.Idle, 0.125);
                     put(ClawState.IntakeCone, 0.75);// 0.5
                     put(ClawState.IntakeCube, 0.75);
                     put(ClawState.FullIntake, 1.0);
