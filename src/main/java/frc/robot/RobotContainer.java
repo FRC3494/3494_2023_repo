@@ -22,8 +22,8 @@ import frc.robot.commands.auto.AutoSetArm;
 import frc.robot.commands.auto.AutoSetClaw;
 import frc.robot.commands.auto.AutoSetWrist;
 import frc.robot.commands.auto.FollowPath;
+import frc.robot.commands.groups.AutoBalanceGroup;
 import frc.robot.commands.groups.AutoBalanceTeleopGroup;
-import frc.robot.commands.groups.AutoExtendBalanceGroup;
 import frc.robot.commands.teleop.TeleopDrive;
 import frc.robot.subsystems.Camera;
 import frc.robot.subsystems.drivetrain.Drivetrain;
@@ -146,7 +146,7 @@ public class RobotContainer {
         }),
 
         Balance("Balance", (container) -> {
-            return AutoExtendBalanceGroup.get(container.drivetrain, container.shoulder);
+            return AutoBalanceGroup.get(container.drivetrain);
         }),
 
         PlacePickupPlace("Place then Pickup Cube then Place", (container) -> {

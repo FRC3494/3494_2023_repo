@@ -31,9 +31,9 @@ public final class Constants extends AutoConfigurable {
                     put(ArmPosition.GroundIntakeCube,
                             new ArmState(ShoulderState.Base1, ForearmState.GroundIntakeCube, WristState.GroundCube));
                     put(ArmPosition.DoubleSubstationCone,
-                            new ArmState(ShoulderState.Base2, ForearmState.DoubleSubstation, WristState.DoubleSubCone));
+                            new ArmState(ShoulderState.Base2, ForearmState.DoubleSubCone, WristState.DoubleSubCone));
                     put(ArmPosition.DoubleSubstationCube,
-                            new ArmState(ShoulderState.Base2, ForearmState.DoubleSubstation, WristState.DoubleSubCube));
+                            new ArmState(ShoulderState.Base2, ForearmState.DoubleSubCube, WristState.DoubleSubCube));
                     put(ArmPosition.SingleSubstation,
                             new ArmState(ShoulderState.Base2, ForearmState.SingleSubstation, WristState.SingleSub));
                     put(ArmPosition.Base4Cone2,
@@ -103,7 +103,8 @@ public final class Constants extends AutoConfigurable {
                     put(ForearmState.Intermediate, 42.8);
                     put(ForearmState.GroundIntakeCube, 46.9);
                     put(ForearmState.GroundIntakeCone, 79.52);
-                    put(ForearmState.DoubleSubstation, -72.00);
+                    put(ForearmState.DoubleSubCube, -72.00);
+                    put(ForearmState.DoubleSubCone, -83.00);
                     put(ForearmState.SingleSubstation, 28.09);
                     put(ForearmState.Base1Hybrid, 25.3);
                     put(ForearmState.Store, 11.9);
@@ -145,19 +146,19 @@ public final class Constants extends AutoConfigurable {
 
             public static HashMap<WristState, Double> POSITIONS = new HashMap<>() {
                 {
-                    put(WristState.Store, -136.0 + 90);
-                    put(WristState.GroundCube, 24.0 + 90);
-                    put(WristState.GroundCone, 19.7 + 90);
-                    put(WristState.Base2Cone1, -4.8 + 90);
-                    put(WristState.Base4Cone1, 135.5 + 90);
-                    put(WristState.Base4Cone2, 60.00 + 90);
-                    put(WristState.Base4Cube1, -104.5 + 90);
-                    put(WristState.Base4Cube2, 58.2 + 90);
-                    put(WristState.DoubleSubCube, 56.06 + 90);
-                    put(WristState.DoubleSubCone, 20.5 + 90);
-                    put(WristState.SingleSub, 119.01 + 90);
-                    put(WristState.Hybrid, 95.2 + 90);
-                    put(WristState.Base2Cube1, -9.97 + 90);
+                    put(WristState.Store, -46.0);
+                    put(WristState.GroundCube, 114.0);
+                    put(WristState.GroundCone, 109.7);
+                    put(WristState.Base2Cone1, 85.2);
+                    put(WristState.Base4Cone1, 225.5);
+                    put(WristState.Base4Cone2, 150.0);
+                    put(WristState.Base4Cube1, -14.5);
+                    put(WristState.Base4Cube2, 148.2);
+                    put(WristState.DoubleSubCube, 146.1);
+                    put(WristState.DoubleSubCone, 143.4);
+                    put(WristState.SingleSub, 209.0);
+                    put(WristState.Hybrid, 185.2);
+                    put(WristState.Base2Cube1, 80.0);
                 }
             };
         }
@@ -299,7 +300,7 @@ public final class Constants extends AutoConfigurable {
 
             public static final double LEVEL_ANGLE = 5;
 
-            public static final double FAST_POWER = 2.2;
+            public static final double FAST_POWER = 0.75;
             public static final double SLOW_POWER = 0.585;// 0.05
             public static final double DIVIDE_FACTOR = 3;
             public static final double DIVIDE_ANGLE = 8.5;

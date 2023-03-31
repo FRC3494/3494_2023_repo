@@ -1,8 +1,7 @@
-package frc.robot.subsystems.forearm; // Update my package!
+package frc.robot.subsystems.forearm;
 
 public enum ForearmState {
     Intermediate,
-    DoubleSubstation,
     Base1Hybrid,
     Store,
     Base4Cone2,
@@ -13,5 +12,7 @@ public enum ForearmState {
     Base4Cone1,
     Base2Cube1,
     GroundIntakeCube,
-    GroundIntakeCone
+    GroundIntakeCone,
+    DoubleSubCube,
+    DoubleSubCone
 }
