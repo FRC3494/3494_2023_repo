@@ -76,7 +76,7 @@ public class Wrist extends SubsystemBase implements IStateControllable<ArmState>
         }
     }
 
-    double getAbsoluteEncoderAngle() {
+    public double getAbsoluteEncoderAngle() {
         return -encoder.getPosition() + 180;
     }
 

@@ -20,9 +20,12 @@ import frc.robot.commands.RunPneumatics;
 import frc.robot.commands.auto.AutoBalance;
 import frc.robot.commands.auto.AutoSetArm;
 import frc.robot.commands.auto.AutoSetClaw;
+import frc.robot.commands.auto.AutoSetForearm;
+import frc.robot.commands.auto.AutoSetShoulder;
 import frc.robot.commands.auto.AutoSetWrist;
 import frc.robot.commands.auto.FollowPath;
 import frc.robot.commands.groups.AutoBalanceGroup;
+import frc.robot.commands.groups.AutoBalanceGroupDumb;
 import frc.robot.commands.groups.AutoBalanceTeleopGroup;
 import frc.robot.commands.teleop.TeleopDrive;
 import frc.robot.subsystems.Camera;
@@ -34,9 +37,11 @@ import frc.robot.subsystems.arm.ArmPosition;
 import frc.robot.subsystems.claw.Claw;
 import frc.robot.subsystems.claw.ClawState;
 import frc.robot.subsystems.forearm.Forearm;
+import frc.robot.subsystems.forearm.ForearmState;
 import frc.robot.subsystems.leds.LedPattern;
 import frc.robot.subsystems.leds.Leds;
 import frc.robot.subsystems.shoulder.Shoulder;
+import frc.robot.subsystems.shoulder.ShoulderState;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristState;
 
@@ -52,6 +57,7 @@ public class RobotContainer {
     public final Camera camera;
     private ShuffleboardTab mainTab;
     private ShuffleboardTab fieldTab;
+    private ShuffleboardTab armTab;
 
     private SendableChooser<String> autoChooser;
 
@@ -131,7 +137,7 @@ public class RobotContainer {
     }
 
     public enum Autos {
-        PlaceThenBalance("PlaceConeExitBalance", (container) -> {
+        PlaceThenMobilityThenBalance("Place Medium Then Mobility Then Balance", (container) -> {
             return new SequentialCommandGroup(
                     new AutoSetArm(container.arm, ArmPosition.Base2Cone1),
                     new AutoSetWrist(container.wrist, WristState.Base2Cone1),
@@ -145,11 +151,85 @@ public class RobotContainer {
                     AutoBalanceGroup.get(container.drivetrain));
         }),
 
+        PlaceThenMobilityThenDumbBalance("Place Medium Then Mobility Then Dumb Balance", (container) -> {
+            return new SequentialCommandGroup(
+                    new AutoSetArm(container.arm, ArmPosition.Base2Cone1),
+                    new AutoSetWrist(container.wrist, WristState.Base2Cone1),
+                    new WaitCommand(1),
+                    new AutoSetClaw(container.claw, ClawState.OuttakeCone),
+                    new WaitCommand(0.2),
+                    new AutoSetWrist(container.wrist, WristState.Store),
+                    new AutoSetArm(container.arm, ArmPosition.Store),
+                    new AutoSetClaw(container.claw, ClawState.Idle),
+                    pathFollow(container, "Auto1 Segment1", 1.85),
+                    AutoBalanceGroupDumb.get(container.drivetrain),
+                    pathFollow(container, "Dumb Balance", 0.5));
+        }),
+        PlaceThenMobility("Place Medium Then Mobility", (container) -> {
+            return new SequentialCommandGroup(
+                    new AutoSetArm(container.arm, ArmPosition.Base2Cone1),
+                    new AutoSetWrist(container.wrist, WristState.Base2Cone1),
+                    new WaitCommand(1),
+                    new AutoSetClaw(container.claw, ClawState.OuttakeCone),
+                    new WaitCommand(0.2),
+                    new AutoSetWrist(container.wrist, WristState.Store),
+                    new AutoSetArm(container.arm, ArmPosition.Store),
+                    new AutoSetClaw(container.claw, ClawState.Idle),
+                    pathFollow(container, "Auto1 Segment1", 1.85));
+        }),
+        PlaceThenBalance("Place Medium Then Balance", (container) -> {
+            return new SequentialCommandGroup(
+                    new AutoSetArm(container.arm, ArmPosition.Base2Cone1),
+                    new AutoSetWrist(container.wrist, WristState.Base2Cone1),
+                    new WaitCommand(1),
+                    new AutoSetClaw(container.claw, ClawState.OuttakeCone),
+                    new WaitCommand(0.2),
+                    new AutoSetWrist(container.wrist, WristState.Store),
+                    new AutoSetArm(container.arm, ArmPosition.Store),
+                    new AutoSetClaw(container.claw, ClawState.Idle),
+                    AutoBalanceGroup.get(container.drivetrain));
+        }),
+        Place("Place Medium", (container) -> {
+            return new SequentialCommandGroup(
+                    new AutoSetArm(container.arm, ArmPosition.Base2Cone1),
+                    new AutoSetWrist(container.wrist, WristState.Base2Cone1),
+                    new WaitCommand(1),
+                    new AutoSetClaw(container.claw, ClawState.OuttakeCone),
+                    new WaitCommand(0.2),
+                    new AutoSetWrist(container.wrist, WristState.Store),
+                    new AutoSetArm(container.arm, ArmPosition.Store),
+                    new AutoSetClaw(container.claw, ClawState.Idle));
+        }),
+        PlaceHigh("Place High", (container) -> {
+            return new SequentialCommandGroup(
+                    new ParallelCommandGroup(
+                            new AutoSetForearm(container.forearm, ForearmState.Base4Cone2),
+                            new AutoSetWrist(container.wrist, WristState.Base4Cone2)),
+                    new WaitCommand(0.5),
+                    new AutoSetShoulder(container.shoulder, ShoulderState.Base4),
+                    new WaitCommand(2),
+                    new AutoSetClaw(container.claw, ClawState.OuttakeCone),
+                    new WaitCommand(0.2),
+                    new ParallelCommandGroup(
+                            pathFollow(container, "LeaveCom"),
+                            new SequentialCommandGroup(
+                                    new WaitCommand(0.75),
+                                    new ParallelCommandGroup(
+                                            new AutoSetShoulder(container.shoulder, ShoulderState.Base2),
+                                            new AutoSetForearm(container.forearm, ForearmState.Store),
+                                            new AutoSetWrist(container.wrist, WristState.Store)),
+                                    new AutoSetClaw(container.claw, ClawState.Idle))));
+        }),
+
         Balance("Balance", (container) -> {
             return AutoBalanceGroup.get(container.drivetrain);
         }),
 
-        PlacePickupPlace("Place then Pickup Cube then Place", (container) -> {
+        None("None", (container) -> {
+            return new PrintCommand("l");
+        }),
+
+        PlacePickupPlaceRight("Place Medium then Pickup Cube then Place Medium Right", (container) -> {
             return new SequentialCommandGroup(
                     new AutoSetArm(container.arm, ArmPosition.Base2Cone1),
                     new AutoSetWrist(container.wrist, WristState.Base2Cone1),
@@ -159,12 +239,12 @@ public class RobotContainer {
                     new ParallelCommandGroup(
                             new AutoSetArm(container.arm, ArmPosition.GroundIntakeCube),
                             new AutoSetClaw(container.claw, ClawState.IntakeCube),
-                            pathFollow(container, "LeaveComPickUp")),
+                            pathFollow(container, "LeaveComPickUpRight")),
                     new WaitCommand(0.75),
                     new AutoSetClaw(container.claw, ClawState.IntakeCube),
                     new ParallelCommandGroup(
                             new AutoSetArm(container.arm, ArmPosition.Base2Cube1),
-                            pathFollow(container, "LeaveComPickUpReturn")),
+                            pathFollow(container, "LeaveComPickUpReturnRight")),
                     new WaitCommand(0.2),
                     new AutoSetClaw(container.claw, ClawState.OuttakeCube),
                     new WaitCommand(0.3),
@@ -218,6 +298,7 @@ public class RobotContainer {
 
         mainTab = Shuffleboard.getTab("Main");
         fieldTab = Shuffleboard.getTab("Field");
+        armTab = Shuffleboard.getTab("Arm");
 
         mainTab.add(autoChooser).withSize(2, 1).withPosition(0, 0);
 
@@ -234,8 +315,12 @@ public class RobotContainer {
         fieldTab.addDouble("NavX Roll", () -> NavX.getRoll()).withPosition(8, 1);
         fieldTab.addDouble("NavX Yaw", () -> NavX.getYaw()).withPosition(8, 2);
 
-        fieldTab.addDouble("Forearm Position", () -> forearm.getAngle()).withPosition(8, 3);
-        fieldTab.addDouble("Wrist Position", () -> wrist.getAngle()).withPosition(8, 4);
+        armTab.addDouble("Motor Forearm Position", () -> forearm.getAngle()).withPosition(0, 0).withSize(2, 1);
+        armTab.addDouble("Real Forearm Position", () -> forearm.getAbsoluteEncoderAngle()).withPosition(2, 0)
+                .withSize(2, 1);
+        armTab.addDouble("Motor Wrist Position", () -> wrist.getAngle()).withPosition(0, 1).withSize(2, 1);
+        armTab.addDouble("Real Wrist Position", () -> wrist.getAbsoluteEncoderAngle()).withPosition(2, 1).withSize(2,
+                1);
 
         mainTab.add(camera.getCamera()).withPosition(2, 0).withSize(4, 4);
 

@@ -104,7 +104,7 @@ public final class Constants extends AutoConfigurable {
                     put(ForearmState.GroundIntakeCube, 46.9);
                     put(ForearmState.GroundIntakeCone, 79.52);
                     put(ForearmState.DoubleSubCube, -72.00);
-                    put(ForearmState.DoubleSubCone, -83.00);
+                    put(ForearmState.DoubleSubCone, -86.10);
                     put(ForearmState.SingleSubstation, 28.09);
                     put(ForearmState.Base1Hybrid, 25.3);
                     put(ForearmState.Store, 11.9);
@@ -112,7 +112,7 @@ public final class Constants extends AutoConfigurable {
                     put(ForearmState.Base4Cube2, -120.08);
                     put(ForearmState.Base4Cone1, -112.7);
                     put(ForearmState.Base4Cube1, -5.3);
-                    put(ForearmState.Base2Cone1, 110.5);
+                    put(ForearmState.Base2Cone1, 120.7);
                     put(ForearmState.Base2Cube1, 100.9);
                 }
             };
@@ -149,16 +149,16 @@ public final class Constants extends AutoConfigurable {
                     put(WristState.Store, -46.0);
                     put(WristState.GroundCube, 114.0);
                     put(WristState.GroundCone, 109.7);
-                    put(WristState.Base2Cone1, 85.2);
+                    put(WristState.Base2Cone1, 74.4);
                     put(WristState.Base4Cone1, 225.5);
                     put(WristState.Base4Cone2, 150.0);
                     put(WristState.Base4Cube1, -14.5);
                     put(WristState.Base4Cube2, 148.2);
                     put(WristState.DoubleSubCube, 146.1);
-                    put(WristState.DoubleSubCone, 143.4);
+                    put(WristState.DoubleSubCone, 168.3);
                     put(WristState.SingleSub, 209.0);
                     put(WristState.Hybrid, 185.2);
-                    put(WristState.Base2Cube1, 80.0);
+                    put(WristState.Base2Cube1, 110.4);
                 }
             };
         }

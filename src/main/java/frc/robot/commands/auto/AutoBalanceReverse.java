@@ -5,7 +5,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 
-public class AutoBalance extends CommandBase {
+public class AutoBalanceReverse extends CommandBase {
 	public Drivetrain drivetrain;
 
 	double accumulator = 0;
@@ -17,7 +17,7 @@ public class AutoBalance extends CommandBase {
 
 	double lastAngle = 0;
 
-	public AutoBalance(Drivetrain drivetrain) {
+	public AutoBalanceReverse(Drivetrain drivetrain) {
 		this.drivetrain = drivetrain;
 
 		addRequirements(drivetrain);
@@ -37,7 +37,7 @@ public class AutoBalance extends CommandBase {
 		double deltaTime = currentTime - previousTime;
 		previousTime = currentTime;
 
-		double currentAngle = -NavX.getPitch();
+		double currentAngle = NavX.getPitch();
 		// double angleDerivative = lastAngle - currentAngle;
 		lastAngle = currentAngle;
 
@@ -49,7 +49,7 @@ public class AutoBalance extends CommandBase {
 
 			balancedTime += deltaTime;
 		} else {
-			double curvedPower = Constants.Commands.AutoBalance.SLOW_POWER * Math.pow(currentAngle / 11, 5);
+			double curvedPower = Constants.Commands.AutoBalance.SLOW_POWER * Math.pow(currentAngle / 16, 5);
 
 			setDrivetrain(Math.min(Math.max(curvedPower, -Constants.Commands.AutoBalance.SLOW_POWER),
 					Constants.Commands.AutoBalance.SLOW_POWER), 0, 0, false);
@@ -64,6 +64,6 @@ public class AutoBalance extends CommandBase {
 	}
 
 	public void setDrivetrain(double x, double y, double w, boolean fieldRelative) {
-		drivetrain.drive(-x, y, w, fieldRelative);
+		drivetrain.drive(x, y, w, fieldRelative);
 	}
 }

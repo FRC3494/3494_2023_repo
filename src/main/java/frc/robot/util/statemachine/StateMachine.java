@@ -185,7 +185,7 @@ public abstract class StateMachine<TState extends StateMachineState> extends Sub
         parents[source] = -1;
         while (!queue.isEmpty()) {
             int v = queue.pop();
-            
+
             for (TState key : adjacencyMatrix.get(nodes.get(v)).keySet()) {
                 if (adjacencyMatrix.get(nodes.get(v)).get(key) < 0)
                     continue;
@@ -196,9 +196,10 @@ public abstract class StateMachine<TState extends StateMachineState> extends Sub
                     used[u] = true;
                     queue.push(u);
                     d[u] = d[v] + 1;
-                    parents[u] = v;nodes.get(v);
+                    parents[u] = v;
+                    nodes.get(v);
                 }
-                
+
             }
         }
 

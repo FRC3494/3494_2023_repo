@@ -74,7 +74,7 @@ public class Forearm extends SubsystemBase implements IStateControllable<ArmStat
         }
     }
 
-    double getAbsoluteEncoderAngle() {
+    public double getAbsoluteEncoderAngle() {
         return encoder.getPosition() - 180;
     }
 
