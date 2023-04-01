@@ -86,7 +86,8 @@ public class Shoulder extends SubsystemBase implements IStateControllable<ArmSta
                 break;
         }
 
-        if (currentState == newState) shouldWeSlow = false;
+        if (currentState == newState)
+            shouldWeSlow = false;
 
         currentState = newState;
 
@@ -111,5 +112,10 @@ public class Shoulder extends SubsystemBase implements IStateControllable<ArmSta
 
     public boolean needsSlow() {
         return shouldWeSlow;
+    }
+
+    public void toZero() {
+        setTopPiston(Value.kReverse);
+        setBottomPiston(Value.kForward);
     }
 }

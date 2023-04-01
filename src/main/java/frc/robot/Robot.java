@@ -50,16 +50,18 @@ public class Robot extends TimedRobot {
 			autonomousCommand.cancel();
 		}
 
-        switch (DriverStation.getAlliance()) {
-            case Red:
-                OI.setRedOffset();
-                break;
-            case Blue:
-                OI.setBlueOffset();
-                break;
-            default:
-                break;
-        }
+		switch (DriverStation.getAlliance()) {
+			case Red:
+				OI.setRedOffset();
+				break;
+			case Blue:
+				OI.setBlueOffset();
+				break;
+			default:
+				break;
+		}
+
+		robotContainer.teleopInit();
 	}
 
 	@Override

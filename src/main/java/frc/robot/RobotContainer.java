@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.RunPneumatics;
 import frc.robot.commands.auto.AutoBalance;
+import frc.robot.commands.auto.AutoLockDrivetrain;
 import frc.robot.commands.auto.AutoSetArm;
 import frc.robot.commands.auto.AutoSetClaw;
 import frc.robot.commands.auto.AutoSetForearm;
@@ -26,6 +27,7 @@ import frc.robot.commands.auto.AutoSetWrist;
 import frc.robot.commands.auto.FollowPath;
 import frc.robot.commands.groups.AutoBalanceGroup;
 import frc.robot.commands.groups.AutoBalanceGroupDumb;
+import frc.robot.commands.groups.AutoBalanceGroupDumbReverse;
 import frc.robot.commands.groups.AutoBalanceTeleopGroup;
 import frc.robot.commands.teleop.TeleopDrive;
 import frc.robot.subsystems.Camera;
@@ -246,6 +248,30 @@ public class RobotContainer {
                                     new AutoSetClaw(container.claw, ClawState.Idle))));
         }),
 
+        PlaceHighBalanceForward("Place High Balance Forward", (container) -> {
+            return new SequentialCommandGroup(
+                    new ParallelCommandGroup(
+                            new AutoSetForearm(container.forearm, ForearmState.Base4Cone2),
+                            new AutoSetWrist(container.wrist, WristState.Base4Cone2)),
+                    new WaitCommand(0.5),
+                    new AutoSetShoulder(container.shoulder, ShoulderState.Base4),
+                    new WaitCommand(2),
+                    new AutoSetClaw(container.claw, ClawState.OuttakeCone),
+                    new WaitCommand(0.2),
+                    pathFollow(container, "Dumb Balance Reverse Place Nudge", 0.5),
+                    new ParallelCommandGroup(
+                            new AutoSetShoulder(container.shoulder, ShoulderState.Base2),
+                            new AutoSetForearm(container.forearm, ForearmState.Store),
+                            new AutoSetWrist(container.wrist, WristState.Store)),
+                    new ParallelCommandGroup(
+                            new SequentialCommandGroup(
+                                    AutoBalanceGroupDumbReverse.get(container.drivetrain),
+                                    pathFollow(container, "Dumb Balance Reverse", 0.5)),
+                            new SequentialCommandGroup(
+                                    new AutoSetClaw(container.claw, ClawState.Idle))),
+                    new AutoLockDrivetrain(container.drivetrain));
+        }),
+
         Balance("Balance", (container) -> {
             return AutoBalanceGroup.get(container.drivetrain);
         }),
@@ -366,6 +392,10 @@ public class RobotContainer {
         leds.setPattern(LedPattern.IDLE);
     }
 
+    public void teleopInit() {
+        drivetrain.unlock();
+    }
+
     public void configureButtonBindings() {
         // OI.resetHeadingEvent().rising().ifHigh(drivetrain::zeroYaw);
         OI.resetHeadingEvent().rising().ifHigh(() -> {
@@ -433,6 +463,10 @@ public class RobotContainer {
             System.out.println(OI.coneMode);
             leds.setPattern(LedPattern.CUBE);
             OI.coneMode = false;
+        });
+
+        OI.toZero().rising().ifHigh(() -> {
+            arm.toZero();
         });
     }
 }

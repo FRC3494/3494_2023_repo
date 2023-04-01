@@ -158,4 +158,8 @@ public class Forearm extends SubsystemBase implements IStateControllable<ArmStat
             motor.getPIDController().setOutputRange(Constants.Subsystems.Forearm.SLOW_MIN_SPEED,
                     Constants.Subsystems.Forearm.SLOW_MAX_SPEED);
     }
+
+    public void toZero() {
+        setTargetAngle(0);
+    }
 }

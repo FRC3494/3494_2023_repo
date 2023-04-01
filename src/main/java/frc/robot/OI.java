@@ -319,4 +319,10 @@ public final class OI {
         // return leftButtonBoard.button(20, eventLoop);
         return rightButtonBoard.button(2, eventLoop);
     }
+
+    public static BooleanEvent toZero() {
+        return rightButtonBoard.button(5, eventLoop)
+                .and(rightButtonBoard.button(6, eventLoop))
+                .and(rightButtonBoard.button(7, eventLoop));
+    }
 }

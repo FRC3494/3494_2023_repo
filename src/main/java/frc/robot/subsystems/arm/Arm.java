@@ -9,15 +9,17 @@ import frc.robot.util.statemachine.StateMachine;
 public class Arm extends StateMachine<ArmState> {
     Forearm forearm;
     Shoulder shoulder;
+    Wrist wrist;
 
     @SuppressWarnings("unchecked") // java is a hell language
     public Arm(Shoulder shoulder, Forearm forearm, Wrist wrist) {
         super(
-            ArmConnections.connections,
-            Constants.Subsystems.Arm.INITIAL_STATE);
+                ArmConnections.connections,
+                Constants.Subsystems.Arm.INITIAL_STATE);
 
         this.forearm = forearm;
         this.shoulder = shoulder;
+        this.wrist = wrist;
 
         registerControllables(shoulder, forearm, wrist);
     }
@@ -30,9 +32,15 @@ public class Arm extends StateMachine<ArmState> {
     public void periodic() {
         super.periodic();
 
-        if (shoulder.needsSlow()) 
+        if (shoulder.needsSlow())
             forearm.slowMode(true);
-        else 
+        else
             forearm.slowMode(false);
+    }
+
+    public void toZero() {
+        shoulder.toZero();
+        forearm.toZero();
+        wrist.toZero();
     }
 }

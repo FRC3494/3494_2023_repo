@@ -151,4 +151,8 @@ public class Wrist extends SubsystemBase implements IStateControllable<ArmState>
     public boolean crashDetected() {
         return false;
     }
+
+    public void toZero() {
+        setTargetAngle(0);
+    }
 }
