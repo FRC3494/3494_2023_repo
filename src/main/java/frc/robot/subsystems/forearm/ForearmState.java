@@ -14,5 +14,7 @@ public enum ForearmState {
     GroundIntakeCube,
     GroundIntakeCone,
     DoubleSubCube,
-    DoubleSubCone
+    DoubleSubCone,
+
+    AUTO_Base2Cube1
 }

@@ -76,8 +76,8 @@ public final class Constants extends AutoConfigurable {
             public static int MOTOR_CHANNEL = 5;
             public static double MOTOR_REDUCTION = (1.0 / 5.0) * (1.0 / 4.0) * (1.0 / 3.0) * (10.0 / 40.0);
 
-            public static double MAX_SPEED = 0.5;
-            public static double MIN_SPEED = -0.5;
+            public static double MAX_SPEED = 0.6;
+            public static double MIN_SPEED = -0.6;
 
             public static double SLOW_MAX_SPEED = 0.15;
             public static double SLOW_MIN_SPEED = -0.15;
@@ -100,27 +100,31 @@ public final class Constants extends AutoConfigurable {
 
             public static HashMap<ForearmState, Double> POSITIONS = new HashMap<>() {
                 {
-                    put(ForearmState.Intermediate, 78.2);
+                    put(ForearmState.Intermediate, 42.8);
                     put(ForearmState.GroundIntakeCube, 62.9);
                     put(ForearmState.GroundIntakeCone, 79.52);
                     put(ForearmState.DoubleSubCube, -72.00);
                     put(ForearmState.DoubleSubCone, -86.10);
                     put(ForearmState.SingleSubstation, 28.09);
-                    put(ForearmState.Base1Hybrid, 25.3);
+                    put(ForearmState.Base1Hybrid, 37.8);
                     put(ForearmState.Store, 11.9);
                     put(ForearmState.Base4Cone2, -134.62);
                     put(ForearmState.Base4Cube2, -120.08);
-                    put(ForearmState.Base4Cone1, -113.7);
+                    put(ForearmState.Base4Cone1, -117.2);
                     put(ForearmState.Base4Cube1, -3.1);
-                    put(ForearmState.Base2Cone1, 123.7);
+                    put(ForearmState.Base2Cone1, 129.0);
                     put(ForearmState.Base2Cube1, 100.9);
+
+                    put(ForearmState.AUTO_Base2Cube1, -46.3);
                 }
             };
         }
 
         public static final class Wrist {
             public static int MOTOR_CHANNEL = 9;
-            public static double MOTOR_REDUCTION = (1.0 / 5.0) * (1.0 / 5.0) * (18.0 / 60.0);
+            public static double MOTOR_REDUCTION = (13.0 / 68.0) * (13.0 / 68.0) * (20.0 / 60.0);
+            // public static double MOTOR_REDUCTION = (1.0 / 5.0) * (1.0 / 5.0) * (18.0 /
+            // 60.0);
 
             public static double MAX_SPEED = 0.3;
             public static double MIN_SPEED = -0.3;
@@ -147,18 +151,20 @@ public final class Constants extends AutoConfigurable {
             public static HashMap<WristState, Double> POSITIONS = new HashMap<>() {
                 {
                     put(WristState.Store, -46.0);
-                    put(WristState.GroundCube, 114.0);
+                    put(WristState.GroundCube, 139.9);
                     put(WristState.GroundCone, 109.7);
-                    put(WristState.Base2Cone1, 74.4);
-                    put(WristState.Base4Cone1, 214.3);
+                    put(WristState.Base2Cone1, 76.9);
+                    put(WristState.Base4Cone1, 233.2);
                     put(WristState.Base4Cone2, 150.0);
                     put(WristState.Base4Cube1, -25.8);
-                    put(WristState.Base4Cube2, 148.2);
+                    put(WristState.Base4Cube2, 162.8);
                     put(WristState.DoubleSubCube, 146.1);
                     put(WristState.DoubleSubCone, 168.3);
-                    put(WristState.SingleSub, 209.0);
+                    put(WristState.SingleSub, 229.7);
                     put(WristState.Hybrid, 185.2);
                     put(WristState.Base2Cube1, 110.4);
+
+                    put(WristState.AUTO_Base2Cube1, 107.2);
                 }
             };
         }
@@ -339,8 +345,12 @@ public final class Constants extends AutoConfigurable {
         public static final int SECONDARY_LEFT_CONTROLLER_PORT = 1;
         public static final int SECONDARY_RIGHT_CONTROLLER_PORT = 2;
 
-        public static final double MAX_DRIVE_SPEED = 3; // m/s
-        public static final double MAX_TURN_SPEED = 5.5; // rad/s
+        public static final double DRIVE_SPEED = 3; // m/s
+        public static final double TURN_SPEED = 5.5; // rad/s
+
+        public static final double SLOW_DRIVE_SPEED = 1.5; // m/s
+        public static final double SLOW_TURN_SPEED = 2.75; // rad/s
+
         public static final double DPAD_SPEED = 0.1;
 
         public static final double FOREARM_FINE_ADJUST_SPEED = 0.15;

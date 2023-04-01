@@ -61,38 +61,43 @@ public final class OI {
     }
 
     public static double teleopXVelocity() {
+        double driveSpeed = slowMode() ? Constants.OI.SLOW_DRIVE_SPEED : Constants.OI.DRIVE_SPEED;
+
         double forward = primaryController.getLeftY();
         double left = primaryController.getLeftX();
         double dPadPower = ((primaryController.getPOV() == 180) ? Constants.OI.DPAD_SPEED : 0)
                 + ((primaryController.getPOV() == 0) ? -Constants.OI.DPAD_SPEED : 0);
 
         double angle = (Math.atan2(forward, left) + Math.toRadians(offset)) % (2 * Math.PI);
-        double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), Constants.OI.MAX_DRIVE_SPEED)
+        double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), driveSpeed)
                 + dPadPower;
 
-        return modifyAxis(-velocity) * Math.cos(angle) * Constants.OI.MAX_DRIVE_SPEED * driveMultiplier();
+        return modifyAxis(-velocity) * Math.cos(angle) * driveSpeed;
     }
 
     public static double teleopYVelocity() {
+        double driveSpeed = slowMode() ? Constants.OI.SLOW_DRIVE_SPEED : Constants.OI.DRIVE_SPEED;
+
         double forward = primaryController.getLeftY();
         double left = primaryController.getLeftX();
         double dPadPower = ((primaryController.getPOV() == 90) ? Constants.OI.DPAD_SPEED : 0)
                 + ((primaryController.getPOV() == 270) ? -Constants.OI.DPAD_SPEED : 0);
 
         double angle = (Math.atan2(forward, left) + Math.toRadians(offset)) % (2 * Math.PI);
-        double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), Constants.OI.MAX_DRIVE_SPEED)
+        double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), driveSpeed)
                 + dPadPower;
 
-        return modifyAxis(velocity) * Math.sin(angle) * Constants.OI.MAX_DRIVE_SPEED * driveMultiplier();
+        return modifyAxis(velocity) * Math.sin(angle) * driveSpeed;
     }
 
     public static double teleopTurnVelocity() {
-        return modifyAxis(primaryController.getRightX()) * Constants.OI.MAX_TURN_SPEED * driveMultiplier();
+        double turnSpeed = slowMode() ? Constants.OI.SLOW_TURN_SPEED : Constants.OI.TURN_SPEED;
+
+        return modifyAxis(primaryController.getRightX()) * turnSpeed;
     }
 
-    public static double driveMultiplier() {
-        return (primaryController.getRightTriggerAxis() >= 0.1) ? 0.1
-                : ((primaryController.getLeftTriggerAxis() >= 0.1) ? 2 : 1);
+    public static boolean slowMode() {
+        return (primaryController.getRightTriggerAxis() >= 0.1) || (primaryController.getLeftTriggerAxis() >= 0.1);
     }
 
     public static double armDirectDrivePower() {

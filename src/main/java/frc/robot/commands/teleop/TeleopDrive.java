@@ -14,6 +14,7 @@ public class TeleopDrive extends CommandBase {
 
     public TeleopDrive(Drivetrain drivetrain, Forearm forearm, Wrist wrist) {
         this.drivetrain = drivetrain;
+
         this.forearm = forearm;
         this.wrist = wrist;
 
@@ -53,7 +54,8 @@ public class TeleopDrive extends CommandBase {
 
     @Override
     public void execute() {
-        drivetrain.drive(OI.teleopXVelocity(), OI.teleopYVelocity(), -OI.teleopTurnVelocity(), true);
+        drivetrain.drive(OI.teleopXVelocity(), OI.teleopYVelocity(),
+                -OI.teleopTurnVelocity(), true);
 
         double forearmFineAdjust = OI.forearmFineAdjust();
 
