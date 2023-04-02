@@ -76,8 +76,8 @@ public final class Constants extends AutoConfigurable {
             public static int MOTOR_CHANNEL = 5;
             public static double MOTOR_REDUCTION = (1.0 / 5.0) * (1.0 / 4.0) * (1.0 / 3.0) * (10.0 / 40.0);
 
-            public static double MAX_SPEED = 0.6;
-            public static double MIN_SPEED = -0.6;
+            public static double MAX_SPEED = 0.8;
+            public static double MIN_SPEED = -0.8;
 
             public static double SLOW_MAX_SPEED = 0.15;
             public static double SLOW_MIN_SPEED = -0.15;
@@ -126,8 +126,8 @@ public final class Constants extends AutoConfigurable {
             // public static double MOTOR_REDUCTION = (1.0 / 5.0) * (1.0 / 5.0) * (18.0 /
             // 60.0);
 
-            public static double MAX_SPEED = 0.3;
-            public static double MIN_SPEED = -0.3;
+            public static double MAX_SPEED = 0.4;
+            public static double MIN_SPEED = -0.4;
 
             public static float MIN_POSITION = -33.403f + (float) frc.robot.subsystems.wrist.Wrist.degrees2Motor(90);
             public static float MAX_POSITION = 37.905f + (float) frc.robot.subsystems.wrist.Wrist.degrees2Motor(90);

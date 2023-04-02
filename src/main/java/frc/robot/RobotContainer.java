@@ -138,6 +138,17 @@ public class RobotContainer {
          */
     }
 
+    public static Command pathFollow(RobotContainer container, String pathName, PathConstraints constraints) {
+        PathPlannerTrajectory loadedPath = PathPlanner.loadPath(pathName, constraints);
+        return new FollowPath(container.drivetrain, loadedPath, container.robotPosition, true);
+        /*
+         * return new FollowPathWithEvents(new FollowPath(container.drivetrain,
+         * loadedPath, container.robotPosition),
+         * loadedPath.getMarkers(),
+         * Constants.RobotContainer.PathPlanner.PATH_EVENTS);
+         */
+    }
+
     public enum Autos {
         PlaceThenMobilityThenBalance("Place Medium Then Mobility Then Balance", (container) -> {
             return new SequentialCommandGroup(
@@ -357,12 +368,12 @@ public class RobotContainer {
                                             new ParallelCommandGroup(
                                                     new AutoSetForearm(container.forearm, ForearmState.AUTO_Base2Cube1),
                                                     new AutoSetWrist(container.wrist, WristState.AUTO_Base2Cube1))),
-                                    pathFollow(container, "LeaveComPickUpReturnLeftNo180")),
-                            new WaitCommand(0.5),
-                            new AutoSetClaw(container.claw, ClawState.FullOuttake),
-                            new WaitCommand(0.5),
-                            new AutoSetArm(container.arm, ArmPosition.Store),
-                            new AutoSetClaw(container.claw, ClawState.Idle));
+                                    pathFollow(container, "LeaveComPickUpReturnLeftNo180", new PathConstraints(3, 2)))
+                    // new WaitCommand(0.5),
+                    // new AutoSetClaw(container.claw, ClawState.FullOuttake),
+                    // new WaitCommand(0.5),
+                    // new AutoSetArm(container.arm, ArmPosition.Store)
+                    );
                 }),
         PlaceMediumLEFTPickupCubeBack("Place Medium from back Pickup Cube then place Medium from back LEFT",
                 (container) -> {
@@ -389,7 +400,7 @@ public class RobotContainer {
                                                             new WaitCommand(0.85),
                                                             new AutoSetShoulder(container.shoulder,
                                                                     ShoulderState.Base1))))),
-                            new WaitCommand(0.5),
+                            new WaitCommand(0.25),
                             new ParallelCommandGroup(
                                     new AutoSetClaw(container.claw, ClawState.IntakeCube),
                                     new SequentialCommandGroup(
@@ -397,12 +408,11 @@ public class RobotContainer {
                                             new ParallelCommandGroup(
                                                     new AutoSetForearm(container.forearm, ForearmState.AUTO_Base2Cube1),
                                                     new AutoSetWrist(container.wrist, WristState.AUTO_Base2Cube1))),
-                                    pathFollow(container, "LeaveComPickUpReturnRightNo180")),
-                            new WaitCommand(0.5),
-                            new AutoSetClaw(container.claw, ClawState.FullOuttake),
-                            new WaitCommand(0.5),
-                            new AutoSetArm(container.arm, ArmPosition.Store),
-                            new AutoSetClaw(container.claw, ClawState.Idle));
+                                    pathFollow(container, "LeaveComPickUpReturnRightNo180", new PathConstraints(3, 2)))
+                    // new WaitCommand(0.5),
+                    // new AutoSetClaw(container.claw, ClawState.FullOuttake),
+                    // new WaitCommand(0.5));
+                    );
                 });
 
         String displayName;
@@ -468,11 +478,12 @@ public class RobotContainer {
         fieldTab.addDouble("NavX Roll", () -> NavX.getRoll()).withPosition(8, 1);
         fieldTab.addDouble("NavX Yaw", () -> NavX.getYaw()).withPosition(8, 2);
 
-        armTab.addDouble("Motor Forearm Position", () -> forearm.getAngle()).withPosition(0, 0).withSize(2, 1);
-        armTab.addDouble("Real Forearm Position", () -> forearm.getAbsoluteEncoderAngle()).withPosition(2, 0)
+        armTab.addDouble("String Shoulder Position", () -> shoulder.position()).withPosition(0, 1).withSize(2, 1);
+        armTab.addDouble("Motor Forearm Position", () -> forearm.getAngle()).withPosition(0, 1).withSize(2, 1);
+        armTab.addDouble("Real Forearm Position", () -> forearm.getAbsoluteEncoderAngle()).withPosition(2, 1)
                 .withSize(2, 1);
-        armTab.addDouble("Motor Wrist Position", () -> wrist.getAngle()).withPosition(0, 1).withSize(2, 1);
-        armTab.addDouble("Real Wrist Position", () -> wrist.getAbsoluteEncoderAngle()).withPosition(2, 1).withSize(2,
+        armTab.addDouble("Motor Wrist Position", () -> wrist.getAngle()).withPosition(0, 2).withSize(2, 1);
+        armTab.addDouble("Real Wrist Position", () -> wrist.getAbsoluteEncoderAngle()).withPosition(2, 2).withSize(2,
                 1);
 
         mainTab.add(camera.getCamera()).withPosition(2, 0).withSize(4, 4);
