@@ -35,8 +35,8 @@ public final class Constants extends AutoConfigurable {
             }
 
             public static final class FrontRightModule {
-                public static int DRIVE_MOTOR_PORT = 3;
-                public static int STEER_MOTOR_PORT = 1;
+                public static int DRIVE_MOTOR_PORT = 1;
+                public static int STEER_MOTOR_PORT = 3;
 
                 public static int ENCODER_MOTOR_PORT = 3;
 
@@ -53,9 +53,9 @@ public final class Constants extends AutoConfigurable {
             }
 
             public static final class BackRightModule {
-                public static int DRIVE_MOTOR_PORT = 5;
+                public static int DRIVE_MOTOR_PORT = 30;
                 public static int STEER_MOTOR_PORT = 2;
-                public static int ENCODER_MOTOR_PORT = 30;
+                public static int ENCODER_MOTOR_PORT = 2;
                 public static double STEER_OFFSET = -Math.toRadians(164f+8f+2f+10f+5f+3.8f-8.3-119);
             }
 
@@ -120,8 +120,18 @@ public final class Constants extends AutoConfigurable {
 
     public static final class OI {
         public static final int PRIMARY_CONTROLLER_PORT = 0;
+        public static final int SECONDARY_LEFT_CONTROLLER_PORT = 1;
+        public static final int SECONDARY_RIGHT_CONTROLLER_PORT = 2;
 
-        public static final double MAX_DRIVE_SPEED = 9; // m/s
-        public static final double MAX_TURN_SPEED = 9; // rad/s
+        public static final double DRIVE_SPEED = 3; // m/s
+        public static final double TURN_SPEED = 5.5; // rad/s
+
+        public static final double SLOW_DRIVE_SPEED = 1.5; // m/s
+        public static final double SLOW_TURN_SPEED = 2.75; // rad/s
+
+        public static final double DPAD_SPEED = 0.1;
+
+        public static final double FOREARM_FINE_ADJUST_SPEED = 0.15;
+        public static final double WRIST_FINE_ADJUST_SPEED = 0.15;
     }
 }

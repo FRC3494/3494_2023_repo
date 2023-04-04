@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
+import frc.robot.subsystems.NavX;
 
 public final class OI {
     private static EventLoop eventLoop = new EventLoop();
@@ -23,10 +24,10 @@ public final class OI {
 
     private static double modifyAxis(double value) {
         // Deadband
-        value = deadband(value, 0.05);
+        value = deadband(value, 0.0001);
 
         // Square the axis
-        value = Math.copySign(value * value * value, value);
+        value = Math.copySign(Math.pow(value, 3), value);
 
         return value;
     }
@@ -39,16 +40,50 @@ public final class OI {
         eventLoop.poll();
     }
 
-    public static double getTeleopXVelocity() {
-        return modifyAxis(primaryController.getLeftY()) * Constants.OI.MAX_DRIVE_SPEED;
+    private static double offset = 0;
+
+    public static void zeroControls() {
+        offset = -NavX.getYaw() - 90;
     }
 
-    public static double getTeleopYVelocity() {
-        return modifyAxis(primaryController.getLeftX()) * Constants.OI.MAX_DRIVE_SPEED;
+    public static double teleopXVelocity() {
+        double driveSpeed = slowMode() ? Constants.OI.SLOW_DRIVE_SPEED : Constants.OI.DRIVE_SPEED;
+
+        double forward = primaryController.getLeftY();
+        double left = primaryController.getLeftX();
+        double dPadPower = ((primaryController.getPOV() == 180) ? Constants.OI.DPAD_SPEED : 0)
+                + ((primaryController.getPOV() == 0) ? -Constants.OI.DPAD_SPEED : 0);
+
+        double angle = (Math.atan2(forward, left) + Math.toRadians(offset)) % (2 * Math.PI);
+        double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), driveSpeed)
+                + dPadPower;
+
+        return modifyAxis(-velocity) * Math.cos(angle) * driveSpeed;
     }
 
-    public static double getTeleopTurnVelocity() {
-        return modifyAxis(primaryController.getRightX()) * Constants.OI.MAX_TURN_SPEED;
+    public static double teleopYVelocity() {
+        double driveSpeed = slowMode() ? Constants.OI.SLOW_DRIVE_SPEED : Constants.OI.DRIVE_SPEED;
+
+        double forward = primaryController.getLeftY();
+        double left = primaryController.getLeftX();
+        double dPadPower = ((primaryController.getPOV() == 90) ? Constants.OI.DPAD_SPEED : 0)
+                + ((primaryController.getPOV() == 270) ? -Constants.OI.DPAD_SPEED : 0);
+
+        double angle = (Math.atan2(forward, left) + Math.toRadians(offset)) % (2 * Math.PI);
+        double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), driveSpeed)
+                + dPadPower;
+
+        return modifyAxis(velocity) * Math.sin(angle) * driveSpeed;
+    }
+
+    public static double teleopTurnVelocity() {
+        double turnSpeed = slowMode() ? Constants.OI.SLOW_TURN_SPEED : Constants.OI.TURN_SPEED;
+
+        return modifyAxis(primaryController.getRightX()) * turnSpeed;
+    }
+
+    public static boolean slowMode() {
+        return (primaryController.getRightTriggerAxis() >= 0.1) || (primaryController.getLeftTriggerAxis() >= 0.1);
     }
 
     public static BooleanEvent getResetHeadingEvent() {

@@ -20,7 +20,7 @@ public class TeleopDrive extends CommandBase {
 	}
 	@Override
 	public void execute() {
-		drivetrain.drive(OI.getTeleopXVelocity(), OI.getTeleopYVelocity(), OI.getTeleopTurnVelocity(), true);
+		drivetrain.drive(OI.teleopXVelocity(), OI.teleopYVelocity(), OI.teleopTurnVelocity(), true);
 		intake.setLeftMotorSpeed(OI.getIntakeLeftVelocity());
 		intake.setRightMotorSpeed(OI.getIntakeRightVelocity());
 	}

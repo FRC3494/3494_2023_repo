@@ -54,7 +54,9 @@ public class RobotContainer {
 		// Configure the button bindings
 		OI.configureButtonBindings();
 
-		OI.getResetHeadingEvent().rising().ifHigh(drivetrain::zeroYaw);
+        OI.getResetHeadingEvent().rising().ifHigh(() -> {
+            OI.zeroControls();
+        });
 		
 		OI.getAutoBalanceEvent().rising().ifHigh(() -> {
 			if (alternateAutoBalance) autoBalanceDrivetrainCommand.schedule();
