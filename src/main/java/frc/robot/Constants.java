@@ -70,6 +70,7 @@ public final class Constants extends AutoConfigurable {
                     put(ShoulderState.Base4, 0.390);
                 }
             };
+            public static double RADIUS = 45;
         }
 
         public static final class Forearm {
@@ -118,6 +119,7 @@ public final class Constants extends AutoConfigurable {
                     put(ForearmState.AUTO_Base2Cube1, -46.3);
                 }
             };
+            public static double RADIUS = 19;
         }
 
         public static final class Wrist {
@@ -167,6 +169,7 @@ public final class Constants extends AutoConfigurable {
                     put(WristState.AUTO_Base2Cube1, 107.2);
                 }
             };
+            public static double RADIUS = 9;
         }
 
         public static final class Claw {

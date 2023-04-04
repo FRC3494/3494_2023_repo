@@ -12,7 +12,7 @@ public abstract class StateMachine<TState extends StateMachineState> extends Sub
     List<TState> nodes;
     List<StateConnection<TState>> connections;
 
-    HashMap<TState, HashMap<TState, Double>> adjacencyMatrix = new HashMap<>();
+    HashMap<TState, HashMap<TState, Integer>> adjacencyMatrix = new HashMap<>();
 
     TState currentNode;
     TState targetNode;
@@ -56,14 +56,14 @@ public abstract class StateMachine<TState extends StateMachineState> extends Sub
 
         // lord help me
         for (TState fromState : nodes) {
-            adjacencyMatrix.put(fromState, new HashMap<TState, Double>());
+            adjacencyMatrix.put(fromState, new HashMap<TState, Integer>());
 
             for (TState toState : nodes) {
-                double distance = -1;
+                int distance = -1;
 
                 for (StateConnection<TState> connection : connections) {
                     if (connection.from.equals(fromState) && connection.to.equals(toState)) {
-                        distance = 1;
+                        distance = connection.weight;
                         break;
                     }
                 }
@@ -195,9 +195,8 @@ public abstract class StateMachine<TState extends StateMachineState> extends Sub
                 if (!used[u]) {
                     used[u] = true;
                     queue.push(u);
-                    d[u] = d[v] + 1;
+                    d[u] = d[v] + adjacencyMatrix.get(nodes.get(v)).get(key);
                     parents[u] = v;
-                    nodes.get(v);
                 }
 
             }
