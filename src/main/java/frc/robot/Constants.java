@@ -60,14 +60,14 @@ public final class Constants extends AutoConfigurable {
 
             public static int POTENTIOMETER_CHANNEL = 4;
 
-            public static double TARGET_TOLERANCE = 0.012;
+            public static double TARGET_TOLERANCE = 0.02;
 
             public static HashMap<ShoulderState, Double> POSITIONS = new HashMap<>() {
                 {
-                    put(ShoulderState.Base1, 0.191);
-                    put(ShoulderState.Base2, 0.267);
-                    put(ShoulderState.Base3, 0.328);
-                    put(ShoulderState.Base4, 0.390);
+                    put(ShoulderState.Base1, 0.210);
+                    put(ShoulderState.Base2, 0.293);
+                    put(ShoulderState.Base3, 0.322);
+                    put(ShoulderState.Base4, 0.420);
                 }
             };
         }
@@ -85,7 +85,7 @@ public final class Constants extends AutoConfigurable {
             public static float MIN_POSITION = -86.241f; // 135.5
             public static float MAX_POSITION = 89.505f; // -136.0
 
-            public static double TARGET_POSITION_TOLERANCE = 2; // degrees
+            public static double TARGET_POSITION_TOLERANCE = 4; // degrees
 
             public static double RAMP_RATE = 0.5;
 
@@ -104,7 +104,7 @@ public final class Constants extends AutoConfigurable {
                     put(ForearmState.GroundIntakeCube, 62.9);
                     put(ForearmState.GroundIntakeCone, 79.52);
                     put(ForearmState.DoubleSubCube, -72.00);
-                    put(ForearmState.DoubleSubCone, -86.10);
+                    put(ForearmState.DoubleSubCone, -93.10);
                     put(ForearmState.SingleSubstation, 28.09);
                     put(ForearmState.Base1Hybrid, 37.8);
                     put(ForearmState.Store, 11.9);
@@ -132,7 +132,7 @@ public final class Constants extends AutoConfigurable {
             public static float MIN_POSITION = -33.403f + (float) frc.robot.subsystems.wrist.Wrist.degrees2Motor(90);
             public static float MAX_POSITION = 37.905f + (float) frc.robot.subsystems.wrist.Wrist.degrees2Motor(90);
 
-            public static double TARGET_POSITION_TOLERANCE = 2; // degrees
+            public static double TARGET_POSITION_TOLERANCE = 4; // degrees
 
             public static double RAMP_RATE = 0.5;
 
@@ -214,7 +214,7 @@ public final class Constants extends AutoConfigurable {
 
                 public static int ENCODER_MOTOR_PORT = 0;
 
-                public static double STEER_OFFSET = Math.toRadians(241.404);
+                public static double STEER_OFFSET = Math.toRadians(241.404 - 84 - 1.8 - 7.0);
             }
 
             public static final class BackRightModule {
@@ -223,7 +223,7 @@ public final class Constants extends AutoConfigurable {
 
                 public static int ENCODER_MOTOR_PORT = 3;
 
-                public static double STEER_OFFSET = -Math.toRadians(8.247);
+                public static double STEER_OFFSET = -Math.toRadians(8.247 + 138.32 + 90 - 7.6);
             }
 
             public static final double TRACKWIDTH_METERS = 0.47625;

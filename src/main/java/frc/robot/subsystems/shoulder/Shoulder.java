@@ -18,6 +18,8 @@ public class Shoulder extends SubsystemBase implements IStateControllable<ArmSta
 
     ShoulderState currentState;
 
+    boolean isDoneMoving = true;
+
     public Shoulder() {
         topPiston = new DoubleSolenoid(
                 Constants.Subsystems.Pneumatics.BASE_PCM, PneumaticsModuleType.REVPH,
@@ -37,8 +39,12 @@ public class Shoulder extends SubsystemBase implements IStateControllable<ArmSta
 
     @Override
     public void periodic() {
-        if (currentState != null && isAt(currentState))
+        if (currentState != null)
+            isDoneMoving = isAt(currentState);
+
+        if (isDoneMoving) {
             shouldWeSlow = false;
+        }
     }
 
     void setTopPiston(Value value) {
