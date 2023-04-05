@@ -1,12 +1,8 @@
 package frc.robot.commands.auto;
 
-import java.lang.constant.DirectMethodHandleDesc;
-
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.commands.teleop.driveForward;
 
 public class AutoBalance1501 extends CommandBase {
 

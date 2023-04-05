@@ -276,7 +276,7 @@ public class RobotContainer {
                                             ClawState.Idle))));
         }),
 
-        PlaceHighBalanceForward("Place High Balance Forward", (container) -> {
+        PlaceHighBalanceForward("Place High Dumb Balance Forward", (container) -> {
             return new SequentialCommandGroup(
                     new ParallelCommandGroup(
                             new AutoSetForearm(container.forearm, ForearmState.Base4Cone2),
@@ -291,6 +291,28 @@ public class RobotContainer {
                             new AutoSetShoulder(container.shoulder, ShoulderState.Base2),
                             new AutoSetForearm(container.forearm, ForearmState.Store),
                             new AutoSetWrist(container.wrist, WristState.Store)),
+                    new ParallelCommandGroup(
+                            new SequentialCommandGroup(
+                                    AutoBalanceGroupDumbReverse
+                                            .get(container.drivetrain),
+                                    pathFollow(container, "Dumb Balance Reverse",
+                                            0.5)),
+                            new SequentialCommandGroup(
+                                    new AutoSetClaw(container.claw,
+                                            ClawState.Idle))),
+                    new AutoLockDrivetrain(container.drivetrain));
+        }),
+
+        PlaceThenBalanceForward("Place Medium Then Dumb Balance Forward", (container) -> {
+            return new SequentialCommandGroup(
+                    new AutoSetArm(container.arm, ArmPosition.Base2Cone1),
+                    new AutoSetWrist(container.wrist, WristState.Base2Cone1),
+                    new WaitCommand(1),
+                    new AutoSetClaw(container.claw, ClawState.OuttakeCone),
+                    new WaitCommand(0.2),
+                    new AutoSetWrist(container.wrist, WristState.Store),
+                    new AutoSetArm(container.arm, ArmPosition.Store),
+                    new AutoSetClaw(container.claw, ClawState.Idle),
                     new ParallelCommandGroup(
                             new SequentialCommandGroup(
                                     AutoBalanceGroupDumbReverse
