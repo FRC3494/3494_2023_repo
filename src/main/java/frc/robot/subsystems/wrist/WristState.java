@@ -15,5 +15,6 @@ public enum WristState {
     Hybrid,
     Base2Cube1,
 
-    AUTO_Base2Cube1
+    AUTO_Base2Cube1,
+    AUTO_GroundIntake
 }

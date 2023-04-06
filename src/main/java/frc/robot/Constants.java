@@ -165,6 +165,7 @@ public final class Constants extends AutoConfigurable {
                     put(WristState.Base2Cube1, 110.4);
 
                     put(WristState.AUTO_Base2Cube1, 107.2);
+                    put(WristState.AUTO_GroundIntake, 128.4);
                 }
             };
         }
@@ -196,7 +197,7 @@ public final class Constants extends AutoConfigurable {
 
                 public static int ENCODER_MOTOR_PORT = 1;
 
-                public static double STEER_OFFSET = Math.toRadians(17.783);
+                public static double STEER_OFFSET = -Math.toRadians(9.81707551766 - 4.44 + 180);
             }
 
             public static final class FrontRightModule {
@@ -205,7 +206,7 @@ public final class Constants extends AutoConfigurable {
 
                 public static int ENCODER_MOTOR_PORT = 2;
 
-                public static double STEER_OFFSET = Math.toRadians(16.056);
+                public static double STEER_OFFSET = Math.toRadians(139.60942544736315 - 30.0 + 180);
             }
 
             public static final class BackLeftModule {
@@ -214,7 +215,7 @@ public final class Constants extends AutoConfigurable {
 
                 public static int ENCODER_MOTOR_PORT = 0;
 
-                public static double STEER_OFFSET = Math.toRadians(241.404 - 84 - 1.8 - 7.0);
+                public static double STEER_OFFSET = Math.toRadians(241.404 - 84 - 1.8 - 7.0 - 1.83);
             }
 
             public static final class BackRightModule {

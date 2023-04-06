@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -116,40 +117,35 @@ public class RobotContainer {
         Constants.RobotContainer.PathPlanner.PATH_EVENTS.put("Wait5", new WaitCommand(5));
     }
 
+    public boolean errorRecording = false;
+    public double errorStart = 0;
+
     public static Command pathFollow(RobotContainer container, String pathName) {
-        PathPlannerTrajectory loadedPath = PathPlanner.loadPath(pathName,
-                Constants.RobotContainer.PathPlanner.PATH_CONSTRAINTS);
-        System.out.println("Running An Auto");
-        return new FollowPath(container.drivetrain, loadedPath, container.robotPosition, true);
-        /*
-         * return new FollowPathWithEvents(new FollowPath(container.drivetrain,
-         * loadedPath, container.robotPosition),
-         * loadedPath.getMarkers(),
-         * Constants.RobotContainer.PathPlanner.PATH_EVENTS);
-         */
+        return pathFollow(container, pathName, Constants.RobotContainer.PathPlanner.PATH_CONSTRAINTS);
     }
 
     public static Command pathFollow(RobotContainer container, String pathName, double targetSpeed) {
-        PathPlannerTrajectory loadedPath = PathPlanner.loadPath(pathName, new PathConstraints(targetSpeed,
+        return pathFollow(container, pathName, new PathConstraints(targetSpeed,
                 Constants.RobotContainer.PathPlanner.PATH_CONSTRAINTS.maxAcceleration));
-        return new FollowPath(container.drivetrain, loadedPath, container.robotPosition, true);
-        /*
-         * return new FollowPathWithEvents(new FollowPath(container.drivetrain,
-         * loadedPath, container.robotPosition),
-         * loadedPath.getMarkers(),
-         * Constants.RobotContainer.PathPlanner.PATH_EVENTS);
-         */
     }
 
     public static Command pathFollow(RobotContainer container, String pathName, PathConstraints constraints) {
         PathPlannerTrajectory loadedPath = PathPlanner.loadPath(pathName, constraints);
-        return new FollowPath(container.drivetrain, loadedPath, container.robotPosition, true);
-        /*
-         * return new FollowPathWithEvents(new FollowPath(container.drivetrain,
-         * loadedPath, container.robotPosition),
-         * loadedPath.getMarkers(),
-         * Constants.RobotContainer.PathPlanner.PATH_EVENTS);
-         */
+
+        return Commands.either(
+                new FollowPath(container.drivetrain, loadedPath, container.robotPosition, true,
+                        NavX.getYaw() - container.errorStart),
+                new FollowPath(container.drivetrain, loadedPath, container.robotPosition, true),
+                () -> container.errorRecording).andThen(() -> {
+                    container.errorRecording = false;
+                }, container.drivetrain);
+    }
+
+    public static Command startRecordingError(RobotContainer container) {
+        return Commands.runOnce(() -> {
+            container.errorRecording = true;
+            container.errorStart = NavX.getYaw();
+        }, container.drivetrain);
     }
 
     public enum Autos {
@@ -361,7 +357,7 @@ public class RobotContainer {
                     new AutoSetWrist(container.wrist, WristState.Base2Cone1),
                     new WaitCommand(1),
                     new AutoSetClaw(container.claw, ClawState.OuttakeCone),
-                    new WaitCommand(0.2),
+                    new WaitCommand(0.4),
                     new ParallelCommandGroup(
                             new AutoSetArm(container.arm, ArmPosition.GroundIntakeCube),
                             new AutoSetClaw(container.claw, ClawState.IntakeCube),
@@ -380,6 +376,7 @@ public class RobotContainer {
         PlaceMediumRIGHTPickupCubeBack("Place Medium from back Pickup Cube then place Medium from back RIGHT",
                 (container) -> {
                     return new SequentialCommandGroup(
+                            startRecordingError(container),
                             new ParallelCommandGroup(
                                     new AutoSetForearm(container.forearm,
                                             ForearmState.Base4Cone1),
@@ -393,7 +390,8 @@ public class RobotContainer {
 
                             new ParallelCommandGroup(
                                     pathFollow(container,
-                                            "LeaveComPickUpLeftNo180"),
+                                            "LeaveComPickUpLeftNo180",
+                                            new PathConstraints(2, 2)),
                                     new SequentialCommandGroup(
                                             new WaitCommand(0.65),
                                             new ParallelCommandGroup(
@@ -402,15 +400,16 @@ public class RobotContainer {
                                                             ForearmState.GroundIntakeCube),
                                                     new AutoSetWrist(
                                                             container.wrist,
-                                                            WristState.GroundCube),
+                                                            WristState.AUTO_GroundIntake),
                                                     new AutoSetClaw(container.claw,
                                                             ClawState.IntakeCube),
                                                     new SequentialCommandGroup(
-                                                            new WaitCommand(0.85),
+                                                            new WaitCommand(1.5),
                                                             new AutoSetShoulder(
                                                                     container.shoulder,
                                                                     ShoulderState.Base1))))),
                             new WaitCommand(0.5),
+                            pathFollow(container, "wiggle_wiggle_wiggle"),
                             new ParallelCommandGroup(
                                     new AutoSetClaw(container.claw,
                                             ClawState.IntakeCube),
@@ -427,16 +426,16 @@ public class RobotContainer {
                                                             WristState.AUTO_Base2Cube1))),
                                     pathFollow(container,
                                             "LeaveComPickUpReturnLeftNo180",
-                                            new PathConstraints(3, 2)))
-                    // new WaitCommand(0.5),
-                    // new AutoSetClaw(container.claw, ClawState.FullOuttake),
-                    // new WaitCommand(0.5),
-                    // new AutoSetArm(container.arm, ArmPosition.Store)
-                    );
+                                            new PathConstraints(2, 2))),
+                            new WaitCommand(0.5),
+                            new AutoSetClaw(container.claw, ClawState.FullOuttake),
+                            new WaitCommand(0.5),
+                            new AutoSetArm(container.arm, ArmPosition.Store));
                 }),
         PlaceMediumLEFTPickupCubeBack("Place Medium from back Pickup Cube then place Medium from back LEFT",
                 (container) -> {
                     return new SequentialCommandGroup(
+                            startRecordingError(container),
                             new ParallelCommandGroup(
                                     new AutoSetForearm(container.forearm,
                                             ForearmState.Base4Cone1),
@@ -459,11 +458,11 @@ public class RobotContainer {
                                                             ForearmState.GroundIntakeCube),
                                                     new AutoSetWrist(
                                                             container.wrist,
-                                                            WristState.GroundCube),
+                                                            WristState.AUTO_GroundIntake),
                                                     new AutoSetClaw(container.claw,
                                                             ClawState.IntakeCube),
                                                     new SequentialCommandGroup(
-                                                            new WaitCommand(0.85),
+                                                            new WaitCommand(1.5),
                                                             new AutoSetShoulder(
                                                                     container.shoulder,
                                                                     ShoulderState.Base1))))),
