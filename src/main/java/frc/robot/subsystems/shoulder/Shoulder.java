@@ -19,6 +19,7 @@ public class Shoulder extends SubsystemBase implements IStateControllable<ArmSta
     ShoulderState currentState;
 
     boolean isDoneMoving = true;
+    boolean lastDoneMoving = true;
 
     public Shoulder() {
         topPiston = new DoubleSolenoid(
@@ -41,6 +42,11 @@ public class Shoulder extends SubsystemBase implements IStateControllable<ArmSta
     public void periodic() {
         if (currentState != null)
             isDoneMoving = isAt(currentState);
+
+        if (isDoneMoving && !lastDoneMoving)
+            System.out.println("Shoulder Hit Target");
+
+        lastDoneMoving = isDoneMoving;
 
         if (isDoneMoving) {
             shouldWeSlow = false;

@@ -386,12 +386,11 @@ public class RobotContainer {
                             new AutoSetShoulder(container.shoulder, ShoulderState.Base4),
                             new WaitCommand(1.0),
                             new AutoSetClaw(container.claw, ClawState.OuttakeCone),
-                            new WaitCommand(0.3),
+                            new WaitCommand(0.2),
 
                             new ParallelCommandGroup(
                                     pathFollow(container,
-                                            "LeaveComPickUpLeftNo180",
-                                            new PathConstraints(2, 2)),
+                                            "LeaveComPickUpLeftNo180"),
                                     new SequentialCommandGroup(
                                             new WaitCommand(0.65),
                                             new ParallelCommandGroup(
@@ -408,8 +407,7 @@ public class RobotContainer {
                                                             new AutoSetShoulder(
                                                                     container.shoulder,
                                                                     ShoulderState.Base1))))),
-                            new WaitCommand(0.5),
-                            pathFollow(container, "wiggle_wiggle_wiggle"),
+                            new WaitCommand(0.25),
                             new ParallelCommandGroup(
                                     new AutoSetClaw(container.claw,
                                             ClawState.IntakeCube),
@@ -426,11 +424,14 @@ public class RobotContainer {
                                                             WristState.AUTO_Base2Cube1))),
                                     pathFollow(container,
                                             "LeaveComPickUpReturnLeftNo180",
-                                            new PathConstraints(2, 2))),
-                            new WaitCommand(0.5),
-                            new AutoSetClaw(container.claw, ClawState.FullOuttake),
-                            new WaitCommand(0.5),
-                            new AutoSetArm(container.arm, ArmPosition.Store));
+                                            new PathConstraints(3, 2))),
+                            new AutoSetClaw(container.claw,
+                                    ClawState.FullOuttake),
+                            new WaitCommand(0.25)
+                    // new WaitCommand(0.5),
+                    // new AutoSetClaw(container.claw, ClawState.FullOuttake),
+                    // new WaitCommand(0.5));
+                    );
                 }),
         PlaceMediumLEFTPickupCubeBack("Place Medium from back Pickup Cube then place Medium from back LEFT",
                 (container) -> {
@@ -483,7 +484,11 @@ public class RobotContainer {
                                                             WristState.AUTO_Base2Cube1))),
                                     pathFollow(container,
                                             "LeaveComPickUpReturnRightNo180",
-                                            new PathConstraints(3, 2)))
+                                            new PathConstraints(3, 2))),
+                            new AutoSetClaw(container.claw,
+                                    ClawState.FullOuttake),
+                            new WaitCommand(0.25),
+                            pathFollow(container, "LeaveCom", new PathConstraints(3, 2))
                     // new WaitCommand(0.5),
                     // new AutoSetClaw(container.claw, ClawState.FullOuttake),
                     // new WaitCommand(0.5));
@@ -564,7 +569,7 @@ public class RobotContainer {
                 .withSize(2,
                         1);
 
-        mainTab.add(camera.getCamera()).withPosition(2, 0).withSize(4, 4);
+        // mainTab.add(camera.getCamera()).withPosition(2, 0).withSize(4, 4);
 
         mainTab.addDouble("Controller Offset", () -> OI.getDriveOffset()).withPosition(0, 2).withSize(2, 1);
     }

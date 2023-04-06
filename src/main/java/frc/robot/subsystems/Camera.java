@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -11,20 +10,24 @@ public class Camera extends SubsystemBase {
     public Timer reconnectTimer;
 
     public Camera() {
-        camera = CameraServer.startAutomaticCapture();
+        // camera = CameraServer.startAutomaticCapture();
 
-        /*reconnectTimer = new Timer();
-        reconnectTimer.start();*/
+        /*
+         * reconnectTimer = new Timer();
+         * reconnectTimer.start();
+         */
     }
 
     @Override
     public void periodic() {
-        /*if (!camera.isConnected()
-            && reconnectTimer.advanceIfElapsed(1)) {
-            camera.close();
-
-            camera = CameraServer.startAutomaticCapture();
-        }*/
+        /*
+         * if (!camera.isConnected()
+         * && reconnectTimer.advanceIfElapsed(1)) {
+         * camera.close();
+         * 
+         * camera = CameraServer.startAutomaticCapture();
+         * }
+         */
     }
 
     public UsbCamera getCamera() {

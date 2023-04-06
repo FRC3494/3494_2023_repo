@@ -22,6 +22,7 @@ public class Wrist extends SubsystemBase implements IStateControllable<ArmState>
     WristState currentState;
 
     boolean isDoneMoving = true;
+    boolean lastDoneMoving = true;
 
     Timer motorStillTimer = new Timer();
 
@@ -59,6 +60,11 @@ public class Wrist extends SubsystemBase implements IStateControllable<ArmState>
     public void periodic() {
         if (currentState != null)
             isDoneMoving = isAt(currentState);
+
+        if (isDoneMoving && !lastDoneMoving)
+            System.out.println("Wrist Hit Target");
+
+        lastDoneMoving = isDoneMoving;
 
         if (Math.abs(encoder.getVelocity()) <= Constants.Subsystems.Wrist.MAX_CORRECT_VELOCITY &&
                 encoder.getPosition() <= 350 &&

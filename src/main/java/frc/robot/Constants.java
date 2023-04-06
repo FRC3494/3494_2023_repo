@@ -60,14 +60,14 @@ public final class Constants extends AutoConfigurable {
 
             public static int POTENTIOMETER_CHANNEL = 4;
 
-            public static double TARGET_TOLERANCE = 0.02;
+            public static double TARGET_TOLERANCE = 0.05;
 
             public static HashMap<ShoulderState, Double> POSITIONS = new HashMap<>() {
                 {
-                    put(ShoulderState.Base1, 0.210);
-                    put(ShoulderState.Base2, 0.293);
+                    put(ShoulderState.Base1, 0.240);
+                    put(ShoulderState.Base2, 0.322);
                     put(ShoulderState.Base3, 0.322);
-                    put(ShoulderState.Base4, 0.420);
+                    put(ShoulderState.Base4, 0.450);
                 }
             };
         }
@@ -164,7 +164,7 @@ public final class Constants extends AutoConfigurable {
                     put(WristState.Hybrid, 185.2);
                     put(WristState.Base2Cube1, 110.4);
 
-                    put(WristState.AUTO_Base2Cube1, 107.2);
+                    put(WristState.AUTO_Base2Cube1, 117.2);
                     put(WristState.AUTO_GroundIntake, 128.4);
                 }
             };
