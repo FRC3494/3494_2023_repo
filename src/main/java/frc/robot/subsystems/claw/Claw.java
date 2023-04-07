@@ -43,4 +43,8 @@ public class Claw extends SubsystemBase {
         if (stallTimer.hasElapsed(Constants.Subsystems.Claw.CURRENT_CUTOFF_DURATION))
             set(ClawState.Idle);
     }
+
+    public ClawState getState() {
+        return currentState;
+    }
 }

@@ -25,6 +25,7 @@ import frc.robot.commands.auto.AutoSetClaw;
 import frc.robot.commands.auto.AutoSetForearm;
 import frc.robot.commands.auto.AutoSetShoulder;
 import frc.robot.commands.auto.AutoSetWrist;
+import frc.robot.commands.auto.AutoWaitForGrab;
 import frc.robot.commands.auto.FollowPath;
 import frc.robot.commands.groups.AutoBalanceGroup;
 import frc.robot.commands.groups.AutoBalanceGroupDumb;
@@ -427,7 +428,8 @@ public class RobotContainer {
                                             new PathConstraints(3, 2))),
                             new AutoSetClaw(container.claw,
                                     ClawState.FullOuttake),
-                            new WaitCommand(0.25)
+                            new WaitCommand(0.25),
+                            pathFollow(container, "LeaveComCurveRight", new PathConstraints(3, 2))
                     // new WaitCommand(0.5),
                     // new AutoSetClaw(container.claw, ClawState.FullOuttake),
                     // new WaitCommand(0.5));
@@ -488,7 +490,133 @@ public class RobotContainer {
                             new AutoSetClaw(container.claw,
                                     ClawState.FullOuttake),
                             new WaitCommand(0.25),
-                            pathFollow(container, "LeaveCom", new PathConstraints(3, 2))
+                            pathFollow(container, "LeaveComCurveLeft", new PathConstraints(3, 2))
+                    // new WaitCommand(0.5),
+                    // new AutoSetClaw(container.claw, ClawState.FullOuttake),
+                    // new WaitCommand(0.5));
+                    );
+                }),
+        PlaceMediumRIGHTMaybePickupCubeBack(
+                "Place Medium from back Pickup Cube (stop if fail) then place Medium from back RIGHT",
+                (container) -> {
+                    return new SequentialCommandGroup(
+                            startRecordingError(container),
+                            new ParallelCommandGroup(
+                                    new AutoSetForearm(container.forearm,
+                                            ForearmState.Base4Cone1),
+                                    new AutoSetWrist(container.wrist,
+                                            WristState.Base4Cone1)),
+                            new WaitCommand(0.5),
+                            new AutoSetShoulder(container.shoulder, ShoulderState.Base4),
+                            new WaitCommand(1.0),
+                            new AutoSetClaw(container.claw, ClawState.OuttakeCone),
+                            new WaitCommand(0.2),
+
+                            new ParallelCommandGroup(
+                                    pathFollow(container,
+                                            "LeaveComPickUpLeftNo180"),
+                                    new SequentialCommandGroup(
+                                            new WaitCommand(0.65),
+                                            new ParallelCommandGroup(
+                                                    new AutoSetForearm(
+                                                            container.forearm,
+                                                            ForearmState.GroundIntakeCube),
+                                                    new AutoSetWrist(
+                                                            container.wrist,
+                                                            WristState.AUTO_GroundIntake),
+                                                    new AutoSetClaw(container.claw,
+                                                            ClawState.IntakeCube),
+                                                    new SequentialCommandGroup(
+                                                            new WaitCommand(1.5),
+                                                            new AutoSetShoulder(
+                                                                    container.shoulder,
+                                                                    ShoulderState.Base1))))),
+                            new WaitCommand(0.25),
+                            new AutoWaitForGrab(container.claw),
+                            new ParallelCommandGroup(
+                                    new AutoSetClaw(container.claw,
+                                            ClawState.IntakeCube),
+                                    new SequentialCommandGroup(
+                                            new AutoSetShoulder(
+                                                    container.shoulder,
+                                                    ShoulderState.Base2),
+                                            new ParallelCommandGroup(
+                                                    new AutoSetForearm(
+                                                            container.forearm,
+                                                            ForearmState.AUTO_Base2Cube1),
+                                                    new AutoSetWrist(
+                                                            container.wrist,
+                                                            WristState.AUTO_Base2Cube1))),
+                                    pathFollow(container,
+                                            "LeaveComPickUpReturnLeftNo180",
+                                            new PathConstraints(3, 2))),
+                            new AutoSetClaw(container.claw,
+                                    ClawState.FullOuttake),
+                            new WaitCommand(0.25),
+                            pathFollow(container, "LeaveComCurveRight", new PathConstraints(3, 2))
+                    // new WaitCommand(0.5),
+                    // new AutoSetClaw(container.claw, ClawState.FullOuttake),
+                    // new WaitCommand(0.5));
+                    );
+                }),
+        PlaceMediumLEFTMaybePickupCubeBack(
+                "Place Medium from back Pickup Cube (stop if fail) then place Medium from back LEFT",
+                (container) -> {
+                    return new SequentialCommandGroup(
+                            startRecordingError(container),
+                            new ParallelCommandGroup(
+                                    new AutoSetForearm(container.forearm,
+                                            ForearmState.Base4Cone1),
+                                    new AutoSetWrist(container.wrist,
+                                            WristState.Base4Cone1)),
+                            new WaitCommand(0.5),
+                            new AutoSetShoulder(container.shoulder, ShoulderState.Base4),
+                            new WaitCommand(1.0),
+                            new AutoSetClaw(container.claw, ClawState.OuttakeCone),
+                            new WaitCommand(0.2),
+
+                            new ParallelCommandGroup(
+                                    pathFollow(container,
+                                            "LeaveComPickUpRightNo180"),
+                                    new SequentialCommandGroup(
+                                            new WaitCommand(0.65),
+                                            new ParallelCommandGroup(
+                                                    new AutoSetForearm(
+                                                            container.forearm,
+                                                            ForearmState.GroundIntakeCube),
+                                                    new AutoSetWrist(
+                                                            container.wrist,
+                                                            WristState.AUTO_GroundIntake),
+                                                    new AutoSetClaw(container.claw,
+                                                            ClawState.IntakeCube),
+                                                    new SequentialCommandGroup(
+                                                            new WaitCommand(1.5),
+                                                            new AutoSetShoulder(
+                                                                    container.shoulder,
+                                                                    ShoulderState.Base1))))),
+                            new WaitCommand(0.25),
+                            new AutoWaitForGrab(container.claw),
+                            new ParallelCommandGroup(
+                                    new AutoSetClaw(container.claw,
+                                            ClawState.IntakeCube),
+                                    new SequentialCommandGroup(
+                                            new AutoSetShoulder(
+                                                    container.shoulder,
+                                                    ShoulderState.Base2),
+                                            new ParallelCommandGroup(
+                                                    new AutoSetForearm(
+                                                            container.forearm,
+                                                            ForearmState.AUTO_Base2Cube1),
+                                                    new AutoSetWrist(
+                                                            container.wrist,
+                                                            WristState.AUTO_Base2Cube1))),
+                                    pathFollow(container,
+                                            "LeaveComPickUpReturnRightNo180",
+                                            new PathConstraints(3, 2))),
+                            new AutoSetClaw(container.claw,
+                                    ClawState.FullOuttake),
+                            new WaitCommand(0.25),
+                            pathFollow(container, "LeaveComCurveLeft", new PathConstraints(3, 2))
                     // new WaitCommand(0.5),
                     // new AutoSetClaw(container.claw, ClawState.FullOuttake),
                     // new WaitCommand(0.5));

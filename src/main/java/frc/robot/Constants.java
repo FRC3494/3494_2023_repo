@@ -64,10 +64,10 @@ public final class Constants extends AutoConfigurable {
 
             public static HashMap<ShoulderState, Double> POSITIONS = new HashMap<>() {
                 {
-                    put(ShoulderState.Base1, 0.240);
-                    put(ShoulderState.Base2, 0.322);
+                    put(ShoulderState.Base1, 0.195);
+                    put(ShoulderState.Base2, 0.270);
                     put(ShoulderState.Base3, 0.322);
-                    put(ShoulderState.Base4, 0.450);
+                    put(ShoulderState.Base4, 0.397);
                 }
             };
         }
