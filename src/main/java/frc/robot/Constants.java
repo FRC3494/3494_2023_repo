@@ -65,7 +65,7 @@ public final class Constants extends AutoConfigurable {
             public static HashMap<ShoulderState, Double> POSITIONS = new HashMap<>() {
                 {
                     put(ShoulderState.Base1, 0.195);
-                    put(ShoulderState.Base2, 0.270);
+                    put(ShoulderState.Base2, 0.272);
                     put(ShoulderState.Base3, 0.322);
                     put(ShoulderState.Base4, 0.397);
                 }
@@ -76,8 +76,8 @@ public final class Constants extends AutoConfigurable {
             public static int MOTOR_CHANNEL = 5;
             public static double MOTOR_REDUCTION = (1.0 / 5.0) * (1.0 / 4.0) * (1.0 / 3.0) * (10.0 / 40.0);
 
-            public static double MAX_SPEED = 0.8;
-            public static double MIN_SPEED = -0.8;
+            public static double MAX_SPEED = 0.9;
+            public static double MIN_SPEED = -0.9;
 
             public static double SLOW_MAX_SPEED = 0.15;
             public static double SLOW_MIN_SPEED = -0.15;
@@ -103,13 +103,13 @@ public final class Constants extends AutoConfigurable {
                     put(ForearmState.Intermediate, 42.8);
                     put(ForearmState.GroundIntakeCube, 62.9);
                     put(ForearmState.GroundIntakeCone, 79.52);
-                    put(ForearmState.DoubleSubCube, -72.00);
+                    put(ForearmState.DoubleSubCube, -74.00);
                     put(ForearmState.DoubleSubCone, -93.10);
                     put(ForearmState.SingleSubstation, 28.09);
                     put(ForearmState.Base1Hybrid, 37.8);
                     put(ForearmState.Store, 11.9);
                     put(ForearmState.Base4Cone2, -134.62);
-                    put(ForearmState.Base4Cube2, -120.08);
+                    put(ForearmState.Base4Cube2, -121.6);
                     put(ForearmState.Base4Cone1, -117.2);
                     put(ForearmState.Base4Cube1, -3.1);
                     put(ForearmState.Base2Cone1, 129.0);
@@ -154,18 +154,19 @@ public final class Constants extends AutoConfigurable {
                     put(WristState.GroundCube, 139.9);
                     put(WristState.GroundCone, 109.7);
                     put(WristState.Base2Cone1, 76.9);
-                    put(WristState.Base4Cone1, 233.2);
+                    put(WristState.Base4Cone1, 221.0);
                     put(WristState.Base4Cone2, 150.0);
                     put(WristState.Base4Cube1, -25.8);
-                    put(WristState.Base4Cube2, 162.8);
-                    put(WristState.DoubleSubCube, 146.1);
+                    put(WristState.Base4Cube2, 163.4);
+                    put(WristState.DoubleSubCube, 147.1);
                     put(WristState.DoubleSubCone, 168.3);
-                    put(WristState.SingleSub, 229.7);
+                    put(WristState.SingleSub, 220.8);
                     put(WristState.Hybrid, 185.2);
                     put(WristState.Base2Cube1, 110.4);
 
                     put(WristState.AUTO_Base2Cube1, 117.2);
                     put(WristState.AUTO_GroundIntake, 128.4);
+                    put(WristState.AUTO_Base4Cone1, 233.2);
                 }
             };
         }
@@ -175,7 +176,7 @@ public final class Constants extends AutoConfigurable {
 
             public static HashMap<ClawState, Double> SPEEDS = new HashMap<>() {
                 {
-                    put(ClawState.Idle, 0.125);
+                    put(ClawState.Idle, 0.180);
                     put(ClawState.IntakeCone, 0.75);// 0.5
                     put(ClawState.IntakeCube, 0.75);
                     put(ClawState.FullIntake, 1.0);
@@ -350,7 +351,7 @@ public final class Constants extends AutoConfigurable {
         public static final double TURN_SPEED = 5.5; // rad/s
 
         public static final double SLOW_DRIVE_SPEED = 1.5; // m/s
-        public static final double SLOW_TURN_SPEED = 2.75; // rad/s
+        public static final double SLOW_TURN_SPEED = 1.925; // rad/s
 
         public static final double DPAD_SPEED = 0.1;
 

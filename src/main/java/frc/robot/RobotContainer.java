@@ -382,7 +382,7 @@ public class RobotContainer {
                                     new AutoSetForearm(container.forearm,
                                             ForearmState.Base4Cone1),
                                     new AutoSetWrist(container.wrist,
-                                            WristState.Base4Cone1)),
+                                            WristState.AUTO_Base4Cone1)),
                             new WaitCommand(0.5),
                             new AutoSetShoulder(container.shoulder, ShoulderState.Base4),
                             new WaitCommand(1.0),
@@ -443,7 +443,7 @@ public class RobotContainer {
                                     new AutoSetForearm(container.forearm,
                                             ForearmState.Base4Cone1),
                                     new AutoSetWrist(container.wrist,
-                                            WristState.Base4Cone1)),
+                                            WristState.AUTO_Base4Cone1)),
                             new WaitCommand(0.5),
                             new AutoSetShoulder(container.shoulder, ShoulderState.Base4),
                             new WaitCommand(1.0),
@@ -505,7 +505,7 @@ public class RobotContainer {
                                     new AutoSetForearm(container.forearm,
                                             ForearmState.Base4Cone1),
                                     new AutoSetWrist(container.wrist,
-                                            WristState.Base4Cone1)),
+                                            WristState.AUTO_Base4Cone1)),
                             new WaitCommand(0.5),
                             new AutoSetShoulder(container.shoulder, ShoulderState.Base4),
                             new WaitCommand(1.0),
@@ -568,7 +568,7 @@ public class RobotContainer {
                                     new AutoSetForearm(container.forearm,
                                             ForearmState.Base4Cone1),
                                     new AutoSetWrist(container.wrist,
-                                            WristState.Base4Cone1)),
+                                            WristState.AUTO_Base4Cone1)),
                             new WaitCommand(0.5),
                             new AutoSetShoulder(container.shoulder, ShoulderState.Base4),
                             new WaitCommand(1.0),
@@ -621,7 +621,163 @@ public class RobotContainer {
                     // new AutoSetClaw(container.claw, ClawState.FullOuttake),
                     // new WaitCommand(0.5));
                     );
+                }),
+        PlaceMediumRIGHTBumpMaybePickupCubeBack(
+                "Place Medium from back Pickup Cube (stop if fail) then place Medium from back RIGHT BUMP",
+                (container) -> {
+                    return new SequentialCommandGroup(
+                            startRecordingError(container),
+                            new ParallelCommandGroup(
+                                    new AutoSetForearm(container.forearm,
+                                            ForearmState.Base4Cone1),
+                                    new AutoSetWrist(container.wrist,
+                                            WristState.AUTO_Base4Cone1)),
+                            new WaitCommand(0.5),
+                            new AutoSetShoulder(container.shoulder, ShoulderState.Base4),
+                            new WaitCommand(1.0),
+                            new AutoSetClaw(container.claw, ClawState.OuttakeCone),
+                            new WaitCommand(0.2),
+
+                            new ParallelCommandGroup(
+                                    pathFollow(container,
+                                            "LeaveComPickUpLeftNo180", new PathConstraints(0.66, 1)),
+                                    new SequentialCommandGroup(
+                                            new WaitCommand(0.65),
+                                            new ParallelCommandGroup(
+                                                    new AutoSetForearm(
+                                                            container.forearm,
+                                                            ForearmState.GroundIntakeCube),
+                                                    new AutoSetWrist(
+                                                            container.wrist,
+                                                            WristState.AUTO_GroundIntake),
+                                                    new AutoSetClaw(container.claw,
+                                                            ClawState.IntakeCube),
+                                                    new SequentialCommandGroup(
+                                                            new WaitCommand(1.5),
+                                                            new AutoSetShoulder(
+                                                                    container.shoulder,
+                                                                    ShoulderState.Base1))))),
+                            new WaitCommand(0.25),
+                            new AutoWaitForGrab(container.claw),
+                            new ParallelCommandGroup(
+                                    new AutoSetShoulder(container.shoulder, ShoulderState.Base2),
+                                    new AutoSetWrist(container.wrist, WristState.SingleSub)),
+                            new AutoSetClaw(container.claw,
+                                    ClawState.IntakeCube),
+                            new WaitCommand(0.75),
+                            new AutoSetForearm(container.forearm, ForearmState.SingleSubstation));
+                }),
+        PlaceMediumLEFTBumpMaybePickupCubeBack(
+                "Place Medium from back Pickup Cube (stop if fail) then place Medium from back LEFT BUMP",
+                (container) -> {
+                    return new SequentialCommandGroup(
+                            startRecordingError(container),
+                            new ParallelCommandGroup(
+                                    new AutoSetForearm(container.forearm,
+                                            ForearmState.Base4Cone1),
+                                    new AutoSetWrist(container.wrist,
+                                            WristState.AUTO_Base4Cone1)),
+                            new WaitCommand(0.5),
+                            new AutoSetShoulder(container.shoulder, ShoulderState.Base4),
+                            new WaitCommand(1.0),
+                            new AutoSetClaw(container.claw, ClawState.OuttakeCone),
+                            new WaitCommand(0.2),
+
+                            new ParallelCommandGroup(
+                                    pathFollow(container,
+                                            "LeaveComPickUpRightNo180", new PathConstraints(0.66, 1)),
+                                    new SequentialCommandGroup(
+                                            new WaitCommand(0.65),
+                                            new ParallelCommandGroup(
+                                                    new AutoSetForearm(
+                                                            container.forearm,
+                                                            ForearmState.GroundIntakeCube),
+                                                    new AutoSetWrist(
+                                                            container.wrist,
+                                                            WristState.AUTO_GroundIntake),
+                                                    new AutoSetClaw(container.claw,
+                                                            ClawState.IntakeCube),
+                                                    new SequentialCommandGroup(
+                                                            new WaitCommand(1.5),
+                                                            new AutoSetShoulder(
+                                                                    container.shoulder,
+                                                                    ShoulderState.Base1))))),
+                            new WaitCommand(0.25),
+                            new AutoWaitForGrab(container.claw),
+                            new ParallelCommandGroup(
+                                    new AutoSetShoulder(container.shoulder, ShoulderState.Base2),
+                                    new AutoSetWrist(container.wrist, WristState.SingleSub)),
+                            new AutoSetClaw(container.claw,
+                                    ClawState.IntakeCube),
+                            new WaitCommand(0.75),
+                            new AutoSetForearm(container.forearm, ForearmState.SingleSubstation));
                 });
+        // PlaceMediumLEFTPickupSweepCubeBack(
+        // "Place Medium from back Sweep to Pickup Cube (stop if fail) then place Medium
+        // from back LEFT",
+        // (container) -> {
+        // return new SequentialCommandGroup(
+        // startRecordingError(container),
+        // new ParallelCommandGroup(
+        // new AutoSetForearm(container.forearm,
+        // ForearmState.Base4Cone1),
+        // new AutoSetWrist(container.wrist,
+        // WristState.AUTO_Base4Cone1)),
+        // new WaitCommand(0.5),
+        // new AutoSetShoulder(container.shoulder, ShoulderState.Base4),
+        // new WaitCommand(1.0),
+        // new AutoSetClaw(container.claw, ClawState.OuttakeCone),
+        // new WaitCommand(0.2),
+
+        // new ParallelCommandGroup(
+        // pathFollow(container,
+        // "LeaveComPickUpRightNo180SweepPart1"),
+        // new SequentialCommandGroup(
+        // new WaitCommand(0.65),
+        // new ParallelCommandGroup(
+        // new AutoSetForearm(
+        // container.forearm,
+        // ForearmState.GroundIntakeCube),
+        // new AutoSetWrist(
+        // container.wrist,
+        // WristState.AUTO_GroundIntake),
+        // new AutoSetClaw(container.claw,
+        // ClawState.IntakeCube),
+        // new SequentialCommandGroup(
+        // new WaitCommand(1.5),
+        // new AutoSetShoulder(
+        // container.shoulder,
+        // ShoulderState.Base1))))),
+        // pathFollow(container,
+        // "LeaveComPickUpRightNo180SweepPart2"),
+        // new AutoWaitForGrab(container.claw),
+        // new WaitCommand(0.25),
+        // new ParallelCommandGroup(
+        // new AutoSetClaw(container.claw,
+        // ClawState.IntakeCube),
+        // new SequentialCommandGroup(
+        // new AutoSetShoulder(
+        // container.shoulder,
+        // ShoulderState.Base2),
+        // new ParallelCommandGroup(
+        // new AutoSetForearm(
+        // container.forearm,
+        // ForearmState.AUTO_Base2Cube1),
+        // new AutoSetWrist(
+        // container.wrist,
+        // WristState.AUTO_Base2Cube1))),
+        // pathFollow(container,
+        // "LeaveComPickUpReturnRightNo180",
+        // new PathConstraints(3, 2))),
+        // new AutoSetClaw(container.claw,
+        // ClawState.FullOuttake),
+        // new WaitCommand(0.25),
+        // pathFollow(container, "LeaveComCurveLeft", new PathConstraints(3, 2))
+        // // new WaitCommand(0.5),
+        // // new AutoSetClaw(container.claw, ClawState.FullOuttake),
+        // // new WaitCommand(0.5));
+        // );
+        // });
 
         String displayName;
         Function<RobotContainer, Command> commandFunction;
