@@ -22,7 +22,7 @@ public class AutoBalance1501 extends CommandBase {
     public void initialize() {
         oldTilt = NavX.getPitch();
         finished = false;
-        System.out.println("Balance Begin");
+        // System.out.println("Balance Begin");
     }
 
     @Override
@@ -43,7 +43,7 @@ public class AutoBalance1501 extends CommandBase {
 
     @Override
     public void end(boolean inturrupted) {
-        System.out.println("Balance End");
+        // System.out.println("Balance End");
         drivetrain.drive(0, 0, 0, false);
         // SWERVE.drive(new Translation2d(0,0), 0, true, false);
     }

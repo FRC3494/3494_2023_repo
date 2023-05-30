@@ -25,10 +25,11 @@ public class AutoLineUp extends CommandBase {
 	double previousTime = 0;
 
 	double aprilTagYaw;
-	double aprilTagID;  
-    JsonObject limeLightData;
+	double aprilTagID;
+	JsonObject limeLightData;
 	JsonArray limeLightDataArray;
-    //static HashMap<String, GenericEntry> tagMap = new HashMap<String, GenericEntry>(); 
+	// static HashMap<String, GenericEntry> tagMap = new HashMap<String,
+	// GenericEntry>();
 
 	double tagX;
 	double tagY;
@@ -36,8 +37,8 @@ public class AutoLineUp extends CommandBase {
 
 	List<PathPoint> toTagPath;
 	Field2d field2d;
-	//private PathPlannerTrajectory path;
-    
+	// private PathPlannerTrajectory path;
+
 	public AutoLineUp(Drivetrain drivetrain, Field2d field2d) {
 		this.drivetrain = drivetrain;
 		addRequirements(drivetrain);
@@ -45,52 +46,56 @@ public class AutoLineUp extends CommandBase {
 	}
 
 	@Override
-  	public void initialize() {
-        limeLightData = (JsonObject) JsonParser.parseString(
-            NetworkTableInstance.getDefault()
-            .getTable("limelight")
-            .getEntry("json")
-            .getString("{}")
-        );
-		limeLightDataArray =  (JsonArray) ((JsonObject) limeLightData.get("Results")).get("Fiducial");
-		if(limeLightDataArray.size() != 0){
-			System.out.println(limeLightDataArray.get(0).getAsJsonObject().get("fID"));
-			System.out.println(limeLightDataArray.get(0).getAsJsonObject().get("tx"));
-			aprilTagID =  limeLightDataArray.get(0).getAsJsonObject().get("fID").getAsDouble();
+	public void initialize() {
+		limeLightData = (JsonObject) JsonParser.parseString(
+				NetworkTableInstance.getDefault()
+						.getTable("limelight")
+						.getEntry("json")
+						.getString("{}"));
+		limeLightDataArray = (JsonArray) ((JsonObject) limeLightData.get("Results")).get("Fiducial");
+		if (limeLightDataArray.size() != 0) {
+			// System.out.println(limeLightDataArray.get(0).getAsJsonObject().get("fID"));
+			// System.out.println(limeLightDataArray.get(0).getAsJsonObject().get("tx"));
+			aprilTagID = limeLightDataArray.get(0).getAsJsonObject().get("fID").getAsDouble();
 			aprilTagYaw = limeLightDataArray.get(0).getAsJsonObject().get("tx").getAsDouble();
-		}
-		else{
+		} else {
 			aprilTagID = -1;
 			aprilTagYaw = 0;
 		}
-		toTagPath = new ArrayList<PathPoint>(Arrays.asList(new PathPoint(new Translation2d(0,0), new Rotation2d(0)), new PathPoint(new Translation2d(tagX, tagZ), new Rotation2d(0))));
-		//path = PathPlanner.generatePath(new PathConstraints(Constants.Subsystems.Drivetrain.MAX_VELOCITY_METERS_PER_SECOND, 2), toTagPath);
-		//new FollowPath(drivetrain, path, field2d, false).schedule();
+		toTagPath = new ArrayList<PathPoint>(Arrays.asList(new PathPoint(new Translation2d(0, 0), new Rotation2d(0)),
+				new PathPoint(new Translation2d(tagX, tagZ), new Rotation2d(0))));
+		// path = PathPlanner.generatePath(new
+		// PathConstraints(Constants.Subsystems.Drivetrain.MAX_VELOCITY_METERS_PER_SECOND,
+		// 2), toTagPath);
+		// new FollowPath(drivetrain, path, field2d, false).schedule();
 	}
 
 	@Override
 	public void execute() {
 	}
-	public double getStrafePower(double aprilTagYaw){
-		double power = isNegative(aprilTagYaw) * Math.pow(Math.abs(aprilTagYaw), 0.5)/5 * Constants.Commands.AutoLineUp.MAX_STRAFE_SPEED;
-		if(Math.abs(power)< 0.08){
-			power = isNegative(aprilTagYaw) *0.08;
+
+	public double getStrafePower(double aprilTagYaw) {
+		double power = isNegative(aprilTagYaw) * Math.pow(Math.abs(aprilTagYaw), 0.5) / 5
+				* Constants.Commands.AutoLineUp.MAX_STRAFE_SPEED;
+		if (Math.abs(power) < 0.08) {
+			power = isNegative(aprilTagYaw) * 0.08;
 		}
 		return power;
 	}
-	public int isNegative(double number){
-		if(number <0){
+
+	public int isNegative(double number) {
+		if (number < 0) {
 			return -1;
-		}
-		else {
+		} else {
 			return 1;
 		}
 	}
-  	@Override
-  	public void end(boolean interrupted) {
+
+	@Override
+	public void end(boolean interrupted) {
 		drivetrain.drive(0, 0, 0, false);
-  	}
- 
+	}
+
 	public void setDrivetrain(double x, double y, double w, boolean fieldRelative) {
 		drivetrain.drive(x, y, w, fieldRelative);
 	}

@@ -25,10 +25,11 @@ import frc.robot.util.LimelightHelpers;
 
 public class Drivetrain extends SubsystemBase {
 	double aprilTagYaw;
-	double aprilTagID;  
-    JsonObject limeLightData;
+	double aprilTagID;
+	JsonObject limeLightData;
 	JsonArray limeLightDataArray;
-    //static HashMap<String, GenericEntry> tagMap = new HashMap<String, GenericEntry>(); 
+	// static HashMap<String, GenericEntry> tagMap = new HashMap<String,
+	// GenericEntry>();
 
 	double tagX;
 	double tagY;
@@ -36,8 +37,10 @@ public class Drivetrain extends SubsystemBase {
 	int i = -1;
 	private List<Double> standardDeviationX = new ArrayList<>();
 	private List<Double> standardDeviationY = new ArrayList<>();
-	public Pose2d limelightBotPose;
-	
+	public Pose2d limelightBotPoseLeft;
+	public Pose2d limelightBotPoseRight;
+
+	public Pose2d limelightBotPoseMaster;
 	SwerveModule frontLeft = Mk4iSwerveModuleHelper.createAnalogNeo(
 			Shuffleboard.getTab("Drivetrain").getLayout("Front Left Module", BuiltInLayouts.kList)
 					.withSize(2, 4)
@@ -82,8 +85,8 @@ public class Drivetrain extends SubsystemBase {
 
 	// Odometry class for tracking robot pose
 	private SwerveDriveOdometry odometry = new SwerveDriveOdometry(
-			Constants.Subsystems.Drivetrain.SWERVE_KINEMATICS, 
-			getGyroscopeRotation(), 
+			Constants.Subsystems.Drivetrain.SWERVE_KINEMATICS,
+			getGyroscopeRotation(),
 			getSwerveModulePositions());
 
 	/** Creates a new DriveSubsystem. */
@@ -94,39 +97,89 @@ public class Drivetrain extends SubsystemBase {
 	public void periodic() {
 		odometry.update(getGyroscopeRotation(), getSwerveModulePositions());
 
-		//update limelight position here
-		
-		limelightBotPose = LimelightHelpers.getBotPose2d("limelight");
-		//System.out.println(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0));
-		//System.out.println("Stdev" + nextStandardDeviation(limelightBotPose.getX(), limelightBotPose.getY()));
-		if (nextStandardDeviation(limelightBotPose.getX(), limelightBotPose.getY()) <= Constants.Subsystems.Drivetrain.MAX_STANDARD_DEVIATION_LIMELIGHT && NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0)!=0 && limelightBotPose.getX() != 0 && limelightBotPose.getY() !=0){
-			//System.out.println("Sdev" +nextStandardDeviation(limelightBotPose.getX(), limelightBotPose.getY()));
+		// update limelight position here
 
-			resetOdometry(new Pose2d(limelightBotPose.getX()+8.27, limelightBotPose.getY()+4.01, limelightBotPose.getRotation()));
-			//System.out.println("New Psoe:"+ odometry.getPoseMeters());
+		limelightBotPoseLeft = LimelightHelpers.getBotPose2d("limelight-left");
+		limelightBotPoseRight = LimelightHelpers.getBotPose2d("limelight-right");
+		limelightBotPoseRight = new Pose2d(limelightBotPoseRight.getX() + 8.27, limelightBotPoseRight.getY() + 4.01,
+				limelightBotPoseRight.getRotation());
+		// System.out.println(limelightBotPoseLeft);
+		// System.out.println(limelightBotPoseRight);
+		// System.out.println(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0));
+
+		// -------------LEFT STANDARD
+		// Dev-------------------------------------------------------------
+		// System.out.println("Stdev" +
+		// nextStandardDeviation(limelightBotPoseLeft.getX(),
+		// limelightBotPoseLeft.getY()));
+		if (nextStandardDeviation(limelightBotPoseLeft.getX(),
+				limelightBotPoseLeft.getY()) <= Constants.Subsystems.Drivetrain.MAX_STANDARD_DEVIATION_LIMELIGHT
+				&& NetworkTableInstance.getDefault().getTable("limelight-left").getEntry("tv").getDouble(0) != 0
+				&& limelightBotPoseLeft.getX() != 0 && limelightBotPoseLeft.getY() != 0) {
+			// System.out.println("Sdev" +nextStandardDeviation(limelightBotPose.getX(),
+			// limelightBotPose.getY()));
+
+			limelightBotPoseLeft = new Pose2d(limelightBotPoseLeft.getX(), limelightBotPoseLeft.getY(),
+					limelightBotPoseLeft.getRotation());
+			// System.out.println("New Psoe:"+ odometry.getPoseMeters());
 		}
+		// -------------RIGHT STANDARD
+		// DEV--------------------------------------------------------------
+		// System.out.println("Stdev" +
+		// nextStandardDeviation(limelightBotPoseRight.getX(),
+		// limelightBotPoseRight.getY()));
+		if (nextStandardDeviation(limelightBotPoseRight.getX(),
+				limelightBotPoseRight.getY()) <= Constants.Subsystems.Drivetrain.MAX_STANDARD_DEVIATION_LIMELIGHT
+				&& NetworkTableInstance.getDefault().getTable("limelight-right").getEntry("tv").getDouble(0) != 0
+				&& limelightBotPoseRight.getX() != 0 && limelightBotPoseRight.getY() != 0) {
+			// System.out.println("Sdev" +nextStandardDeviation(limelightBotPose.getX(),
+			// limelightBotPose.getY()));
+
+			limelightBotPoseRight = new Pose2d(limelightBotPoseRight.getX(), limelightBotPoseRight.getY(),
+					limelightBotPoseRight.getRotation());
+			// System.out.println("New Psoe:"+ odometry.getPoseMeters());
+		}
+		// -----------SET MASTER BOT POSE
+		resetOdometry(limelightBotPoseRight);
+		// if (limelightBotPoseLeft.getX() != 0 && limelightBotPoseRight.getX() != 0) {
+		// limelightBotPoseMaster = new Pose2d((limelightBotPoseLeft.getX() +
+		// limelightBotPoseRight.getX()) / 2,
+		// (limelightBotPoseLeft.getY() + limelightBotPoseRight.getY()) / 2,
+		// new Rotation2d((limelightBotPoseLeft.getRotation().getRadians()
+		// + limelightBotPoseRight.getRotation().getRadians()) / 2));
+		// } else if (limelightBotPoseLeft.getX() != 0) {
+		// limelightBotPoseMaster = limelightBotPoseLeft;
+		// } else {
+		// limelightBotPoseMaster = limelightBotPoseRight;
+		// }
+		// // System.out.println(limelightBotPoseMaster);
+		// if (limelightBotPoseMaster.getX() != 0) {
+		// resetOdometry(limelightBotPoseMaster);
+		// }
 	}
 
-	double nextStandardDeviation(double nextX, double nextY){ 
+	double nextStandardDeviation(double nextX, double nextY) {
 		standardDeviationX.add(0, nextX);
 		standardDeviationY.add(0, nextY);
 
-		if (standardDeviationX.size() >= 11) 
+		if (standardDeviationX.size() >= 11)
 			standardDeviationX.remove(standardDeviationX.size() - 1);
-		if (standardDeviationY.size() >= 11) 
+		if (standardDeviationY.size() >= 11)
 			standardDeviationY.remove(standardDeviationY.size() - 1);
 
-		return Math.pow(Math.pow(standardDeviation(standardDeviationX), 2) + Math.pow(standardDeviation(standardDeviationY), 2), 0.5);
+		return Math.pow(
+				Math.pow(standardDeviation(standardDeviationX), 2) + Math.pow(standardDeviation(standardDeviationY), 2),
+				0.5);
 	}
 
 	double standardDeviation(List<Double> list) {
 		double acc = 0;
-		for (int i = 0; i < list.size(); i++){
+		for (int i = 0; i < list.size(); i++) {
 			acc += list.get(i);
 		}
 		double mean = acc / list.size();
 		double midSectionOfTheEquationThatMustBeIterated = 0;
-		for (int i = 0; i < list.size(); i++){
+		for (int i = 0; i < list.size(); i++) {
 			midSectionOfTheEquationThatMustBeIterated += Math.pow(list.get(i) - mean, 2);
 		}
 		return Math.pow((midSectionOfTheEquationThatMustBeIterated) / (list.size() - 1), 0.5);
@@ -171,14 +224,16 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	@SuppressWarnings("ParameterName")
 	public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-		if (locked) return;
+		if (locked)
+			return;
 
 		var swerveModuleStates = Constants.Subsystems.Drivetrain.SWERVE_KINEMATICS.toSwerveModuleStates(
 				fieldRelative
 						? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getGyroscopeRotation())
 						: new ChassisSpeeds(xSpeed, ySpeed, rot));
 
-		SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Subsystems.Drivetrain.MAX_VELOCITY_METERS_PER_SECOND);
+		SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates,
+				Constants.Subsystems.Drivetrain.MAX_VELOCITY_METERS_PER_SECOND);
 
 		if (Math.abs(xSpeed) < .001 && Math.abs(ySpeed) < .001 && Math.abs(rot) < .001) {
 			frontLeft.set(0, frontLeft.getState().angle.getRadians());
@@ -191,9 +246,11 @@ public class Drivetrain extends SubsystemBase {
 		setModuleStates(swerveModuleStates);
 	}
 
-	public void drive(ChassisSpeeds speeds){
-		SwerveModuleState[] swerveModuleStates = Constants.Subsystems.Drivetrain.SWERVE_KINEMATICS.toSwerveModuleStates(speeds);
-		SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Subsystems.Drivetrain.MAX_VELOCITY_METERS_PER_SECOND);
+	public void drive(ChassisSpeeds speeds) {
+		SwerveModuleState[] swerveModuleStates = Constants.Subsystems.Drivetrain.SWERVE_KINEMATICS
+				.toSwerveModuleStates(speeds);
+		SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates,
+				Constants.Subsystems.Drivetrain.MAX_VELOCITY_METERS_PER_SECOND);
 		setModuleStates(swerveModuleStates);
 	}
 
@@ -239,11 +296,11 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	public SwerveModulePosition[] getSwerveModulePositions() {
-		return new SwerveModulePosition[] { 
-			frontLeft.getState(),
-			frontRight.getState(),
-			backLeft.getState(),
-			backRight.getState()
+		return new SwerveModulePosition[] {
+				frontLeft.getState(),
+				frontRight.getState(),
+				backLeft.getState(),
+				backRight.getState()
 		};
 	}
 
@@ -256,37 +313,45 @@ public class Drivetrain extends SubsystemBase {
 		if (NavX.getNavX().isMagnetometerCalibrated()) {
 			// We will only get valid fused headings if the magnetometer is calibrated
 			return Rotation2d.fromDegrees(NavX.getYaw());
-		};
+		}
+		;
 
 		return Rotation2d.fromDegrees(360.0 - NavX.getYaw());
 	}
 
-
-	/*public PathPlannerTrajectory getPathToTag(){
-		limeLightData = (JsonObject) JsonParser.parseString(
-            NetworkTableInstance.getDefault()
-            .getTable("limelight")
-            .getEntry("json")
-            .getString("{}")
-        );
-		limeLightDataArray =  (JsonArray) ((JsonObject) limeLightData.get("Results")).get("Fiducial");
-		if(limeLightDataArray.size() != 0){
-			System.out.println(limeLightDataArray.get(0).getAsJsonObject().get("fID"));
-			System.out.println(limeLightDataArray.get(0).getAsJsonObject().get("tx"));
-			aprilTagID =  limeLightDataArray.get(0).getAsJsonObject().get("fID").getAsDouble();
-			aprilTagYaw = limeLightDataArray.get(0).getAsJsonObject().get("tx").getAsDouble();
-		}
-		else{
-			aprilTagID = -1;
-			aprilTagYaw = 0;
-		}
-		odometry.resetPosition(getGyroscopeRotation(), getSwerveModulePositions(), new Pose2d(tagX, tagZ, getPose().getRotation()));
-		System.out.println("Odometery:"+ odometry.getPoseMeters());
-		//new PathPoint(new Translation2d(0,0), new Rotation2d(0)),
-		ArrayList<PathPoint> toTagPath = new ArrayList<PathPoint>(Arrays.asList(
-			new PathPoint(new Translation2d(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY()), new Rotation2d(0)),
-			new PathPoint(new Translation2d(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY()+0.1), new Rotation2d(0))));
-		
-		return PathPlanner.generatePath(new PathConstraints(0.2, 0.2), toTagPath);
-	}*/
+	/*
+	 * public PathPlannerTrajectory getPathToTag(){
+	 * limeLightData = (JsonObject) JsonParser.parseString(
+	 * NetworkTableInstance.getDefault()
+	 * .getTable("limelight")
+	 * .getEntry("json")
+	 * .getString("{}")
+	 * );
+	 * limeLightDataArray = (JsonArray) ((JsonObject)
+	 * limeLightData.get("Results")).get("Fiducial");
+	 * if(limeLightDataArray.size() != 0){
+	 * System.out.println(limeLightDataArray.get(0).getAsJsonObject().get("fID"));
+	 * System.out.println(limeLightDataArray.get(0).getAsJsonObject().get("tx"));
+	 * aprilTagID =
+	 * limeLightDataArray.get(0).getAsJsonObject().get("fID").getAsDouble();
+	 * aprilTagYaw =
+	 * limeLightDataArray.get(0).getAsJsonObject().get("tx").getAsDouble();
+	 * }
+	 * else{
+	 * aprilTagID = -1;
+	 * aprilTagYaw = 0;
+	 * }
+	 * odometry.resetPosition(getGyroscopeRotation(), getSwerveModulePositions(),
+	 * new Pose2d(tagX, tagZ, getPose().getRotation()));
+	 * System.out.println("Odometery:"+ odometry.getPoseMeters());
+	 * //new PathPoint(new Translation2d(0,0), new Rotation2d(0)),
+	 * ArrayList<PathPoint> toTagPath = new ArrayList<PathPoint>(Arrays.asList(
+	 * new PathPoint(new Translation2d(odometry.getPoseMeters().getX(),
+	 * odometry.getPoseMeters().getY()), new Rotation2d(0)),
+	 * new PathPoint(new Translation2d(odometry.getPoseMeters().getX(),
+	 * odometry.getPoseMeters().getY()+0.1), new Rotation2d(0))));
+	 * 
+	 * return PathPlanner.generatePath(new PathConstraints(0.2, 0.2), toTagPath);
+	 * }
+	 */
 }
