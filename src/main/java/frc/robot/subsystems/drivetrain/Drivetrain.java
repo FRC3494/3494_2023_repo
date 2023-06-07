@@ -22,25 +22,22 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.NavX;
 import frc.robot.util.LimelightHelpers;
+import frc.robot.util.Pose2dHelpers;
 
 public class Drivetrain extends SubsystemBase {
-	double aprilTagYaw;
-	double aprilTagID;
-	JsonObject limeLightData;
-	JsonArray limeLightDataArray;
-	// static HashMap<String, GenericEntry> tagMap = new HashMap<String,
-	// GenericEntry>();
+	private List<Double> standardDeviationXLeft = new ArrayList<>();
+	private List<Double> standardDeviationYLeft = new ArrayList<>();
 
-	double tagX;
-	double tagY;
-	double tagZ;
-	int i = -1;
-	private List<Double> standardDeviationX = new ArrayList<>();
-	private List<Double> standardDeviationY = new ArrayList<>();
+	private List<Double> standardDeviationXRight = new ArrayList<>();
+	private List<Double> standardDeviationYRight = new ArrayList<>();
+
 	public Pose2d limelightBotPoseLeft;
 	public Pose2d limelightBotPoseRight;
 
 	public Pose2d limelightBotPoseMaster;
+	private boolean resetLeft = false;
+	private boolean resetRight = true;
+
 	SwerveModule frontLeft = Mk4iSwerveModuleHelper.createAnalogNeo(
 			Shuffleboard.getTab("Drivetrain").getLayout("Front Left Module", BuiltInLayouts.kList)
 					.withSize(2, 4)
@@ -101,8 +98,9 @@ public class Drivetrain extends SubsystemBase {
 
 		limelightBotPoseLeft = LimelightHelpers.getBotPose2d("limelight-left");
 		limelightBotPoseRight = LimelightHelpers.getBotPose2d("limelight-right");
-		limelightBotPoseRight = new Pose2d(limelightBotPoseRight.getX() + 8.27, limelightBotPoseRight.getY() + 4.01,
-				limelightBotPoseRight.getRotation());
+		// limelightBotPoseRight = new Pose2d(limelightBotPoseRight.getX() + 8.27,
+		// limelightBotPoseRight.getY() + 4.01,
+		// limelightBotPoseRight.getRotation());
 		// System.out.println(limelightBotPoseLeft);
 		// System.out.println(limelightBotPoseRight);
 		// System.out.println(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0));
@@ -112,53 +110,56 @@ public class Drivetrain extends SubsystemBase {
 		// System.out.println("Stdev" +
 		// nextStandardDeviation(limelightBotPoseLeft.getX(),
 		// limelightBotPoseLeft.getY()));
-		if (nextStandardDeviation(limelightBotPoseLeft.getX(),
-				limelightBotPoseLeft.getY()) <= Constants.Subsystems.Drivetrain.MAX_STANDARD_DEVIATION_LIMELIGHT
-				&& NetworkTableInstance.getDefault().getTable("limelight-left").getEntry("tv").getDouble(0) != 0
-				&& limelightBotPoseLeft.getX() != 0 && limelightBotPoseLeft.getY() != 0) {
+		boolean leftNeitherXNorYAt0 = limelightBotPoseLeft.getX() != 0 && limelightBotPoseLeft.getY() != 0;
+		boolean leftAprilTagIsDetected = NetworkTableInstance.getDefault().getTable("limelight-left").getEntry("tv")
+				.getDouble(0) != 0;
+		boolean leftLimelightIsStable = nextStandardDeviation(limelightBotPoseLeft.getX(),
+				limelightBotPoseLeft.getY(), standardDeviationXLeft,
+				standardDeviationYLeft) <= Constants.Subsystems.Drivetrain.MAX_STANDARD_DEVIATION_LIMELIGHT;
+
+		if (leftLimelightIsStable
+				&& leftAprilTagIsDetected
+				&& leftNeitherXNorYAt0) {
 			// System.out.println("Sdev" +nextStandardDeviation(limelightBotPose.getX(),
 			// limelightBotPose.getY()));
 
-			limelightBotPoseLeft = new Pose2d(limelightBotPoseLeft.getX(), limelightBotPoseLeft.getY(),
+			limelightBotPoseLeft = new Pose2d(limelightBotPoseLeft.getX() + 8.27, limelightBotPoseLeft.getY() + 4.01,
 					limelightBotPoseLeft.getRotation());
-			// System.out.println("New Psoe:"+ odometry.getPoseMeters());
+			resetLeft = true;
 		}
-		// -------------RIGHT STANDARD
-		// DEV--------------------------------------------------------------
-		// System.out.println("Stdev" +
-		// nextStandardDeviation(limelightBotPoseRight.getX(),
-		// limelightBotPoseRight.getY()));
-		if (nextStandardDeviation(limelightBotPoseRight.getX(),
-				limelightBotPoseRight.getY()) <= Constants.Subsystems.Drivetrain.MAX_STANDARD_DEVIATION_LIMELIGHT
-				&& NetworkTableInstance.getDefault().getTable("limelight-right").getEntry("tv").getDouble(0) != 0
-				&& limelightBotPoseRight.getX() != 0 && limelightBotPoseRight.getY() != 0) {
-			// System.out.println("Sdev" +nextStandardDeviation(limelightBotPose.getX(),
-			// limelightBotPose.getY()));
 
-			limelightBotPoseRight = new Pose2d(limelightBotPoseRight.getX(), limelightBotPoseRight.getY(),
+		boolean rightNeitherXNorYAt0 = limelightBotPoseRight.getX() != 0 && limelightBotPoseRight.getY() != 0;
+		boolean rightAprilTagIsDetected = NetworkTableInstance.getDefault().getTable("limelight-right").getEntry("tv")
+				.getDouble(0) != 0;
+		boolean rightLimelightIsStable = nextStandardDeviation(limelightBotPoseRight.getX(),
+				limelightBotPoseRight.getY(), standardDeviationXRight,
+				standardDeviationYRight) <= Constants.Subsystems.Drivetrain.MAX_STANDARD_DEVIATION_LIMELIGHT;
+
+		if (rightLimelightIsStable
+				&& rightAprilTagIsDetected
+				&& rightNeitherXNorYAt0) {
+
+			limelightBotPoseRight = new Pose2d(limelightBotPoseRight.getX() + 8.27, limelightBotPoseRight.getY() + 4.01,
 					limelightBotPoseRight.getRotation());
-			// System.out.println("New Psoe:"+ odometry.getPoseMeters());
+			resetRight = true;
 		}
+
 		// -----------SET MASTER BOT POSE
-		resetOdometry(limelightBotPoseRight);
-		// if (limelightBotPoseLeft.getX() != 0 && limelightBotPoseRight.getX() != 0) {
-		// limelightBotPoseMaster = new Pose2d((limelightBotPoseLeft.getX() +
-		// limelightBotPoseRight.getX()) / 2,
-		// (limelightBotPoseLeft.getY() + limelightBotPoseRight.getY()) / 2,
-		// new Rotation2d((limelightBotPoseLeft.getRotation().getRadians()
-		// + limelightBotPoseRight.getRotation().getRadians()) / 2));
-		// } else if (limelightBotPoseLeft.getX() != 0) {
-		// limelightBotPoseMaster = limelightBotPoseLeft;
-		// } else {
-		// limelightBotPoseMaster = limelightBotPoseRight;
-		// }
-		// // System.out.println(limelightBotPoseMaster);
-		// if (limelightBotPoseMaster.getX() != 0) {
-		// resetOdometry(limelightBotPoseMaster);
-		// }
+		if (resetRight && resetLeft) {
+			Pose2d averagedPoses = Pose2dHelpers.mean(limelightBotPoseLeft, limelightBotPoseRight);
+			resetOdometry(averagedPoses);
+		} else if (resetRight) {
+			resetOdometry(limelightBotPoseRight);
+		} else if (resetLeft) {
+			resetOdometry(limelightBotPoseLeft);
+		}
+
+		resetRight = false;
+		resetLeft = false;
 	}
 
-	double nextStandardDeviation(double nextX, double nextY) {
+	double nextStandardDeviation(double nextX, double nextY, List<Double> standardDeviationX,
+			List<Double> standardDeviationY) {
 		standardDeviationX.add(0, nextX);
 		standardDeviationY.add(0, nextY);
 
@@ -318,40 +319,4 @@ public class Drivetrain extends SubsystemBase {
 
 		return Rotation2d.fromDegrees(360.0 - NavX.getYaw());
 	}
-
-	/*
-	 * public PathPlannerTrajectory getPathToTag(){
-	 * limeLightData = (JsonObject) JsonParser.parseString(
-	 * NetworkTableInstance.getDefault()
-	 * .getTable("limelight")
-	 * .getEntry("json")
-	 * .getString("{}")
-	 * );
-	 * limeLightDataArray = (JsonArray) ((JsonObject)
-	 * limeLightData.get("Results")).get("Fiducial");
-	 * if(limeLightDataArray.size() != 0){
-	 * System.out.println(limeLightDataArray.get(0).getAsJsonObject().get("fID"));
-	 * System.out.println(limeLightDataArray.get(0).getAsJsonObject().get("tx"));
-	 * aprilTagID =
-	 * limeLightDataArray.get(0).getAsJsonObject().get("fID").getAsDouble();
-	 * aprilTagYaw =
-	 * limeLightDataArray.get(0).getAsJsonObject().get("tx").getAsDouble();
-	 * }
-	 * else{
-	 * aprilTagID = -1;
-	 * aprilTagYaw = 0;
-	 * }
-	 * odometry.resetPosition(getGyroscopeRotation(), getSwerveModulePositions(),
-	 * new Pose2d(tagX, tagZ, getPose().getRotation()));
-	 * System.out.println("Odometery:"+ odometry.getPoseMeters());
-	 * //new PathPoint(new Translation2d(0,0), new Rotation2d(0)),
-	 * ArrayList<PathPoint> toTagPath = new ArrayList<PathPoint>(Arrays.asList(
-	 * new PathPoint(new Translation2d(odometry.getPoseMeters().getX(),
-	 * odometry.getPoseMeters().getY()), new Rotation2d(0)),
-	 * new PathPoint(new Translation2d(odometry.getPoseMeters().getX(),
-	 * odometry.getPoseMeters().getY()+0.1), new Rotation2d(0))));
-	 * 
-	 * return PathPlanner.generatePath(new PathConstraints(0.2, 0.2), toTagPath);
-	 * }
-	 */
 }

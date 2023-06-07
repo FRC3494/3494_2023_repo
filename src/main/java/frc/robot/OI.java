@@ -112,11 +112,10 @@ public final class OI {
         return primaryController.y(eventLoop);
     }
 
-    /*
-     * public static BooleanEvent autoLineUpEvent() {
-     * return primaryController.a(eventLoop);
-     * }
-     */
+    public static BooleanEvent autoLineUpEvent() {
+        return primaryController.a(eventLoop);
+    }
+
     public static BooleanEvent selectDrivePickupMenu() {
         return primaryController.a(eventLoop).and(() -> !pickupMenu);
     }
