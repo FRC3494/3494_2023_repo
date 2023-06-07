@@ -2,9 +2,9 @@ package frc.robot.subsystems.drivetrain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.OptionalDouble;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
@@ -90,26 +90,15 @@ public class Drivetrain extends SubsystemBase {
 	public Drivetrain() {
 	}
 
+	private Pose2d limelightToFieldOffset = new Pose2d(8.27, 4.01, new Rotation2d());
+
 	@Override
 	public void periodic() {
 		odometry.update(getGyroscopeRotation(), getSwerveModulePositions());
 
-		// update limelight position here
-
 		limelightBotPoseLeft = LimelightHelpers.getBotPose2d("limelight-left");
 		limelightBotPoseRight = LimelightHelpers.getBotPose2d("limelight-right");
-		// limelightBotPoseRight = new Pose2d(limelightBotPoseRight.getX() + 8.27,
-		// limelightBotPoseRight.getY() + 4.01,
-		// limelightBotPoseRight.getRotation());
-		// System.out.println(limelightBotPoseLeft);
-		// System.out.println(limelightBotPoseRight);
-		// System.out.println(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0));
 
-		// -------------LEFT STANDARD
-		// Dev-------------------------------------------------------------
-		// System.out.println("Stdev" +
-		// nextStandardDeviation(limelightBotPoseLeft.getX(),
-		// limelightBotPoseLeft.getY()));
 		boolean leftNeitherXNorYAt0 = limelightBotPoseLeft.getX() != 0 && limelightBotPoseLeft.getY() != 0;
 		boolean leftAprilTagIsDetected = NetworkTableInstance.getDefault().getTable("limelight-left").getEntry("tv")
 				.getDouble(0) != 0;
@@ -120,11 +109,8 @@ public class Drivetrain extends SubsystemBase {
 		if (leftLimelightIsStable
 				&& leftAprilTagIsDetected
 				&& leftNeitherXNorYAt0) {
-			// System.out.println("Sdev" +nextStandardDeviation(limelightBotPose.getX(),
-			// limelightBotPose.getY()));
+			limelightBotPoseLeft = Pose2dHelpers.add(limelightBotPoseRight, limelightToFieldOffset);
 
-			limelightBotPoseLeft = new Pose2d(limelightBotPoseLeft.getX() + 8.27, limelightBotPoseLeft.getY() + 4.01,
-					limelightBotPoseLeft.getRotation());
 			resetLeft = true;
 		}
 
@@ -138,9 +124,8 @@ public class Drivetrain extends SubsystemBase {
 		if (rightLimelightIsStable
 				&& rightAprilTagIsDetected
 				&& rightNeitherXNorYAt0) {
+			limelightBotPoseRight = Pose2dHelpers.add(limelightBotPoseRight, limelightToFieldOffset);
 
-			limelightBotPoseRight = new Pose2d(limelightBotPoseRight.getX() + 8.27, limelightBotPoseRight.getY() + 4.01,
-					limelightBotPoseRight.getRotation());
 			resetRight = true;
 		}
 
@@ -168,23 +153,22 @@ public class Drivetrain extends SubsystemBase {
 		if (standardDeviationY.size() >= 11)
 			standardDeviationY.remove(standardDeviationY.size() - 1);
 
-		return Math.pow(
-				Math.pow(standardDeviation(standardDeviationX), 2) + Math.pow(standardDeviation(standardDeviationY), 2),
-				0.5);
+		return Math.sqrt(
+				Math.pow(standardDeviation(standardDeviationX), 2)
+						+ Math.pow(standardDeviation(standardDeviationY), 2));
 	}
 
 	double standardDeviation(List<Double> list) {
-		double acc = 0;
-		for (int i = 0; i < list.size(); i++) {
-			acc += list.get(i);
-		}
-		double mean = acc / list.size();
-		double midSectionOfTheEquationThatMustBeIterated = 0;
-		for (int i = 0; i < list.size(); i++) {
-			midSectionOfTheEquationThatMustBeIterated += Math.pow(list.get(i) - mean, 2);
-		}
-		return Math.pow((midSectionOfTheEquationThatMustBeIterated) / (list.size() - 1), 0.5);
+		double mean = list
+				.stream()
+				.mapToDouble(a -> a)
+				.average().getAsDouble();
 
+		double midSectionOfTheEquationThatMustBeIterated = list.stream().reduce(
+				(double) 0,
+				(prev, cur) -> prev + Math.pow(cur - mean, 2));
+
+		return Math.sqrt((midSectionOfTheEquationThatMustBeIterated) / (list.size() - 1));
 	}
 
 	/**
@@ -315,7 +299,6 @@ public class Drivetrain extends SubsystemBase {
 			// We will only get valid fused headings if the magnetometer is calibrated
 			return Rotation2d.fromDegrees(NavX.getYaw());
 		}
-		;
 
 		return Rotation2d.fromDegrees(360.0 - NavX.getYaw());
 	}
