@@ -3,6 +3,7 @@ package frc.robot.subsystems.drivetrain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.OptionalDouble;
 
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
@@ -25,19 +26,6 @@ import frc.robot.util.LimelightHelpers;
 import frc.robot.util.Pose2dHelpers;
 
 public class Drivetrain extends SubsystemBase {
-	private List<Double> standardDeviationXLeft = new ArrayList<>();
-	private List<Double> standardDeviationYLeft = new ArrayList<>();
-
-	private List<Double> standardDeviationXRight = new ArrayList<>();
-	private List<Double> standardDeviationYRight = new ArrayList<>();
-
-	public Pose2d limelightBotPoseLeft;
-	public Pose2d limelightBotPoseRight;
-
-	public Pose2d limelightBotPoseMaster;
-	private boolean resetLeft = false;
-	private boolean resetRight = true;
-
 	SwerveModule frontLeft = Mk4iSwerveModuleHelper.createAnalogNeo(
 			Shuffleboard.getTab("Drivetrain").getLayout("Front Left Module", BuiltInLayouts.kList)
 					.withSize(2, 4)
@@ -86,89 +74,21 @@ public class Drivetrain extends SubsystemBase {
 			getGyroscopeRotation(),
 			getSwerveModulePositions());
 
+	private LimelightLocalization limelightLocalization = new LimelightLocalization();
+
 	/** Creates a new DriveSubsystem. */
 	public Drivetrain() {
 	}
-
-	private Pose2d limelightToFieldOffset = new Pose2d(8.27, 4.01, new Rotation2d());
 
 	@Override
 	public void periodic() {
 		odometry.update(getGyroscopeRotation(), getSwerveModulePositions());
 
-		limelightBotPoseLeft = LimelightHelpers.getBotPose2d("limelight-left");
-		limelightBotPoseRight = LimelightHelpers.getBotPose2d("limelight-right");
+		Optional<Pose2d> pose = limelightLocalization.getCurrentPose();
 
-		boolean leftNeitherXNorYAt0 = limelightBotPoseLeft.getX() != 0 && limelightBotPoseLeft.getY() != 0;
-		boolean leftAprilTagIsDetected = NetworkTableInstance.getDefault().getTable("limelight-left").getEntry("tv")
-				.getDouble(0) != 0;
-		boolean leftLimelightIsStable = nextStandardDeviation(limelightBotPoseLeft.getX(),
-				limelightBotPoseLeft.getY(), standardDeviationXLeft,
-				standardDeviationYLeft) <= Constants.Subsystems.Drivetrain.MAX_STANDARD_DEVIATION_LIMELIGHT;
-
-		if (leftLimelightIsStable
-				&& leftAprilTagIsDetected
-				&& leftNeitherXNorYAt0) {
-			limelightBotPoseLeft = Pose2dHelpers.add(limelightBotPoseRight, limelightToFieldOffset);
-
-			resetLeft = true;
+		if (pose.isPresent()) {
+			resetOdometry(pose.get());
 		}
-
-		boolean rightNeitherXNorYAt0 = limelightBotPoseRight.getX() != 0 && limelightBotPoseRight.getY() != 0;
-		boolean rightAprilTagIsDetected = NetworkTableInstance.getDefault().getTable("limelight-right").getEntry("tv")
-				.getDouble(0) != 0;
-		boolean rightLimelightIsStable = nextStandardDeviation(limelightBotPoseRight.getX(),
-				limelightBotPoseRight.getY(), standardDeviationXRight,
-				standardDeviationYRight) <= Constants.Subsystems.Drivetrain.MAX_STANDARD_DEVIATION_LIMELIGHT;
-
-		if (rightLimelightIsStable
-				&& rightAprilTagIsDetected
-				&& rightNeitherXNorYAt0) {
-			limelightBotPoseRight = Pose2dHelpers.add(limelightBotPoseRight, limelightToFieldOffset);
-
-			resetRight = true;
-		}
-
-		// -----------SET MASTER BOT POSE
-		if (resetRight && resetLeft) {
-			Pose2d averagedPoses = Pose2dHelpers.mean(limelightBotPoseLeft, limelightBotPoseRight);
-			resetOdometry(averagedPoses);
-		} else if (resetRight) {
-			resetOdometry(limelightBotPoseRight);
-		} else if (resetLeft) {
-			resetOdometry(limelightBotPoseLeft);
-		}
-
-		resetRight = false;
-		resetLeft = false;
-	}
-
-	double nextStandardDeviation(double nextX, double nextY, List<Double> standardDeviationX,
-			List<Double> standardDeviationY) {
-		standardDeviationX.add(0, nextX);
-		standardDeviationY.add(0, nextY);
-
-		if (standardDeviationX.size() >= 11)
-			standardDeviationX.remove(standardDeviationX.size() - 1);
-		if (standardDeviationY.size() >= 11)
-			standardDeviationY.remove(standardDeviationY.size() - 1);
-
-		return Math.sqrt(
-				Math.pow(standardDeviation(standardDeviationX), 2)
-						+ Math.pow(standardDeviation(standardDeviationY), 2));
-	}
-
-	double standardDeviation(List<Double> list) {
-		double mean = list
-				.stream()
-				.mapToDouble(a -> a)
-				.average().getAsDouble();
-
-		double midSectionOfTheEquationThatMustBeIterated = list.stream().reduce(
-				(double) 0,
-				(prev, cur) -> prev + Math.pow(cur - mean, 2));
-
-		return Math.sqrt((midSectionOfTheEquationThatMustBeIterated) / (list.size() - 1));
 	}
 
 	/**
@@ -190,8 +110,6 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
-	 * Resets the odometry to the specified pose.
-	 *
 	 * @param pose The pose to which to set the odometry.
 	 */
 	public void resetOdometry(Pose2d pose) {
@@ -212,7 +130,7 @@ public class Drivetrain extends SubsystemBase {
 		if (locked)
 			return;
 
-		var swerveModuleStates = Constants.Subsystems.Drivetrain.SWERVE_KINEMATICS.toSwerveModuleStates(
+		SwerveModuleState[] swerveModuleStates = Constants.Subsystems.Drivetrain.SWERVE_KINEMATICS.toSwerveModuleStates(
 				fieldRelative
 						? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getGyroscopeRotation())
 						: new ChassisSpeeds(xSpeed, ySpeed, rot));
