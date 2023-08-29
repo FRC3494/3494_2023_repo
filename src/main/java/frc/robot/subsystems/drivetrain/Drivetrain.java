@@ -8,14 +8,17 @@ import com.google.gson.JsonObject;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+//import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -83,95 +86,50 @@ public class Drivetrain extends SubsystemBase {
 	NavX navX;
 
 	// Odometry class for tracking robot pose
-	private SwerveDriveOdometry odometry = new SwerveDriveOdometry(
-			Constants.Subsystems.Drivetrain.SWERVE_KINEMATICS,
-			getGyroscopeRotation(),
-			getSwerveModulePositions());
+	private final SwerveDrivePoseEstimator m_poseEstimator;
 
 	/** Creates a new DriveSubsystem. */
 	public Drivetrain() {
+		m_poseEstimator = new SwerveDrivePoseEstimator(Constants.Subsystems.Drivetrain.SWERVE_KINEMATICS,
+				getGyroscopeRotation(), getSwerveModulePositions(), new Pose2d());
 	}
 
 	@Override
 	public void periodic() {
-		odometry.update(getGyroscopeRotation(),
-				getSwerveModulePositions());
-
+		m_poseEstimator.update(getGyroscopeRotation(), getSwerveModulePositions());
 		// update limelight position here
-
 		limelightBotPoseLeft = LimelightHelpers.getBotPose2d("limelight-left");
 		limelightBotPoseRight = LimelightHelpers.getBotPose2d("limelight-right");
-		// limelightBotPoseRight = new Pose2d(limelightBotPoseRight.getX() + 8.27,
-		// limelightBotPoseRight.getY() + 4.01,
-		// limelightBotPoseRight.getRotation());
-		// System.out.println(limelightBotPoseLeft);
-		// System.out.println(limelightBotPoseRight);
-		// System.out.println(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0));
 
-		// -------------LEFT STANDARD
-		// Dev-------------------------------------------------------------
-		// System.out.println("Stdev" +
-		// nextStandardDeviation(limelightBotPoseLeft.getX(),
-		// limelightBotPoseLeft.getY()));
 		boolean leftNeitherXNorYAt0 = limelightBotPoseLeft.getX() != 0 && limelightBotPoseLeft.getY() != 0;
-		// boolean leftAprilTagIsDetected =
-		// NetworkTableInstance.getDefault().getTable("limelight-left").getEntry("tv")
-		// .getDouble(0) != 0;
-		// boolean leftLimelightIsStable =
-		// nextStandardDeviation(limelightBotPoseLeft.getX(),
-		// limelightBotPoseLeft.getY(), standardDeviationXLeft,
-		// standardDeviationYLeft) <=
-		// Constants.Subsystems.Drivetrain.MAX_STANDARD_DEVIATION_LIMELIGHT;
-
-		// if (leftLimelightIsStable
-		// && leftAprilTagIsDetected
-		// && leftNeitherXNorYAt0) {
-		// // System.out.println("Sdev" +nextStandardDeviation(limelightBotPose.getX(),
-		// // limelightBotPose.getY()));
 
 		limelightBotPoseLeft = new Pose2d(limelightBotPoseLeft.getX() + 8.27,
 				limelightBotPoseLeft.getY() + 4.01,
 				limelightBotPoseLeft.getRotation());
-		// resetLeft = true;
-		// }
 
 		boolean rightNeitherXNorYAt0 = limelightBotPoseRight.getX() != 0 && limelightBotPoseRight.getY() != 0;
-		// boolean rightAprilTagIsDetected =
-		// NetworkTableInstance.getDefault().getTable("limelight-right").getEntry("tv")
-		// .getDouble(0) != 0;
-		// boolean rightLimelightIsStable =
-		// nextStandardDeviation(limelightBotPoseRight.getX(),
-		// limelightBotPoseRight.getY(), standardDeviationXRight,
-		// standardDeviationYRight) <=
-		// Constants.Subsystems.Drivetrain.MAX_STANDARD_DEVIATION_LIMELIGHT;
-
-		// if (rightLimelightIsStable
-		// && rightAprilTagIsDetected
-		// && rightNeitherXNorYAt0) {
-
 		limelightBotPoseRight = new Pose2d(limelightBotPoseRight.getX() + 8.27,
 				limelightBotPoseRight.getY() + 4.01,
 				limelightBotPoseRight.getRotation());
-		// resetRight = true;
-		// }
-
 		// -----------SET MASTER BOT POSE
 		if (rightNeitherXNorYAt0 && leftNeitherXNorYAt0) {// resetRight && resetLeft
 			averagedPoses = Pose2dHelpers.meanCorrect(limelightBotPoseLeft, limelightBotPoseRight);
-
-			// resetOdometry(averagedPoses);
+			m_poseEstimator.addVisionMeasurement(averagedPoses, Timer.getFPGATimestamp(),
+					VecBuilder.fill(0.9, 0.9, 0.9));// taken from soncis squirrls
 		} else if (rightNeitherXNorYAt0) {
+			m_poseEstimator.addVisionMeasurement(limelightBotPoseRight, Timer.getFPGATimestamp(),
+					VecBuilder.fill(0.9, 0.9, 0.9));// taken from soncis squirrls
 			// resetOdometry(limelightBotPoseRight);
 		} else if (leftNeitherXNorYAt0) {
 			// resetOdometry(limelightBotPoseLeft);
+			m_poseEstimator.addVisionMeasurement(limelightBotPoseLeft, Timer.getFPGATimestamp(),
+					VecBuilder.fill(0.9, 0.9, 0.9));// taken from soncis squirrls
 		}
 
 		SmartDashboard.putBoolean("Averaging", rightNeitherXNorYAt0 && leftNeitherXNorYAt0);
 		SmartDashboard.putNumber("Left Odo", limelightBotPoseLeft.getX());
 		SmartDashboard.putNumber("Right Odo", limelightBotPoseRight.getX());
-		SmartDashboard.putNumber("True Odo", odometry.getPoseMeters().getX());
-		resetRight = false;
-		resetLeft = false;
+		SmartDashboard.putNumber("True Odo", m_poseEstimator.getEstimatedPosition().getX());
 	}
 
 	double nextStandardDeviation(double nextX, double nextY, List<Double> standardDeviationX,
@@ -209,7 +167,7 @@ public class Drivetrain extends SubsystemBase {
 	 * @return The pose.
 	 */
 	public Pose2d getPose() {
-		return odometry.getPoseMeters();
+		return m_poseEstimator.getEstimatedPosition();
 	}
 
 	/**
@@ -227,7 +185,7 @@ public class Drivetrain extends SubsystemBase {
 	 * @param pose The pose to which to set the odometry.
 	 */
 	public void resetOdometry(Pose2d pose) {
-		odometry.resetPosition(getGyroscopeRotation(), getSwerveModulePositions(), pose);
+		m_poseEstimator.resetPosition(getGyroscopeRotation(), getSwerveModulePositions(), pose);
 	}
 
 	/**
