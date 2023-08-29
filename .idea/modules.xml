@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/3494_2023_repo.iml" filepath="$PROJECT_DIR$/.idea/modules/3494_2023_repo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/3494_2023_repo.main.iml" filepath="$PROJECT_DIR$/.idea/modules/3494_2023_repo.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/3494_2023_repo.test.iml" filepath="$PROJECT_DIR$/.idea/modules/3494_2023_repo.test.iml" />
+    </modules>
+  </component>
+</project>

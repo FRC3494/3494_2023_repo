@@ -61,8 +61,9 @@ public final class OI {
     }
 
     public static double teleopXVelocity() {
-        double driveSpeed = slowMode() ? Constants.OI.SLOW_DRIVE_SPEED : Constants.OI.DRIVE_SPEED;
-
+        // double driveSpeed = slowMode() ? Constants.OI.SLOW_DRIVE_SPEED :
+        // Constants.OI.DRIVE_SPEED;
+        double driveSpeed = 1;
         double forward = primaryController.getLeftY();
         double left = primaryController.getLeftX();
         double dPadPower = ((primaryController.getPOV() == 180) ? Constants.OI.DPAD_SPEED : 0)
@@ -76,8 +77,9 @@ public final class OI {
     }
 
     public static double teleopYVelocity() {
-        double driveSpeed = slowMode() ? Constants.OI.SLOW_DRIVE_SPEED : Constants.OI.DRIVE_SPEED;
-
+        // double driveSpeed = slowMode() ? Constants.OI.SLOW_DRIVE_SPEED :
+        // Constants.OI.DRIVE_SPEED;
+        double driveSpeed = 1.0;
         double forward = primaryController.getLeftY();
         double left = primaryController.getLeftX();
         double dPadPower = ((primaryController.getPOV() == 90) ? Constants.OI.DPAD_SPEED : 0)
@@ -91,8 +93,9 @@ public final class OI {
     }
 
     public static double teleopTurnVelocity() {
-        double turnSpeed = slowMode() ? Constants.OI.SLOW_TURN_SPEED : Constants.OI.TURN_SPEED;
-
+        // double turnSpeed = slowMode() ? Constants.OI.SLOW_TURN_SPEED :
+        // Constants.OI.TURN_SPEED;
+        double turnSpeed = 1;
         return modifyAxis(primaryController.getRightX()) * turnSpeed;
     }
 

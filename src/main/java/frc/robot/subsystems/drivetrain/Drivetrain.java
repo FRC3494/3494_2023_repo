@@ -18,8 +18,10 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.OI;
 import frc.robot.subsystems.NavX;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.Pose2dHelpers;
@@ -33,7 +35,7 @@ public class Drivetrain extends SubsystemBase {
 
 	public Pose2d limelightBotPoseLeft;
 	public Pose2d limelightBotPoseRight;
-
+	public Pose2d averagedPoses;
 	public Pose2d limelightBotPoseMaster;
 	private boolean resetLeft = false;
 	private boolean resetRight = true;
@@ -92,7 +94,8 @@ public class Drivetrain extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		odometry.update(getGyroscopeRotation(), getSwerveModulePositions());
+		odometry.update(getGyroscopeRotation(),
+				getSwerveModulePositions());
 
 		// update limelight position here
 
@@ -111,49 +114,62 @@ public class Drivetrain extends SubsystemBase {
 		// nextStandardDeviation(limelightBotPoseLeft.getX(),
 		// limelightBotPoseLeft.getY()));
 		boolean leftNeitherXNorYAt0 = limelightBotPoseLeft.getX() != 0 && limelightBotPoseLeft.getY() != 0;
-		boolean leftAprilTagIsDetected = NetworkTableInstance.getDefault().getTable("limelight-left").getEntry("tv")
-				.getDouble(0) != 0;
-		boolean leftLimelightIsStable = nextStandardDeviation(limelightBotPoseLeft.getX(),
-				limelightBotPoseLeft.getY(), standardDeviationXLeft,
-				standardDeviationYLeft) <= Constants.Subsystems.Drivetrain.MAX_STANDARD_DEVIATION_LIMELIGHT;
+		// boolean leftAprilTagIsDetected =
+		// NetworkTableInstance.getDefault().getTable("limelight-left").getEntry("tv")
+		// .getDouble(0) != 0;
+		// boolean leftLimelightIsStable =
+		// nextStandardDeviation(limelightBotPoseLeft.getX(),
+		// limelightBotPoseLeft.getY(), standardDeviationXLeft,
+		// standardDeviationYLeft) <=
+		// Constants.Subsystems.Drivetrain.MAX_STANDARD_DEVIATION_LIMELIGHT;
 
-		if (leftLimelightIsStable
-				&& leftAprilTagIsDetected
-				&& leftNeitherXNorYAt0) {
-			// System.out.println("Sdev" +nextStandardDeviation(limelightBotPose.getX(),
-			// limelightBotPose.getY()));
+		// if (leftLimelightIsStable
+		// && leftAprilTagIsDetected
+		// && leftNeitherXNorYAt0) {
+		// // System.out.println("Sdev" +nextStandardDeviation(limelightBotPose.getX(),
+		// // limelightBotPose.getY()));
 
-			limelightBotPoseLeft = new Pose2d(limelightBotPoseLeft.getX() + 8.27, limelightBotPoseLeft.getY() + 4.01,
-					limelightBotPoseLeft.getRotation());
-			resetLeft = true;
-		}
+		limelightBotPoseLeft = new Pose2d(limelightBotPoseLeft.getX() + 8.27,
+				limelightBotPoseLeft.getY() + 4.01,
+				limelightBotPoseLeft.getRotation());
+		// resetLeft = true;
+		// }
 
 		boolean rightNeitherXNorYAt0 = limelightBotPoseRight.getX() != 0 && limelightBotPoseRight.getY() != 0;
-		boolean rightAprilTagIsDetected = NetworkTableInstance.getDefault().getTable("limelight-right").getEntry("tv")
-				.getDouble(0) != 0;
-		boolean rightLimelightIsStable = nextStandardDeviation(limelightBotPoseRight.getX(),
-				limelightBotPoseRight.getY(), standardDeviationXRight,
-				standardDeviationYRight) <= Constants.Subsystems.Drivetrain.MAX_STANDARD_DEVIATION_LIMELIGHT;
+		// boolean rightAprilTagIsDetected =
+		// NetworkTableInstance.getDefault().getTable("limelight-right").getEntry("tv")
+		// .getDouble(0) != 0;
+		// boolean rightLimelightIsStable =
+		// nextStandardDeviation(limelightBotPoseRight.getX(),
+		// limelightBotPoseRight.getY(), standardDeviationXRight,
+		// standardDeviationYRight) <=
+		// Constants.Subsystems.Drivetrain.MAX_STANDARD_DEVIATION_LIMELIGHT;
 
-		if (rightLimelightIsStable
-				&& rightAprilTagIsDetected
-				&& rightNeitherXNorYAt0) {
+		// if (rightLimelightIsStable
+		// && rightAprilTagIsDetected
+		// && rightNeitherXNorYAt0) {
 
-			limelightBotPoseRight = new Pose2d(limelightBotPoseRight.getX() + 8.27, limelightBotPoseRight.getY() + 4.01,
-					limelightBotPoseRight.getRotation());
-			resetRight = true;
-		}
+		limelightBotPoseRight = new Pose2d(limelightBotPoseRight.getX() + 8.27,
+				limelightBotPoseRight.getY() + 4.01,
+				limelightBotPoseRight.getRotation());
+		// resetRight = true;
+		// }
 
 		// -----------SET MASTER BOT POSE
-		if (resetRight && resetLeft) {
-			Pose2d averagedPoses = Pose2dHelpers.mean(limelightBotPoseLeft, limelightBotPoseRight);
-			resetOdometry(averagedPoses);
-		} else if (resetRight) {
-			resetOdometry(limelightBotPoseRight);
-		} else if (resetLeft) {
-			resetOdometry(limelightBotPoseLeft);
+		if (rightNeitherXNorYAt0 && leftNeitherXNorYAt0) {// resetRight && resetLeft
+			averagedPoses = Pose2dHelpers.meanCorrect(limelightBotPoseLeft, limelightBotPoseRight);
+
+			// resetOdometry(averagedPoses);
+		} else if (rightNeitherXNorYAt0) {
+			// resetOdometry(limelightBotPoseRight);
+		} else if (leftNeitherXNorYAt0) {
+			// resetOdometry(limelightBotPoseLeft);
 		}
 
+		SmartDashboard.putBoolean("Averaging", rightNeitherXNorYAt0 && leftNeitherXNorYAt0);
+		SmartDashboard.putNumber("Left Odo", limelightBotPoseLeft.getX());
+		SmartDashboard.putNumber("Right Odo", limelightBotPoseRight.getX());
+		SmartDashboard.putNumber("True Odo", odometry.getPoseMeters().getX());
 		resetRight = false;
 		resetLeft = false;
 	}
