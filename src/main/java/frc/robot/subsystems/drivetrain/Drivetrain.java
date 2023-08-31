@@ -114,15 +114,21 @@ public class Drivetrain extends SubsystemBase {
 		// -----------SET MASTER BOT POSE
 		if (rightNeitherXNorYAt0 && leftNeitherXNorYAt0) {// resetRight && resetLeft
 			averagedPoses = Pose2dHelpers.meanCorrect(limelightBotPoseLeft, limelightBotPoseRight);
+
 			m_poseEstimator.addVisionMeasurement(averagedPoses, Timer.getFPGATimestamp(),
 					VecBuilder.fill(0.9, 0.9, 0.9));// taken from soncis squirrls
 		} else if (rightNeitherXNorYAt0) {
-			m_poseEstimator.addVisionMeasurement(limelightBotPoseRight, Timer.getFPGATimestamp(),
+			m_poseEstimator.addVisionMeasurement(limelightBotPoseRight,
+					Timer.getFPGATimestamp(),
 					VecBuilder.fill(0.9, 0.9, 0.9));// taken from soncis squirrls
-			// resetOdometry(limelightBotPoseRight);
+			resetOdometry(limelightBotPoseRight);
 		} else if (leftNeitherXNorYAt0) {
 			// resetOdometry(limelightBotPoseLeft);
-			m_poseEstimator.addVisionMeasurement(limelightBotPoseLeft, Timer.getFPGATimestamp(),
+			m_poseEstimator.addVisionMeasurement(
+					new Pose2d(limelightBotPoseLeft.getX(), limelightBotPoseLeft.getY(),
+							limelightBotPoseLeft.getRotation()),
+					// new Rotation2d(getGyroscopeRotation().getRadians() + Math.PI)),
+					Timer.getFPGATimestamp(),
 					VecBuilder.fill(0.9, 0.9, 0.9));// taken from soncis squirrls
 		}
 

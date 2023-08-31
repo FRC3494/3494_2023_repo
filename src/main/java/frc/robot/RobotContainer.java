@@ -31,6 +31,7 @@ import frc.robot.commands.groups.AutoBalanceGroup;
 import frc.robot.commands.groups.AutoBalanceGroupDumb;
 import frc.robot.commands.groups.AutoBalanceGroupDumbReverse;
 import frc.robot.commands.groups.AutoBalanceTeleopGroup;
+import frc.robot.commands.groups.AutoLineUpTeleopGroup;
 import frc.robot.commands.teleop.TeleopDrive;
 import frc.robot.subsystems.Camera;
 import frc.robot.subsystems.drivetrain.Drivetrain;
@@ -957,6 +958,9 @@ public class RobotContainer {
 
                 OI.toZero().rising().ifHigh(() -> {
                         arm.toZero();
+                });
+                OI.autoLineUpEvent().rising().ifHigh(() -> {
+                        AutoLineUpTeleopGroup.get(drivetrain, robotPosition).schedule();
                 });
         }
 }
