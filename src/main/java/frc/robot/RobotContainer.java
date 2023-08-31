@@ -34,6 +34,7 @@ import frc.robot.commands.groups.AutoBalanceTeleopGroup;
 import frc.robot.commands.groups.AutoLineUpTeleopGroup;
 import frc.robot.commands.teleop.TeleopDrive;
 import frc.robot.subsystems.Camera;
+import frc.robot.subsystems.drivetrain.DriveLocation;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.Pneumatics;
@@ -959,8 +960,23 @@ public class RobotContainer {
                 OI.toZero().rising().ifHigh(() -> {
                         arm.toZero();
                 });
-                OI.autoLineUpEvent().rising().ifHigh(() -> {
-                        AutoLineUpTeleopGroup.get(drivetrain, robotPosition).schedule();
+                // OI.autoLineUpEvent().rising().ifHigh(() -> {
+                // AutoLineUpTeleopGroup.get(drivetrain, robotPosition).schedule();
+                // });
+                OI.selectDriveMiddleGridMenu().rising().ifHigh(() -> {
+                        OI.middleGridMenu = true;
+                });
+                OI.resetMenuMiddleGrid().rising().ifHigh(() -> {
+                        OI.middleGridMenu = false;
+                });
+                OI.selectDriveLeftConeMiddleGrid().rising().ifHigh(() -> {
+                        AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.LeftConeMiddleGrid);
+                });
+                OI.selectDriveMiddleCubeMiddleGrid().rising().ifHigh(() -> {
+                        AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.MiddleCubeMiddleGrid);
+                });
+                OI.selectDriveRightConeMiddleGrid().rising().ifHigh(() -> {
+                        AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.RightConeMiddleGrid);
                 });
         }
 }

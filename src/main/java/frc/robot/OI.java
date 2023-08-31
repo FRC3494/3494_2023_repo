@@ -61,9 +61,7 @@ public final class OI {
     }
 
     public static double teleopXVelocity() {
-        // double driveSpeed = slowMode() ? Constants.OI.SLOW_DRIVE_SPEED :
-        // Constants.OI.DRIVE_SPEED;
-        double driveSpeed = 1;
+        double driveSpeed = slowMode() ? Constants.OI.SLOW_DRIVE_SPEED : Constants.OI.DRIVE_SPEED;
         double forward = primaryController.getLeftY();
         double left = primaryController.getLeftX();
         double dPadPower = ((primaryController.getPOV() == 180) ? Constants.OI.DPAD_SPEED : 0)
@@ -77,9 +75,7 @@ public final class OI {
     }
 
     public static double teleopYVelocity() {
-        // double driveSpeed = slowMode() ? Constants.OI.SLOW_DRIVE_SPEED :
-        // Constants.OI.DRIVE_SPEED;
-        double driveSpeed = 1.0;
+        double driveSpeed = slowMode() ? Constants.OI.SLOW_DRIVE_SPEED : Constants.OI.DRIVE_SPEED;
         double forward = primaryController.getLeftY();
         double left = primaryController.getLeftX();
         double dPadPower = ((primaryController.getPOV() == 90) ? Constants.OI.DPAD_SPEED : 0)
@@ -93,14 +89,14 @@ public final class OI {
     }
 
     public static double teleopTurnVelocity() {
-        // double turnSpeed = slowMode() ? Constants.OI.SLOW_TURN_SPEED :
-        // Constants.OI.TURN_SPEED;
-        double turnSpeed = 1;
+        double turnSpeed = slowMode() ? Constants.OI.SLOW_TURN_SPEED : Constants.OI.TURN_SPEED;
         return modifyAxis(primaryController.getRightX()) * turnSpeed;
     }
 
     public static boolean slowMode() {
-        return (primaryController.getRightTriggerAxis() >= 0.1) || (primaryController.getLeftTriggerAxis() >= 0.1);
+        // return (primaryController.getRightTriggerAxis() >= 0.1) ||
+        // (primaryController.getLeftTriggerAxis() >= 0.1);
+        return (primaryController.getLeftTriggerAxis() >= 0.1);
     }
 
     public static double armDirectDrivePower() {
@@ -115,50 +111,9 @@ public final class OI {
         return primaryController.y(eventLoop);
     }
 
-    public static BooleanEvent autoLineUpEvent() {
-        return primaryController.a(eventLoop);
-    }
-
-    public static BooleanEvent selectDrivePickupMenu() {
-        return primaryController.a(eventLoop).and(() -> !pickupMenu);
-    }
-
-    public static BooleanEvent resetMenuPickup() {
-        return primaryController.a(eventLoop).and(() -> pickupMenu);
-    }
-
-    public static BooleanEvent selectDriveSingleSub() {
-        return primaryController.rightTrigger(eventLoop).and(() -> pickupMenu);
-    }
-
-    public static BooleanEvent selectDriveDoubleSubLeft() {
-        return primaryController.rightBumper(eventLoop).and(() -> pickupMenu);
-    }
-
-    public static BooleanEvent selectDriveDoubleSubRight() {
-        return primaryController.leftBumper(eventLoop).and(() -> pickupMenu);
-    }
-
-    public static BooleanEvent selectDriveLeftGridMenu() {
-        return primaryController.leftTrigger(eventLoop).and(() -> !leftGridMenu);
-    }
-
-    public static BooleanEvent resetMenuLeftGrid() {
-        return primaryController.a(eventLoop).and(() -> leftGridMenu);
-    }
-
-    public static BooleanEvent selectDriveLeftConeLeftGrid() {
-        return primaryController.leftTrigger(eventLoop).and(() -> leftGridMenu);
-    }
-
-    public static BooleanEvent selectDriveMiddleCubeLeftGrid() {
-        return primaryController.leftBumper(eventLoop).and(() -> leftGridMenu);
-    }
-
-    public static BooleanEvent selectDriveRightConeLeftGrid() {
-        return primaryController.rightBumper(eventLoop).and(() -> leftGridMenu);
-    }
-
+    // public static BooleanEvent autoLineUpEvent() {
+    // return primaryController.a(eventLoop);
+    // }
     public static BooleanEvent selectDriveMiddleGridMenu() {
         return primaryController.leftBumper(eventLoop).and(() -> !middleGridMenu);
     }
@@ -179,26 +134,87 @@ public final class OI {
         return primaryController.rightBumper(eventLoop).and(() -> middleGridMenu);
     }
 
-    public static BooleanEvent selectDriveRightGridMenu() {
-        return primaryController.rightBumper(eventLoop).and(() -> !rightGridMenu);
-    }
-
-    public static BooleanEvent resetMenuRightGrid() {
-        return primaryController.a(eventLoop).and(() -> rightGridMenu);
-    }
-
-    public static BooleanEvent selectDriveLeftConeRightGrid() {
-        return primaryController.leftTrigger(eventLoop).and(() -> rightGridMenu);
-    }
-
-    public static BooleanEvent selectDriveMiddleCubeRightGrid() {
-        return primaryController.leftBumper(eventLoop).and(() -> rightGridMenu);
-    }
-
-    public static BooleanEvent selectDriveRightConeRightGrid() {
-        return primaryController.rightBumper(eventLoop).and(() -> rightGridMenu);
-    }
-
+    /*
+     * public static BooleanEvent selectDrivePickupMenu() {
+     * return primaryController.a(eventLoop).and(() -> !pickupMenu);
+     * }
+     * 
+     * public static BooleanEvent resetMenuPickup() {
+     * return primaryController.a(eventLoop).and(() -> pickupMenu);
+     * }
+     * 
+     * public static BooleanEvent selectDriveSingleSub() {
+     * return primaryController.rightTrigger(eventLoop).and(() -> pickupMenu);
+     * }
+     * 
+     * public static BooleanEvent selectDriveDoubleSubLeft() {
+     * return primaryController.rightBumper(eventLoop).and(() -> pickupMenu);
+     * }
+     * 
+     * public static BooleanEvent selectDriveDoubleSubRight() {
+     * return primaryController.leftBumper(eventLoop).and(() -> pickupMenu);
+     * }
+     * 
+     * public static BooleanEvent selectDriveLeftGridMenu() {
+     * return primaryController.leftTrigger(eventLoop).and(() -> !leftGridMenu);
+     * }
+     * 
+     * public static BooleanEvent resetMenuLeftGrid() {
+     * return primaryController.a(eventLoop).and(() -> leftGridMenu);
+     * }
+     * 
+     * public static BooleanEvent selectDriveLeftConeLeftGrid() {
+     * return primaryController.leftTrigger(eventLoop).and(() -> leftGridMenu);
+     * }
+     * 
+     * public static BooleanEvent selectDriveMiddleCubeLeftGrid() {
+     * return primaryController.leftBumper(eventLoop).and(() -> leftGridMenu);
+     * }
+     * 
+     * public static BooleanEvent selectDriveRightConeLeftGrid() {
+     * return primaryController.rightBumper(eventLoop).and(() -> leftGridMenu);
+     * }
+     * 
+     * public static BooleanEvent selectDriveMiddleGridMenu() {
+     * return primaryController.leftBumper(eventLoop).and(() -> !middleGridMenu);
+     * }
+     * 
+     * public static BooleanEvent resetMenuMiddleGrid() {
+     * return primaryController.a(eventLoop).and(() -> middleGridMenu);
+     * }
+     * 
+     * public static BooleanEvent selectDriveLeftConeMiddleGrid() {
+     * return primaryController.leftTrigger(eventLoop).and(() -> middleGridMenu);
+     * }
+     * 
+     * public static BooleanEvent selectDriveMiddleCubeMiddleGrid() {
+     * return primaryController.leftBumper(eventLoop).and(() -> middleGridMenu);
+     * }
+     * 
+     * public static BooleanEvent selectDriveRightConeMiddleGrid() {
+     * return primaryController.rightBumper(eventLoop).and(() -> middleGridMenu);
+     * }
+     * 
+     * public static BooleanEvent selectDriveRightGridMenu() {
+     * return primaryController.rightBumper(eventLoop).and(() -> !rightGridMenu);
+     * }
+     * 
+     * public static BooleanEvent resetMenuRightGrid() {
+     * return primaryController.a(eventLoop).and(() -> rightGridMenu);
+     * }
+     * 
+     * public static BooleanEvent selectDriveLeftConeRightGrid() {
+     * return primaryController.leftTrigger(eventLoop).and(() -> rightGridMenu);
+     * }
+     * 
+     * public static BooleanEvent selectDriveMiddleCubeRightGrid() {
+     * return primaryController.leftBumper(eventLoop).and(() -> rightGridMenu);
+     * }
+     * 
+     * public static BooleanEvent selectDriveRightConeRightGrid() {
+     * return primaryController.rightBumper(eventLoop).and(() -> rightGridMenu);
+     * }
+     */
     public static BooleanEvent driveTrainLock() {
         return primaryController.b(eventLoop);
     }
