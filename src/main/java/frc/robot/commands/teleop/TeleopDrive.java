@@ -14,7 +14,6 @@ public class TeleopDrive extends CommandBase {
 
     public TeleopDrive(Drivetrain drivetrain, Forearm forearm, Wrist wrist) {
         this.drivetrain = drivetrain;
-
         this.forearm = forearm;
         this.wrist = wrist;
 

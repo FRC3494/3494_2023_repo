@@ -111,9 +111,10 @@ public final class OI {
         return primaryController.y(eventLoop);
     }
 
-    // public static BooleanEvent autoLineUpEvent() {
-    // return primaryController.a(eventLoop);
-    // }
+    public static BooleanEvent autoLineUpEvent() {
+        return primaryController.a(eventLoop);
+    }
+
     public static BooleanEvent selectDriveMiddleGridMenu() {
         return primaryController.leftBumper(eventLoop).and(() -> !middleGridMenu);
     }

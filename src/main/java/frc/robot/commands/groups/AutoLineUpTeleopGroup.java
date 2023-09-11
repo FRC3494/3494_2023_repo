@@ -20,41 +20,18 @@ public class AutoLineUpTeleopGroup {
 
         public static Command get(Drivetrain drivetrain, Field2d field2d) {
                 // return new Pose2d(new Translation2d(10, 10), new Rotation2d(0));\
+                PathPoint endPoint = new PathPoint(new Translation2d(blueArrayX, 2.75),
+                                Rotation2d.fromDegrees(blueArrayHeading),
+                                Rotation2d.fromDegrees(blueArrayHeading));
                 PathPlannerTrajectory trajectoryToAprilTag = PathPlanner.generatePath(
                                 new PathConstraints(2.75, 1.25),
                                 new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0),
                                                 drivetrain.getPose().getRotation()), // position, heading
-                                new PathPoint(new Translation2d(2.05, 2.1), Rotation2d.fromDegrees(0),
-                                                Rotation2d.fromDegrees(0)) // position,
-                                                                           // heading
+                                endPoint // position,
+                                         // heading
 
                 );
-                // CUBE MID : 2.05, 2.75
-                // CONE RIGHT : 2.05, 2.1
 
-                // Estimated Positions: (The 2.05 is an estimate)
-                /*
-                 * ALL ON BLUE
-                 * ON RED< ANGLE IS FLIPPED AND X IS ~14.5
-                 * Left-Station left-Cone (2.05, 5.00)
-                 * Left-Station Mid-Cube (2.05, 4.45)
-                 * Left-Station right-Cone (2.05, 3.90)
-                 * 
-                 * Mid-Station left-Cone (2.05, 3.30)
-                 * Mid-Station Mid-Cube (2.05, 2.75)
-                 * Mid-Station right-Cone (2.05, 2.20)
-                 * 
-                 * Right-Station left-Cone (2.05, 1.6)
-                 * Right-Station Mid-Cube (2.05,1.1)
-                 * Right-Station right-Cone (2.05,0.5)
-                 * 
-                 * Blue Double-Sub-RIGHT (15.75, 6)
-                 * Blue Double-Sub-LEFT (15.75, 7.30)
-                 * BLUE SINGLE (14, 7.5)
-                 * 
-                 * RED Double-Sub-RIGHT (0.85, 6)
-                 * RED Double-Sub-LEFT (0.8, 7.30)
-                 */
                 return new TeleopDriveInterruptor()
                                 .deadlineWith(new FollowPath(drivetrain, trajectoryToAprilTag, field2d, false));
         }
@@ -62,6 +39,7 @@ public class AutoLineUpTeleopGroup {
         public static Command go(Drivetrain drivetrain, Field2d field2d, DriveLocation location) {
                 PathPoint endPoint = new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(180),
                                 drivetrain.getPose().getRotation());
+                System.out.println("RAN!!");
                 switch (location) {
                         case SingleSubstation:
                                 endPoint = new PathPoint(new Translation2d(14, 7.5), Rotation2d.fromDegrees(90),
@@ -98,6 +76,7 @@ public class AutoLineUpTeleopGroup {
                                                 Rotation2d.fromDegrees(blueArrayHeading));
                                 break;
                         case MiddleCubeMiddleGrid:
+                                System.out.println("Set END POINT");
                                 endPoint = new PathPoint(new Translation2d(blueArrayX, 2.75),
                                                 Rotation2d.fromDegrees(blueArrayHeading),
                                                 Rotation2d.fromDegrees(blueArrayHeading));
@@ -129,13 +108,16 @@ public class AutoLineUpTeleopGroup {
                                                 drivetrain.getPose().getRotation());
                                 break;
                 }
+                System.out.println("End point");
                 PathPlannerTrajectory trajectoryToAprilTag = PathPlanner.generatePath(
                                 new PathConstraints(2.75, 1.25),
-                                new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(180),
+                                new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0),
                                                 drivetrain.getPose().getRotation()), // position, heading
-                                endPoint // position, heading
+                                endPoint // position,
+                                         // heading
 
                 );
+
                 return new TeleopDriveInterruptor()
                                 .deadlineWith(new FollowPath(drivetrain, trajectoryToAprilTag, field2d, false));
         }

@@ -970,13 +970,19 @@ public class RobotContainer {
                         OI.middleGridMenu = false;
                 });
                 OI.selectDriveLeftConeMiddleGrid().rising().ifHigh(() -> {
-                        AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.LeftConeMiddleGrid);
+                        AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.LeftConeMiddleGrid)
+                                        .schedule();
+
                 });
                 OI.selectDriveMiddleCubeMiddleGrid().rising().ifHigh(() -> {
-                        AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.MiddleCubeMiddleGrid);
+                        AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.MiddleCubeMiddleGrid)
+                                        .schedule();
                 });
                 OI.selectDriveRightConeMiddleGrid().rising().ifHigh(() -> {
-                        AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.RightConeMiddleGrid);
+                        AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.RightConeMiddleGrid)
+                                        .schedule();
+                        ;
+
                 });
         }
 }
