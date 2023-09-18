@@ -972,16 +972,24 @@ public class RobotContainer {
                 OI.selectDriveLeftConeMiddleGrid().rising().ifHigh(() -> {
                         AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.LeftConeMiddleGrid)
                                         .schedule();
+                        // OI.middleGridMenu = false;
 
                 });
                 OI.selectDriveMiddleCubeMiddleGrid().rising().ifHigh(() -> {
                         AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.MiddleCubeMiddleGrid)
                                         .schedule();
+                        // OI.middleGridMenu = false;
                 });
                 OI.selectDriveRightConeMiddleGrid().rising().ifHigh(() -> {
                         AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.RightConeMiddleGrid)
                                         .schedule();
-                        ;
+                        // OI.middleGridMenu = false;
+
+                });
+                OI.selectDriveSingleSub().rising().ifHigh(() -> {
+                        AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.SingleSubstation)
+                                        .schedule();
+                        // OI.middleGridMenu = false;
 
                 });
         }

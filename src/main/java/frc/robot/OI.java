@@ -135,6 +135,18 @@ public final class OI {
         return primaryController.rightBumper(eventLoop).and(() -> middleGridMenu);
     }
 
+    public static BooleanEvent selectDrivePickupMenu() {
+        return primaryController.a(eventLoop).and(() -> !pickupMenu);
+    }
+
+    public static BooleanEvent resetMenuPickup() {
+        return primaryController.a(eventLoop).and(() -> pickupMenu);
+    }
+
+    public static BooleanEvent selectDriveSingleSub() {
+        return primaryController.rightTrigger(eventLoop);// .and(() -> pickupMenu);
+    }
+
     /*
      * public static BooleanEvent selectDrivePickupMenu() {
      * return primaryController.a(eventLoop).and(() -> !pickupMenu);

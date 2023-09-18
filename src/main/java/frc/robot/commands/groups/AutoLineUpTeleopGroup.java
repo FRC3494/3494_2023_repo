@@ -42,8 +42,10 @@ public class AutoLineUpTeleopGroup {
                 System.out.println("RAN!!");
                 switch (location) {
                         case SingleSubstation:
-                                endPoint = new PathPoint(new Translation2d(14, 7.5), Rotation2d.fromDegrees(90),
-                                                Rotation2d.fromDegrees(180));
+                                endPoint = new PathPoint(new Translation2d(14.5, 7.8), Rotation2d.fromDegrees(90), // was
+                                                                                                                   // 14,
+                                                                                                                   // 7.6
+                                                Rotation2d.fromDegrees(90));
                                 break;
                         case DoubleSubstationLeft:
                                 endPoint = new PathPoint(new Translation2d(15.75, 7.30), Rotation2d.fromDegrees(0),

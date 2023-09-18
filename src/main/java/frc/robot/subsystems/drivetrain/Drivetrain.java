@@ -115,18 +115,20 @@ public class Drivetrain extends SubsystemBase {
 		if (rightNeitherXNorYAt0 && leftNeitherXNorYAt0) {// resetRight && resetLeft
 			averagedPoses = Pose2dHelpers.meanCorrect(limelightBotPoseLeft, limelightBotPoseRight);
 
-			m_poseEstimator.addVisionMeasurement(averagedPoses, Timer.getFPGATimestamp(),
+			m_poseEstimator.addVisionMeasurement(new Pose2d(averagedPoses.getX(), averagedPoses.getY(),
+					getGyroscopeRotation()), Timer.getFPGATimestamp(),
 					VecBuilder.fill(0.9, 0.9, 0.9));// taken from soncis squirrls
 		} else if (rightNeitherXNorYAt0) {
-			m_poseEstimator.addVisionMeasurement(limelightBotPoseRight,
+			m_poseEstimator.addVisionMeasurement(new Pose2d(limelightBotPoseRight.getX(), limelightBotPoseRight.getY(),
+					getGyroscopeRotation()),
 					Timer.getFPGATimestamp(),
 					VecBuilder.fill(0.9, 0.9, 0.9));// taken from soncis squirrls
-			resetOdometry(limelightBotPoseRight);
+			// resetOdometry(limelightBotPoseRight);
 		} else if (leftNeitherXNorYAt0) {
 			// resetOdometry(limelightBotPoseLeft);
 			m_poseEstimator.addVisionMeasurement(
 					new Pose2d(limelightBotPoseLeft.getX(), limelightBotPoseLeft.getY(),
-							limelightBotPoseLeft.getRotation()),
+							getGyroscopeRotation()), // used to be limelightBotPoseLeft.getRotation()
 					// new Rotation2d(getGyroscopeRotation().getRadians() + Math.PI)),
 					Timer.getFPGATimestamp(),
 					VecBuilder.fill(0.9, 0.9, 0.9));// taken from soncis squirrls
