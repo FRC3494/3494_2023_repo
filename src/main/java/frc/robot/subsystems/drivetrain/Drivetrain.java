@@ -1,10 +1,7 @@
 package frc.robot.subsystems.drivetrain;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
@@ -26,8 +23,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.OI;
 import frc.robot.subsystems.NavX;
-import frc.robot.util.LimelightHelpers;
-import frc.robot.util.Pose2dHelpers;
 
 public class Drivetrain extends SubsystemBase {
 	private List<Double> standardDeviationXLeft = new ArrayList<>();
@@ -87,6 +82,8 @@ public class Drivetrain extends SubsystemBase {
 
 	// Odometry class for tracking robot pose
 	private final SwerveDrivePoseEstimator m_poseEstimator;
+
+	private LimelightLocalization limelightLocalization = new LimelightLocalization();
 
 	/** Creates a new DriveSubsystem. */
 	public Drivetrain() {
@@ -166,7 +163,6 @@ public class Drivetrain extends SubsystemBase {
 			midSectionOfTheEquationThatMustBeIterated += Math.pow(list.get(i) - mean, 2);
 		}
 		return Math.pow((midSectionOfTheEquationThatMustBeIterated) / (list.size() - 1), 0.5);
-
 	}
 
 	/**
@@ -188,8 +184,6 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
-	 * Resets the odometry to the specified pose.
-	 *
 	 * @param pose The pose to which to set the odometry.
 	 */
 	public void resetOdometry(Pose2d pose) {
@@ -210,7 +204,7 @@ public class Drivetrain extends SubsystemBase {
 		if (locked)
 			return;
 
-		var swerveModuleStates = Constants.Subsystems.Drivetrain.SWERVE_KINEMATICS.toSwerveModuleStates(
+		SwerveModuleState[] swerveModuleStates = Constants.Subsystems.Drivetrain.SWERVE_KINEMATICS.toSwerveModuleStates(
 				fieldRelative
 						? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getGyroscopeRotation())
 						: new ChassisSpeeds(xSpeed, ySpeed, rot));
@@ -297,7 +291,6 @@ public class Drivetrain extends SubsystemBase {
 			// We will only get valid fused headings if the magnetometer is calibrated
 			return Rotation2d.fromDegrees(NavX.getYaw());
 		}
-		;
 
 		return Rotation2d.fromDegrees(360.0 - NavX.getYaw());
 	}
