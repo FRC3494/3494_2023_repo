@@ -848,7 +848,7 @@ public class RobotContainer {
                 robotPosition.setRobotPose(null);
 
                 fieldTab.add(robotPosition).withPosition(1, 0).withSize(7, 4);
-
+                fieldTab.addDouble("raw Angle", () -> NavX.isCompassValid());
                 fieldTab.addDouble("Odometry X", () -> drivetrain.getPose().getX()).withPosition(0, 0);
                 fieldTab.addDouble("Odometry Y", () -> drivetrain.getPose().getY()).withPosition(0, 1);
                 fieldTab.addDouble("Odometry W", () -> drivetrain.getPose().getRotation().getDegrees()).withPosition(0,

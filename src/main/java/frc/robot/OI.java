@@ -58,34 +58,51 @@ public final class OI {
 
     public static void update() {
         eventLoop.poll();
+
+        // System.out.println(primaryController.getPOV());
+    }
+
+    public static boolean isDPadPressed() {
+        return (primaryController.getPOV() != -1);
     }
 
     public static double teleopXVelocity() {
         double driveSpeed = slowMode() ? Constants.OI.SLOW_DRIVE_SPEED : Constants.OI.DRIVE_SPEED;
         double forward = primaryController.getLeftY();
         double left = primaryController.getLeftX();
-        double dPadPower = ((primaryController.getPOV() == 180) ? Constants.OI.DPAD_SPEED : 0)
-                + ((primaryController.getPOV() == 0) ? -Constants.OI.DPAD_SPEED : 0);
+        double dPadPower = ((primaryController.getPOV() == 180) ? -Constants.OI.DPAD_SPEED : 0.0)
+                + ((primaryController.getPOV() == 0) ? Constants.OI.DPAD_SPEED : 0.0);
 
         double angle = (Math.atan2(forward, left) + Math.toRadians(offset)) % (2 * Math.PI);
-        double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), driveSpeed)
-                + dPadPower;
+        driveSpeed += dPadPower;
+        double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2) + Math.pow(dPadPower, 2)),
+                driveSpeed);
 
-        return modifyAxis(-velocity) * Math.cos(angle) * driveSpeed;
+        if (dPadPower == 0) {
+            return modifyAxis(-velocity) * Math.cos(angle) * driveSpeed;
+        } else {
+            return dPadPower;
+        }
+
     }
 
     public static double teleopYVelocity() {
         double driveSpeed = slowMode() ? Constants.OI.SLOW_DRIVE_SPEED : Constants.OI.DRIVE_SPEED;
         double forward = primaryController.getLeftY();
         double left = primaryController.getLeftX();
-        double dPadPower = ((primaryController.getPOV() == 90) ? Constants.OI.DPAD_SPEED : 0)
-                + ((primaryController.getPOV() == 270) ? -Constants.OI.DPAD_SPEED : 0);
+        double dPadPower = ((primaryController.getPOV() == 90) ? -Constants.OI.DPAD_SPEED : 0)
+                + ((primaryController.getPOV() == 270) ? Constants.OI.DPAD_SPEED : 0);
 
         double angle = (Math.atan2(forward, left) + Math.toRadians(offset)) % (2 * Math.PI);
-        double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), driveSpeed)
-                + dPadPower;
+        driveSpeed += dPadPower;
+        double velocity = Math.min(Math.sqrt(Math.pow(forward, 2) + Math.pow(left, 2)), driveSpeed);
 
-        return modifyAxis(velocity) * Math.sin(angle) * driveSpeed;
+        if (dPadPower == 0) {
+            return modifyAxis(velocity) * Math.sin(angle) * driveSpeed;
+        } else {
+            return dPadPower;
+        }
+
     }
 
     public static double teleopTurnVelocity() {

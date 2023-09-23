@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.auto.FollowPath;
+import frc.robot.commands.teleop.TeleopDPadInterruptor;
 import frc.robot.commands.teleop.TeleopDriveInterruptor;
 import frc.robot.subsystems.drivetrain.DriveLocation;
 import frc.robot.subsystems.drivetrain.Drivetrain;
@@ -119,8 +120,10 @@ public class AutoLineUpTeleopGroup {
                                          // heading
 
                 );
-
-                return new TeleopDriveInterruptor()
+                return new TeleopDPadInterruptor()
                                 .deadlineWith(new FollowPath(drivetrain, trajectoryToAprilTag, field2d, false));
+                // return new TeleopDriveInterruptor()
+                // .deadlineWith(new FollowPath(drivetrain, trajectoryToAprilTag, field2d,
+                // false));
         }
 }

@@ -11,8 +11,13 @@ public class NavX {
         ahrs.calibrate();
     }
 
+    public static double isCompassValid() {
+        return ahrs.getYaw();
+    }
+
     public static double getYaw() {
         return -ahrs.getFusedHeading();
+        // return -ahrs.getCompassHeading();
     }
 
     public static double getPitch() {
