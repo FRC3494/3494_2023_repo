@@ -108,7 +108,7 @@ public final class Constants extends AutoConfigurable {
                     put(ForearmState.SingleSubstation, 28.09);
                     put(ForearmState.Base1Hybrid, 37.8);
                     put(ForearmState.Store, 11.9);
-                    put(ForearmState.Base4Cone2, -134.62);
+                    put(ForearmState.Base4Cone2, -129.62);
                     put(ForearmState.Base4Cube2, -121.6);
                     put(ForearmState.Base4Cone1, -117.2);
                     put(ForearmState.Base4Cube1, -3.1);
@@ -164,9 +164,9 @@ public final class Constants extends AutoConfigurable {
                     put(WristState.Hybrid, 185.2);
                     put(WristState.Base2Cube1, 110.4);
 
-                    put(WristState.AUTO_Base2Cube1, 100.2);
-                    put(WristState.AUTO_GroundIntake, 128.4);
-                    put(WristState.AUTO_Base4Cone1, 233.2);
+                    put(WristState.AUTO_Base2Cube1, 117.2); // 100.2
+                    put(WristState.AUTO_GroundIntake, 128.4); // 128.4
+                    put(WristState.AUTO_Base4Cone1, 233.2); // 233.2
                 }
             };
         }

@@ -27,11 +27,12 @@ public final class OI {
     }
 
     public static void setRedOffset() {
-        offset = -100;
+        offset = 95.05;
     }
 
     public static void setBlueOffset() {
-        offset = -270;
+        System.out.println("SET BLUE OFFFFSETTT");
+        offset = -83.72;
     }
 
     private static double deadband(double value, double deadband) {
@@ -136,10 +137,6 @@ public final class OI {
         return primaryController.leftBumper(eventLoop).and(() -> !middleGridMenu);
     }
 
-    public static BooleanEvent resetMenuMiddleGrid() {
-        return primaryController.a(eventLoop).and(() -> middleGridMenu);
-    }
-
     public static BooleanEvent selectDriveLeftConeMiddleGrid() {
         return primaryController.leftTrigger(eventLoop).and(() -> middleGridMenu);
     }
@@ -152,101 +149,42 @@ public final class OI {
         return primaryController.rightBumper(eventLoop).and(() -> middleGridMenu);
     }
 
-    public static BooleanEvent selectDrivePickupMenu() {
-        return primaryController.a(eventLoop).and(() -> !pickupMenu);
+    public static BooleanEvent selectDriveLeftGridMenu() {
+        return primaryController.leftBumper(eventLoop).and(() -> !leftGridMenu);
     }
 
-    public static BooleanEvent resetMenuPickup() {
-        return primaryController.a(eventLoop).and(() -> pickupMenu);
+    public static BooleanEvent selectDriveLeftConeLeftGrid() {
+        return primaryController.leftTrigger(eventLoop).and(() -> leftGridMenu);
     }
 
-    // public static BooleanEvent selectDriveSingleSub() {
-    // return false
-    // // return primaryController.rightTrigger(eventLoop);// .and(() ->
-    // pickupMenu);
-    // }
+    public static BooleanEvent selectDriveMiddleCubeLeftGrid() {
+        return primaryController.leftBumper(eventLoop).and(() -> leftGridMenu);
+    }
 
-    /*
-     * public static BooleanEvent selectDrivePickupMenu() {
-     * return primaryController.a(eventLoop).and(() -> !pickupMenu);
-     * }
-     * 
-     * public static BooleanEvent resetMenuPickup() {
-     * return primaryController.a(eventLoop).and(() -> pickupMenu);
-     * }
-     * 
-     * public static BooleanEvent selectDriveSingleSub() {
-     * return primaryController.rightTrigger(eventLoop).and(() -> pickupMenu);
-     * }
-     * 
-     * public static BooleanEvent selectDriveDoubleSubLeft() {
-     * return primaryController.rightBumper(eventLoop).and(() -> pickupMenu);
-     * }
-     * 
-     * public static BooleanEvent selectDriveDoubleSubRight() {
-     * return primaryController.leftBumper(eventLoop).and(() -> pickupMenu);
-     * }
-     * 
-     * public static BooleanEvent selectDriveLeftGridMenu() {
-     * return primaryController.leftTrigger(eventLoop).and(() -> !leftGridMenu);
-     * }
-     * 
-     * public static BooleanEvent resetMenuLeftGrid() {
-     * return primaryController.a(eventLoop).and(() -> leftGridMenu);
-     * }
-     * 
-     * public static BooleanEvent selectDriveLeftConeLeftGrid() {
-     * return primaryController.leftTrigger(eventLoop).and(() -> leftGridMenu);
-     * }
-     * 
-     * public static BooleanEvent selectDriveMiddleCubeLeftGrid() {
-     * return primaryController.leftBumper(eventLoop).and(() -> leftGridMenu);
-     * }
-     * 
-     * public static BooleanEvent selectDriveRightConeLeftGrid() {
-     * return primaryController.rightBumper(eventLoop).and(() -> leftGridMenu);
-     * }
-     * 
-     * public static BooleanEvent selectDriveMiddleGridMenu() {
-     * return primaryController.leftBumper(eventLoop).and(() -> !middleGridMenu);
-     * }
-     * 
-     * public static BooleanEvent resetMenuMiddleGrid() {
-     * return primaryController.a(eventLoop).and(() -> middleGridMenu);
-     * }
-     * 
-     * public static BooleanEvent selectDriveLeftConeMiddleGrid() {
-     * return primaryController.leftTrigger(eventLoop).and(() -> middleGridMenu);
-     * }
-     * 
-     * public static BooleanEvent selectDriveMiddleCubeMiddleGrid() {
-     * return primaryController.leftBumper(eventLoop).and(() -> middleGridMenu);
-     * }
-     * 
-     * public static BooleanEvent selectDriveRightConeMiddleGrid() {
-     * return primaryController.rightBumper(eventLoop).and(() -> middleGridMenu);
-     * }
-     * 
-     * public static BooleanEvent selectDriveRightGridMenu() {
-     * return primaryController.rightBumper(eventLoop).and(() -> !rightGridMenu);
-     * }
-     * 
-     * public static BooleanEvent resetMenuRightGrid() {
-     * return primaryController.a(eventLoop).and(() -> rightGridMenu);
-     * }
-     * 
-     * public static BooleanEvent selectDriveLeftConeRightGrid() {
-     * return primaryController.leftTrigger(eventLoop).and(() -> rightGridMenu);
-     * }
-     * 
-     * public static BooleanEvent selectDriveMiddleCubeRightGrid() {
-     * return primaryController.leftBumper(eventLoop).and(() -> rightGridMenu);
-     * }
-     * 
-     * public static BooleanEvent selectDriveRightConeRightGrid() {
-     * return primaryController.rightBumper(eventLoop).and(() -> rightGridMenu);
-     * }
-     */
+    public static BooleanEvent selectDriveRightConeLeftGrid() {
+        return primaryController.rightBumper(eventLoop).and(() -> leftGridMenu);
+    }
+
+    public static BooleanEvent selectDriveRightGridMenu() {
+        return primaryController.rightBumper(eventLoop).and(() -> !rightGridMenu);
+    }
+
+    public static BooleanEvent selectDriveLeftConeRightGrid() {
+        return primaryController.leftTrigger(eventLoop).and(() -> rightGridMenu);
+    }
+
+    public static BooleanEvent selectDriveMiddleCubeRightGrid() {
+        return primaryController.leftBumper(eventLoop).and(() -> rightGridMenu);
+    }
+
+    public static BooleanEvent selectDriveRightConeRightGrid() {
+        return primaryController.rightBumper(eventLoop).and(() -> rightGridMenu);
+    }
+
+    public static BooleanEvent resetMenu() {
+        return primaryController.a(eventLoop);
+    }
+
     public static BooleanEvent driveTrainLock() {
         return primaryController.b(eventLoop);
     }

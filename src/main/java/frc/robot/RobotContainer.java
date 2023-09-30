@@ -847,7 +847,7 @@ public class RobotContainer {
                 robotPosition = new Field2d();
 
                 robotPosition.setRobotPose(null);
-
+                fieldTab.addDouble("Offset", () -> OI.getDriveOffset());
                 fieldTab.add(robotPosition).withPosition(1, 0).withSize(7, 4);
                 fieldTab.addDouble("raw Angle", () -> NavX.isCompassValid());
                 fieldTab.addDouble("Odometry X", () -> drivetrain.getPose().getX()).withPosition(0, 0);
@@ -968,35 +968,69 @@ public class RobotContainer {
                 OI.selectDriveLeftConeMiddleGrid().rising().ifHigh(() -> {
                         AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.LeftConeMiddleGrid)
                                         .schedule();
-                        // OI.middleGridMenu = false;
+                        OI.middleGridMenu = false;
 
                 });
                 OI.selectDriveMiddleCubeMiddleGrid().rising().ifHigh(() -> {
                         AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.MiddleCubeMiddleGrid)
                                         .schedule();
-                        System.out.println("GO TO POINT!!!!");
-                        // OI.middleGridMenu = false;
+                        OI.middleGridMenu = false;
                 });
                 OI.selectDriveRightConeMiddleGrid().rising().ifHigh(() -> {
                         AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.RightConeMiddleGrid)
                                         .schedule();
-                        // OI.middleGridMenu = false;
+                        OI.middleGridMenu = false;
+                });
+                // :EFT----
+                OI.selectDriveLeftConeLeftGrid().rising().ifHigh(() -> {
+                        AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.LeftConeLeftGrid)
+                                        .schedule();
+                        OI.leftGridMenu = false;
 
                 });
-                // OI.selectDriveSingleSub().rising().ifHigh(() -> {
-                // AutoLineUpTeleopGroup.go(drivetrain, robotPosition,
-                // DriveLocation.SingleSubstation)
-                // .schedule();
-                // // OI.middleGridMenu = false;
+                OI.selectDriveMiddleCubeLeftGrid().rising().ifHigh(() -> {
+                        AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.MiddleCubeLeftGrid)
+                                        .schedule();
+                        OI.leftGridMenu = false;
+                });
+                OI.selectDriveRightConeLeftGrid().rising().ifHigh(() -> {
+                        AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.RightConeLeftGrid)
+                                        .schedule();
+                        OI.leftGridMenu = false;
+                });
+                // Right----
+                OI.selectDriveLeftConeRightGrid().rising().ifHigh(() -> {
+                        AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.LeftConeRightGrid)
+                                        .schedule();
+                        OI.rightGridMenu = false;
 
-                // });
+                });
+                OI.selectDriveMiddleCubeRightGrid().rising().ifHigh(() -> {
+                        AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.MiddleCubeRightGrid)
+                                        .schedule();
+                        OI.rightGridMenu = false;
+                });
+                OI.selectDriveRightConeRightGrid().rising().ifHigh(() -> {
+                        AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.RightConeRightGrid)
+                                        .schedule();
+                        OI.rightGridMenu = false;
+                });
 
+                // ---DESELCT----------
                 OI.selectDriveMiddleGridMenu().falling().ifHigh(() -> {
-                        System.out.println("SELECTEDDD+___________________");
                         OI.middleGridMenu = true;
                 });
-                OI.resetMenuMiddleGrid().rising().ifHigh(() -> {
+                OI.selectDriveLeftGridMenu().falling().ifHigh(() -> {
+                        OI.leftGridMenu = true;
+                });
+                OI.selectDriveRightGridMenu().falling().ifHigh(() -> {
+                        OI.rightGridMenu = true;
+                });
+                OI.resetMenu().rising().ifHigh(() -> {
                         OI.middleGridMenu = false;
+                        OI.pickupMenu = false;
+                        OI.leftGridMenu = false;
+                        OI.rightGridMenu = false;
                 });
         }
 }
