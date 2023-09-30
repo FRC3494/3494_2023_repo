@@ -126,7 +126,7 @@ public final class Constants extends AutoConfigurable {
             // public static double MOTOR_REDUCTION = (1.0 / 5.0) * (1.0 / 5.0) * (18.0 /
             // 60.0);
 
-            public static double MAX_SPEED = 0.4;
+            public static double MAX_SPEED = 0.4;// 0.4
             public static double MIN_SPEED = -0.4;
 
             public static float MIN_POSITION = -33.403f + (float) frc.robot.subsystems.wrist.Wrist.degrees2Motor(90);
@@ -151,7 +151,7 @@ public final class Constants extends AutoConfigurable {
             public static HashMap<WristState, Double> POSITIONS = new HashMap<>() {
                 {
                     put(WristState.Store, -46.0);
-                    put(WristState.GroundCube, 139.9);
+                    put(WristState.GroundCube, 154.9);
                     put(WristState.GroundCone, 109.7);
                     put(WristState.Base2Cone1, 76.9);
                     put(WristState.Base4Cone1, 221.0);
@@ -164,7 +164,7 @@ public final class Constants extends AutoConfigurable {
                     put(WristState.Hybrid, 185.2);
                     put(WristState.Base2Cube1, 110.4);
 
-                    put(WristState.AUTO_Base2Cube1, 117.2);
+                    put(WristState.AUTO_Base2Cube1, 100.2);
                     put(WristState.AUTO_GroundIntake, 128.4);
                     put(WristState.AUTO_Base4Cone1, 233.2);
                 }
@@ -347,7 +347,7 @@ public final class Constants extends AutoConfigurable {
         public static final int SECONDARY_LEFT_CONTROLLER_PORT = 1;
         public static final int SECONDARY_RIGHT_CONTROLLER_PORT = 2;
 
-        public static final double DRIVE_SPEED = 3; // m/s
+        public static final double DRIVE_SPEED = 3.5; // m/s
         public static final double TURN_SPEED = 5.5; // rad/s
 
         public static final double SLOW_DRIVE_SPEED = 1.5; // m/s

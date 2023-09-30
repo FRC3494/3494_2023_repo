@@ -113,7 +113,7 @@ public final class OI {
     public static boolean slowMode() {
         // return (primaryController.getRightTriggerAxis() >= 0.1) ||
         // (primaryController.getLeftTriggerAxis() >= 0.1);
-        return (primaryController.getLeftTriggerAxis() >= 0.1);
+        return ((primaryController.getLeftTriggerAxis() >= 0.1) || (primaryController.getRightTriggerAxis() >= 0.1));
     }
 
     public static double armDirectDrivePower() {
@@ -160,9 +160,11 @@ public final class OI {
         return primaryController.a(eventLoop).and(() -> pickupMenu);
     }
 
-    public static BooleanEvent selectDriveSingleSub() {
-        return primaryController.rightTrigger(eventLoop);// .and(() -> pickupMenu);
-    }
+    // public static BooleanEvent selectDriveSingleSub() {
+    // return false
+    // // return primaryController.rightTrigger(eventLoop);// .and(() ->
+    // pickupMenu);
+    // }
 
     /*
      * public static BooleanEvent selectDrivePickupMenu() {

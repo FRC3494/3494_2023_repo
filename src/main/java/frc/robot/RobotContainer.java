@@ -52,6 +52,7 @@ import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristState;
 
 public class RobotContainer {
+
         public final Drivetrain drivetrain;
         public final Pneumatics pneumatics;
         public final Shoulder shoulder;
@@ -512,7 +513,7 @@ public class RobotContainer {
                                                                                         WristState.AUTO_Base4Cone1)),
                                                         new WaitCommand(0.5),
                                                         new AutoSetShoulder(container.shoulder, ShoulderState.Base4),
-                                                        new WaitCommand(1.0),
+                                                        new WaitCommand(1.5),
                                                         new AutoSetClaw(container.claw, ClawState.OuttakeCone),
                                                         new WaitCommand(0.2),
 
@@ -576,7 +577,7 @@ public class RobotContainer {
                                                                                         WristState.AUTO_Base4Cone1)),
                                                         new WaitCommand(0.5),
                                                         new AutoSetShoulder(container.shoulder, ShoulderState.Base4),
-                                                        new WaitCommand(1.0),
+                                                        new WaitCommand(1.5),
                                                         new AutoSetClaw(container.claw, ClawState.OuttakeCone),
                                                         new WaitCommand(0.2),
 
@@ -962,13 +963,8 @@ public class RobotContainer {
                 });
                 // OI.autoLineUpEvent().rising().ifHigh(() -> {
                 // AutoLineUpTeleopGroup.get(drivetrain, robotPosition).schedule();
-                // });
-                OI.selectDriveMiddleGridMenu().rising().ifHigh(() -> {
-                        OI.middleGridMenu = true;
-                });
-                OI.resetMenuMiddleGrid().rising().ifHigh(() -> {
-                        OI.middleGridMenu = false;
-                });
+                // });im
+
                 OI.selectDriveLeftConeMiddleGrid().rising().ifHigh(() -> {
                         AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.LeftConeMiddleGrid)
                                         .schedule();
@@ -978,6 +974,7 @@ public class RobotContainer {
                 OI.selectDriveMiddleCubeMiddleGrid().rising().ifHigh(() -> {
                         AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.MiddleCubeMiddleGrid)
                                         .schedule();
+                        System.out.println("GO TO POINT!!!!");
                         // OI.middleGridMenu = false;
                 });
                 OI.selectDriveRightConeMiddleGrid().rising().ifHigh(() -> {
@@ -986,11 +983,20 @@ public class RobotContainer {
                         // OI.middleGridMenu = false;
 
                 });
-                OI.selectDriveSingleSub().rising().ifHigh(() -> {
-                        AutoLineUpTeleopGroup.go(drivetrain, robotPosition, DriveLocation.SingleSubstation)
-                                        .schedule();
-                        // OI.middleGridMenu = false;
+                // OI.selectDriveSingleSub().rising().ifHigh(() -> {
+                // AutoLineUpTeleopGroup.go(drivetrain, robotPosition,
+                // DriveLocation.SingleSubstation)
+                // .schedule();
+                // // OI.middleGridMenu = false;
 
+                // });
+
+                OI.selectDriveMiddleGridMenu().falling().ifHigh(() -> {
+                        System.out.println("SELECTEDDD+___________________");
+                        OI.middleGridMenu = true;
+                });
+                OI.resetMenuMiddleGrid().rising().ifHigh(() -> {
+                        OI.middleGridMenu = false;
                 });
         }
 }

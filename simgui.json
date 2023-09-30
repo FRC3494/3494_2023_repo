@@ -30,10 +30,17 @@
       "/Shuffleboard/Autonomous/SendableChooser[0]": "String Chooser",
       "/Shuffleboard/Field/Field": "Field2d",
       "/Shuffleboard/Main/SendableChooser[0]": "String Chooser"
+    },
+    "windows": {
+      "/Shuffleboard/Field/Field": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables": {
-    "Retained Values": {
+    "Persistent Values": {
       "open": false
     },
     "Transitory Values": {
