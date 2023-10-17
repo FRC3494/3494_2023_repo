@@ -99,19 +99,22 @@ public class Drivetrain extends SubsystemBase {
 	public void periodic() {
 		m_poseEstimator.update(getGyroscopeRotation(), getSwerveModulePositions());
 		// update limelight position here
-		limelightBotPoseLeft = LimelightHelpers.getBotPose2d("limelight-left");
-		limelightBotPoseRight = LimelightHelpers.getBotPose2d("limelight-right");
+		limelightBotPoseLeft = LimelightHelpers.getBotPose2d_wpiBlue("limelight-left");
+		limelightBotPoseRight = LimelightHelpers.getBotPose2d_wpiBlue("limelight-right");
+		// limelightBotPoseLeft = LimelightHelpers.getBotPose2d("limelight-left");
+		// limelightBotPoseRight = LimelightHelpers.getBotPose2d("limelight-right");
 
 		boolean leftNeitherXNorYAt0 = limelightBotPoseLeft.getX() != 0 && limelightBotPoseLeft.getY() != 0;
 
-		limelightBotPoseLeft = new Pose2d(limelightBotPoseLeft.getX() + 8.27,
-				limelightBotPoseLeft.getY() + 4.01,
+		limelightBotPoseLeft = new Pose2d(limelightBotPoseLeft.getX(), // + 8.27,
+				limelightBotPoseLeft.getY(), /// + 4.01,
 				limelightBotPoseLeft.getRotation());
 
 		boolean rightNeitherXNorYAt0 = limelightBotPoseRight.getX() != 0 && limelightBotPoseRight.getY() != 0;
-		limelightBotPoseRight = new Pose2d(limelightBotPoseRight.getX() + 8.27,
-				limelightBotPoseRight.getY() + 4.01,
+		limelightBotPoseRight = new Pose2d(limelightBotPoseRight.getX(), // + 8.27,
+				limelightBotPoseRight.getY(), /// + 4.01,
 				limelightBotPoseRight.getRotation());
+
 		// -----------SET MASTER BOT POSE
 		if (rightNeitherXNorYAt0 && leftNeitherXNorYAt0 && !RobotState.isAutonomous()) {// resetRight && resetLeft
 			averagedPoses = Pose2dHelpers.meanCorrect(limelightBotPoseLeft, limelightBotPoseRight);

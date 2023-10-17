@@ -76,8 +76,8 @@ public final class Constants extends AutoConfigurable {
             public static int MOTOR_CHANNEL = 5;
             public static double MOTOR_REDUCTION = (1.0 / 5.0) * (1.0 / 4.0) * (1.0 / 3.0) * (10.0 / 40.0);
 
-            public static double MAX_SPEED = 0.9;
-            public static double MIN_SPEED = -0.9;
+            public static double MAX_SPEED = 0.2;
+            public static double MIN_SPEED = -0.2;
 
             public static double SLOW_MAX_SPEED = 0.15;
             public static double SLOW_MIN_SPEED = -0.15;
@@ -126,8 +126,8 @@ public final class Constants extends AutoConfigurable {
             // public static double MOTOR_REDUCTION = (1.0 / 5.0) * (1.0 / 5.0) * (18.0 /
             // 60.0);
 
-            public static double MAX_SPEED = 0.4;// 0.4
-            public static double MIN_SPEED = -0.4;
+            public static double MAX_SPEED = 0.1;// 0.4
+            public static double MIN_SPEED = -0.1;
 
             public static float MIN_POSITION = -33.403f + (float) frc.robot.subsystems.wrist.Wrist.degrees2Motor(90);
             public static float MAX_POSITION = 37.905f + (float) frc.robot.subsystems.wrist.Wrist.degrees2Motor(90);
@@ -160,12 +160,12 @@ public final class Constants extends AutoConfigurable {
                     put(WristState.Base4Cube2, 163.4);
                     put(WristState.DoubleSubCube, 147.1);
                     put(WristState.DoubleSubCone, 168.3);
-                    put(WristState.SingleSub, 220.8);
+                    put(WristState.SingleSub, 230.8);
                     put(WristState.Hybrid, 185.2);
                     put(WristState.Base2Cube1, 110.4);
 
                     put(WristState.AUTO_Base2Cube1, 117.2); // 100.2
-                    put(WristState.AUTO_GroundIntake, 128.4); // 128.4
+                    put(WristState.AUTO_GroundIntake, 109.7); // 128.4
                     put(WristState.AUTO_Base4Cone1, 233.2); // 233.2
                 }
             };

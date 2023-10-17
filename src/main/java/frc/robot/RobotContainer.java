@@ -233,7 +233,7 @@ public class RobotContainer {
                                                                                         ClawState.Idle))),
                                         pathFollow(container, "MobilityNoTurn", 1.85),
                                         AutoBalanceGroupDumb.get(container.drivetrain),
-                                        pathFollow(container, "Dumb Balance", 0.5));
+                                        pathFollow(container, "Dumb Balance", 0.63));
 
                 }),
                 Place("Place Medium", (container) -> {

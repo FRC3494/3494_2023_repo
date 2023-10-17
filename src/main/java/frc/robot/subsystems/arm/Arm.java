@@ -30,6 +30,7 @@ public class Arm extends StateMachine<ArmState> {
 
     @Override
     public void periodic() {
+
         super.periodic();
 
         if (shoulder.needsSlow())
