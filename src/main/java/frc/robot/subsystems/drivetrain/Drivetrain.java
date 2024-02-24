@@ -150,7 +150,8 @@ public class Drivetrain extends SubsystemBase {
 		standardDeviationY.add(0, nextY);
 
 		if (standardDeviationX.size() >= 11)
-			standardDeviationX.remove(standardDeviationX.size() - 1);
+			standardDeviationX.remove(standardDeviationX.size() 
+			- 1);
 		if (standardDeviationY.size() >= 11)
 			standardDeviationY.remove(standardDeviationY.size() - 1);
 

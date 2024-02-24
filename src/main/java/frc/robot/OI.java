@@ -150,7 +150,7 @@ public final class OI {
     }
 
     public static BooleanEvent selectDriveLeftGridMenu() {
-        return primaryController.leftBumper(eventLoop).and(() -> !leftGridMenu);
+        return primaryController.leftTrigger(eventLoop).and(() -> !leftGridMenu);
     }
 
     public static BooleanEvent selectDriveLeftConeLeftGrid() {

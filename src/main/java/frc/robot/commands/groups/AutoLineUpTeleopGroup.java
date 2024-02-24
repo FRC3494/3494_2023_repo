@@ -20,6 +20,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 public class AutoLineUpTeleopGroup {
         private static final double blueArrayX = 1.80; // used to be 2.05
         private static final double blueArrayHeading = 0;// used to be 180
+        private static final double blueArrayApproach = 180;
 
         private static final double redArrayX = 14.7; // used to be 2.05
         private static final double redArrayHeading = 180;// used to be 180
@@ -51,50 +52,50 @@ public class AutoLineUpTeleopGroup {
                         // ---------
                         case LeftConeLeftGrid:
                                 endPoint = new PathPoint(new Translation2d(blueArrayX, 5.00),
-                                                Rotation2d.fromDegrees(blueArrayHeading),
+                                                Rotation2d.fromDegrees(blueArrayApproach),
                                                 Rotation2d.fromDegrees(blueArrayHeading));
                                 break;
                         case MiddleCubeLeftGrid:
                                 endPoint = new PathPoint(new Translation2d(blueArrayX, 4.45),
-                                                Rotation2d.fromDegrees(blueArrayHeading),
+                                                Rotation2d.fromDegrees(blueArrayApproach),
                                                 Rotation2d.fromDegrees(blueArrayHeading));
                                 break;
                         case RightConeLeftGrid:
                                 endPoint = new PathPoint(new Translation2d(blueArrayX, 3.90),
-                                                Rotation2d.fromDegrees(blueArrayHeading),
+                                                Rotation2d.fromDegrees(blueArrayApproach),
                                                 Rotation2d.fromDegrees(blueArrayHeading));
                                 break;
                         // ---------
                         case LeftConeMiddleGrid:
                                 endPoint = new PathPoint(new Translation2d(blueArrayX, 3.30),
-                                                Rotation2d.fromDegrees(blueArrayHeading),
+                                                Rotation2d.fromDegrees(blueArrayApproach),
                                                 Rotation2d.fromDegrees(blueArrayHeading));
                                 break;
                         case MiddleCubeMiddleGrid:
                                 System.out.println("Set END POINT");
                                 endPoint = new PathPoint(new Translation2d(blueArrayX, 2.75),
-                                                Rotation2d.fromDegrees(blueArrayHeading),
+                                                Rotation2d.fromDegrees(blueArrayApproach),
                                                 Rotation2d.fromDegrees(blueArrayHeading));
                                 break;
                         case RightConeMiddleGrid:
                                 endPoint = new PathPoint(new Translation2d(blueArrayX, 2.20),
-                                                Rotation2d.fromDegrees(blueArrayHeading),
+                                                Rotation2d.fromDegrees(blueArrayApproach),
                                                 Rotation2d.fromDegrees(blueArrayHeading));
                                 break;
                         // ---------
                         case LeftConeRightGrid:
                                 endPoint = new PathPoint(new Translation2d(blueArrayX, 1.6),
-                                                Rotation2d.fromDegrees(blueArrayHeading),
+                                                Rotation2d.fromDegrees(blueArrayApproach),
                                                 Rotation2d.fromDegrees(blueArrayHeading));
                                 break;
                         case MiddleCubeRightGrid:
                                 endPoint = new PathPoint(new Translation2d(blueArrayX, 1.1),
-                                                Rotation2d.fromDegrees(blueArrayHeading),
+                                                Rotation2d.fromDegrees(blueArrayApproach),
                                                 Rotation2d.fromDegrees(blueArrayHeading));
                                 break;
                         case RightConeRightGrid:
                                 endPoint = new PathPoint(new Translation2d(blueArrayX, 0.5),
-                                                Rotation2d.fromDegrees(blueArrayHeading),
+                                                Rotation2d.fromDegrees(blueArrayApproach),
                                                 Rotation2d.fromDegrees(blueArrayHeading));
                                 break;
                         default:
@@ -106,10 +107,11 @@ public class AutoLineUpTeleopGroup {
                 System.out.println("End point");
                 PathPlannerTrajectory trajectoryToAprilTag = PathPlanner.generatePath(
                                 new PathConstraints(2.75, 1.25),
-                                new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0),
+                                new PathPoint(drivetrain.getPose().getTranslation(),
+                                                Rotation2d.fromDegrees(180),
                                                 drivetrain.getPose().getRotation()), // position, heading
                                 endPoint // position,
-                                         // heading
+                                         // headin
 
                 );
                 return new TeleopDPadInterruptor()

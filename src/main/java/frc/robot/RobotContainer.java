@@ -847,6 +847,9 @@ public class RobotContainer {
                 robotPosition = new Field2d();
 
                 robotPosition.setRobotPose(null);
+                fieldTab.addBoolean("MiddleMenu", () -> OI.middleGridMenu);
+                fieldTab.addBoolean("Left Menu", () -> OI.leftGridMenu);
+                fieldTab.addBoolean("Right Menu", () -> OI.rightGridMenu);
                 fieldTab.addDouble("Offset", () -> OI.getDriveOffset());
                 fieldTab.add(robotPosition).withPosition(1, 0).withSize(7, 4);
                 fieldTab.addDouble("raw Angle", () -> NavX.isCompassValid());
